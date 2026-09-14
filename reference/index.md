@@ -109,14 +109,17 @@ Parchment, brown ink, Tufte restraint
 
 - [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`gc_mineral_colours`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`scale_colour_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`scale_fill_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`scale_colour_gc_c()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`scale_fill_gc_c()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_fill_minerals()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`scale_color_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
   [`scale_color_gc_c()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
-  : The geochemR look: academic parchment, Tufte restraint
+  : The geochemR look: academic parchment, Tufte restraint, colour where
+  it counts
 
 ## Package
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## geochemR 0.2.1
+
+- **Colour separation.** The furniture stays monochrome; the data no
+  longer is. The categorical palette rotates through eleven distinct
+  hues muted for parchment (espresso, rust, slate, moss, ochre, plum,
+  teal, tan, indigo, brick, sage); continuous scales default to the
+  multi-hue `"scholar"` ramp (sand through ochre and rust to plum and
+  ink, luminance falling monotonically), with `"tide"` (cool) and
+  `"divergent"` (slate-parchment- rust) alongside the single-hue ramps;
+  `gc_mineral_colours` /
+  [`scale_fill_minerals()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  colour XRD minerals by kind (silicates warm, carbonates blue, clays
+  green, sulfides dark) so stacked mineralogy reads at a glance.
+  `plot_stacked_depth(fill_scale = )`.
+
 ## geochemR 0.2.0
 
 - **Laboratory workbook reader.**

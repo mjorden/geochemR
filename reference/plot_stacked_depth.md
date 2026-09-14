@@ -16,7 +16,8 @@ plot_stacked_depth(
   analytes,
   holes = NULL,
   normalize = FALSE,
-  xlab = NULL
+  xlab = NULL,
+  fill_scale = NULL
 )
 ```
 
@@ -45,6 +46,13 @@ plot_stacked_depth(
 - xlab:
 
   x-axis label.
+
+- fill_scale:
+
+  A ggplot2 fill scale to use instead of
+  [`scale_fill_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  (e.g.
+  [`scale_fill_minerals()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)).
 
 ## Value
 

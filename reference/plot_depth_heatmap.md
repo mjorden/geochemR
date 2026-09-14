@@ -12,7 +12,7 @@ plot_depth_heatmap(
   analyte,
   breaks = NULL,
   order = "x",
-  palette = "browns"
+  palette = "scholar"
 )
 ```
 
@@ -39,7 +39,8 @@ plot_depth_heatmap(
 - palette:
 
   A sequential palette name for
-  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  (default `"scholar"`).
 
 ## Value
 

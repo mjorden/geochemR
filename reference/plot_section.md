@@ -20,7 +20,7 @@ plot_section(
   maxdist = Inf,
   nmax = 12,
   aspect = 0.05,
-  palette = "browns"
+  palette = "scholar"
 )
 ```
 
@@ -60,7 +60,8 @@ plot_section(
 - palette:
 
   Sequential palette for
-  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  (default `"scholar"`).
 
 ## Value
 

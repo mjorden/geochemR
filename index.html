@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -191,7 +191,7 @@
 <tr>
 <td><strong>Look</strong></td>
 <td>
-<code><a href="reference/theme_gc.html">theme_gc()</a></code>, <code><a href="reference/theme_gc.html">scale_colour_gc()</a></code> / <code><a href="reference/theme_gc.html">scale_fill_gc()</a></code> / <code>..._gc_c()</code>, <code><a href="reference/theme_gc.html">gc_colours()</a></code>, <code><a href="reference/theme_gc.html">gc_pal()</a></code>
+<code><a href="reference/theme_gc.html">theme_gc()</a></code>, <code><a href="reference/theme_gc.html">scale_colour_gc()</a></code> / <code><a href="reference/theme_gc.html">scale_fill_gc()</a></code> / <code>..._gc_c()</code>, <code><a href="reference/theme_gc.html">scale_fill_minerals()</a></code>, <code><a href="reference/theme_gc.html">gc_colours()</a></code>, <code><a href="reference/theme_gc.html">gc_pal()</a></code>, <code>gc_mineral_colours</code>
 </td>
 </tr>
 <tr>
@@ -207,7 +207,8 @@
 <div class="section level2">
 <h2 id="the-look">The look<a class="anchor" aria-label="anchor" href="#the-look"></a>
 </h2>
-<p>Plots are drawn with <code><a href="reference/theme_gc.html">theme_gc()</a></code>: a parchment page, brown ink, a tan-to-espresso palette with a rust accent, serif type — a sibling of the <em>academic</em> style in <a href="https://github.com/mjorden/econscape" class="external-link">econscape</a> — with Tufte’s restraint layered on: no panel fill behind the data, no gridlines unless asked for, hairline axes with outward ticks, muted axis titles, a legend that reads as a row of labels, and on depth profiles of two or three holes the hole names written at the bottom of each trace instead of a legend. <code>theme_gc(grid = "y", panel = "parchment")</code> moves it back toward econscape; <code><a href="reference/theme_gc.html">gc_colours()</a></code> and <code><a href="reference/theme_gc.html">gc_pal()</a></code> expose the palette.</p>
+<p>Plots are drawn with <code><a href="reference/theme_gc.html">theme_gc()</a></code>: a parchment page, brown ink, serif type — a sibling of the <em>academic</em> style in <a href="https://github.com/mjorden/econscape" class="external-link">econscape</a> — with Tufte’s restraint layered on: no panel fill behind the data, no gridlines unless asked for, hairline axes with outward ticks, muted axis titles, a legend that reads as a row of labels, and on depth profiles of two or three holes the hole names written at the bottom of each trace instead of a legend.</p>
+<p>The furniture being monochrome is what lets the data carry colour. The categorical palette rotates through distinct hues muted for parchment (espresso, rust, slate, moss, ochre, plum, teal, …); continuous scales use the multi-hue <code>"scholar"</code> ramp — sand through ochre and rust to plum and ink, luminance falling monotonically — so that both the level and the gradient of a map read (<code>"tide"</code> for a cool version, <code>"divergent"</code> for anomalies about a centre); and XRD minerals are coloured by kind (<code>gc_mineral_colours</code>: silicates warm, carbonates blue, clays green, sulfides dark). <code>theme_gc(grid = "y", panel = "parchment")</code> moves the furniture back toward econscape; <code><a href="reference/theme_gc.html">gc_colours()</a></code> and <code><a href="reference/theme_gc.html">gc_pal()</a></code> expose the palettes.</p>
 </div>
 <div class="section level2">
 <h2 id="notes-on-the-science">Notes on the science<a class="anchor" aria-label="anchor" href="#notes-on-the-science"></a>
@@ -231,7 +232,7 @@
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span>; <span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span><span class="op">)</span>   <span class="co"># 210 tests</span></span>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span>; <span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span><span class="op">)</span>   <span class="co"># 219 tests</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"data-raw/make_example.R"</span><span class="op">)</span>                               <span class="co"># rebuild gc_example</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"data-raw/make_cuttings.R"</span><span class="op">)</span>                              <span class="co"># rebuild gc_cuttings + its workbook</span></span>
 <span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span><span class="op">)</span>                                           <span class="co"># the documentation site</span></span></code></pre></div>

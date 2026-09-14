@@ -21,7 +21,7 @@ plot_map(
   maxdist = Inf,
   contours = 6,
   label = TRUE,
-  palette = "browns"
+  palette = "scholar"
 )
 ```
 
@@ -63,7 +63,8 @@ plot_map(
 - palette:
 
   Sequential palette for
-  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  (default `"scholar"`).
 
 ## Value
 

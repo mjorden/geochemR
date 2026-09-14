@@ -11,7 +11,7 @@ PAM pyrolysis fractions (plot_pam()). One facet per hole."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,8 @@ PAM pyrolysis fractions (<code><a href="plot_pam.html">plot_pam()</a></code>). O
 <span>  <span class="va">analytes</span>,</span>
 <span>  holes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  normalize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  xlab <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fill_scale <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,6 +83,11 @@ PAM pyrolysis fractions (<code><a href="plot_pam.html">plot_pam()</a></code>). O
 
 <dt id="arg-xlab">xlab<a class="anchor" aria-label="anchor" href="#arg-xlab"></a></dt>
 <dd><p>x-axis label.</p></dd>
+
+
+<dt id="arg-fill-scale">fill_scale<a class="anchor" aria-label="anchor" href="#arg-fill-scale"></a></dt>
+<dd><p>A ggplot2 fill scale to use instead of <code><a href="theme_gc.html">scale_fill_gc()</a></code>
+(e.g. <code><a href="theme_gc.html">scale_fill_minerals()</a></code>).</p></dd>
 
 </dl></div>
     <div class="section level2">

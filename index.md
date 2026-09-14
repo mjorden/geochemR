@@ -174,7 +174,7 @@ on XRF: major oxides and censored trace elements.*
 | **Depth** | [`plot_depth_profile()`](https://mjorden.github.io/geochemR/reference/plot_depth_profile.md), [`plot_depth_heatmap()`](https://mjorden.github.io/geochemR/reference/plot_depth_heatmap.md), [`plot_section()`](https://mjorden.github.io/geochemR/reference/plot_section.md) (IDW on a distance–depth grid), [`plot_stacked_depth()`](https://mjorden.github.io/geochemR/reference/plot_stacked_depth.md), [`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md), [`plot_pam()`](https://mjorden.github.io/geochemR/reference/plot_pam.md) |
 | **Plan** | [`plot_map()`](https://mjorden.github.io/geochemR/reference/plot_map.md) (per-hole summary over a depth window, IDW surface + contours), [`gc_idw()`](https://mjorden.github.io/geochemR/reference/gc_idw.md) |
 | **Cross-plots** | [`plot_ternary()`](https://mjorden.github.io/geochemR/reference/plot_ternary.md), [`plot_kerogen()`](https://mjorden.github.io/geochemR/reference/plot_kerogen.md) (HI–OI, HI–Tmax with maturity windows, S2–TOC) |
-| **Look** | [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`scale_colour_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) / [`scale_fill_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) / `..._gc_c()`, [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) |
+| **Look** | [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`scale_colour_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) / [`scale_fill_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) / `..._gc_c()`, [`scale_fill_minerals()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), `gc_mineral_colours` |
 | **Data** | `gc_example` (12 holes), `gc_cuttings` (one cuttings well + its workbook), `gc_minerals`, `gc_oxides`, `gc_sra_analytes`, `gc_pam_analytes` |
 
 Every plot returns a `ggplot` you can keep styling.
@@ -183,19 +183,28 @@ Every plot returns a `ggplot` you can keep styling.
 
 Plots are drawn with
 [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md):
-a parchment page, brown ink, a tan-to-espresso palette with a rust
-accent, serif type — a sibling of the *academic* style in
-[econscape](https://github.com/mjorden/econscape) — with Tufte’s
-restraint layered on: no panel fill behind the data, no gridlines unless
-asked for, hairline axes with outward ticks, muted axis titles, a legend
-that reads as a row of labels, and on depth profiles of two or three
-holes the hole names written at the bottom of each trace instead of a
-legend. `theme_gc(grid = "y", panel = "parchment")` moves it back toward
-econscape;
+a parchment page, brown ink, serif type — a sibling of the *academic*
+style in [econscape](https://github.com/mjorden/econscape) — with
+Tufte’s restraint layered on: no panel fill behind the data, no
+gridlines unless asked for, hairline axes with outward ticks, muted axis
+titles, a legend that reads as a row of labels, and on depth profiles of
+two or three holes the hole names written at the bottom of each trace
+instead of a legend.
+
+The furniture being monochrome is what lets the data carry colour. The
+categorical palette rotates through distinct hues muted for parchment
+(espresso, rust, slate, moss, ochre, plum, teal, …); continuous scales
+use the multi-hue `"scholar"` ramp — sand through ochre and rust to plum
+and ink, luminance falling monotonically — so that both the level and
+the gradient of a map read (`"tide"` for a cool version, `"divergent"`
+for anomalies about a centre); and XRD minerals are coloured by kind
+(`gc_mineral_colours`: silicates warm, carbonates blue, clays green,
+sulfides dark). `theme_gc(grid = "y", panel = "parchment")` moves the
+furniture back toward econscape;
 [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
 and
 [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
-expose the palette.
+expose the palettes.
 
 ## Notes on the science
 
@@ -226,7 +235,7 @@ expose the palette.
 
 ``` r
 
-devtools::load_all(); testthat::test_dir("tests/testthat")   # 210 tests
+devtools::load_all(); testthat::test_dir("tests/testthat")   # 219 tests
 source("data-raw/make_example.R")                               # rebuild gc_example
 source("data-raw/make_cuttings.R")                              # rebuild gc_cuttings + its workbook
 pkgdown::build_site()                                           # the documentation site

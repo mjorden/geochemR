@@ -3,7 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   geochemR: geochemR.html
-last_built: 2026-09-14T18:58Z
+last_built: 2026-09-14T20:06Z
 urls:
   reference: https://mjorden.github.io/geochemR/reference
   article: https://mjorden.github.io/geochemR/articles
