@@ -1,6 +1,6 @@
 # Interval statistics per hole
 
-Aggregates one method's analytes into depth bins per hole — the step
+Aggregates one method's analytes into depth bins per hole - the step
 between sample tables and anything gridded or mapped.
 
 ## Usage

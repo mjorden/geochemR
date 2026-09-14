@@ -35,7 +35,7 @@ A tibble: sample columns, then one column per analyte.
 
 ``` r
 head(gc_wide(gc_example, "SRA"))
-#> # A tibble: 6 × 15
+#> # A tibble: 6 × 17
 #>   sample_id hole_id       x        y     z depth_top depth_base sample_type
 #>   <chr>     <chr>     <dbl>    <dbl> <dbl>     <dbl>      <dbl> <chr>      
 #> 1 H01-000   H01     500019. 4199999. 1254.         0         10 core       
@@ -44,6 +44,6 @@ head(gc_wide(gc_example, "SRA"))
 #> 4 H01-030   H01     500019. 4199999. 1254.        30         40 core       
 #> 5 H01-040   H01     500019. 4199999. 1254.        40         50 cuttings   
 #> 6 H01-050   H01     500019. 4199999. 1254.        50         60 cuttings   
-#> # ℹ 7 more variables: date <date>, depth_mid <dbl>, TOC <dbl>, S1 <dbl>,
-#> #   S2 <dbl>, S3 <dbl>, Tmax <dbl>
+#> # ℹ 9 more variables: formation <lgl>, zone <lgl>, date <date>,
+#> #   depth_mid <dbl>, TOC <dbl>, S1 <dbl>, S2 <dbl>, S3 <dbl>, Tmax <dbl>
 ```

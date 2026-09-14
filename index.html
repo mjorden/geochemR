@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,8 +84,25 @@
 <div class="section level2">
 <h2 id="your-own-data">Your own data<a class="anchor" aria-label="anchor" href="#your-own-data"></a>
 </h2>
-<p>Three wide tables — one row per sample — are all a lab usually sends. The readers match column names case-insensitively, with aliases, and tell you what they ignored.</p>
+<p><strong>A whole deliverable workbook.</strong> Commercial cuttings-analysis reports put every method on one sheet — a <em>group</em> row (<code>SAMPLE INFO</code>, <code>TOC</code>, <code>TRADITIONAL PYROLYSIS</code>, <code>PAM PYROLYSIS</code>, <code>XRD BULK MINERALOGY</code>, <code>XRD CLAY SPECIATION</code>, <code>XRF ELEMENTAL CONCENTRATIONS</code>), an <em>analyte</em> row, a <em>unit</em> row, a QC row, then one sample per row with the bottom depth of each cuttings interval and formation / zone labels. <code><a href="reference/read_workbook.html">read_workbook()</a></code> reads that layout in one call; the package ships a synthetic workbook in exactly that form.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">f</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"cuttings_workbook.xlsx"</span>, package <span class="op">=</span> <span class="st">"geochemR"</span><span class="op">)</span></span>
+<span><span class="va">cu</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_workbook.html">read_workbook</a></span><span class="op">(</span><span class="va">f</span>, hole_id <span class="op">=</span> <span class="st">"EX-1"</span>, lab <span class="op">=</span> <span class="st">"Example Cuttings Lab"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/gc_indices.html">gc_indices</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; read_workbook(): clay speciation reported relative to total clay; converted to bulk wt%</span></span>
+<span><span class="va">cu</span></span>
+<span><span class="co">#&gt; &lt;gc_data&gt; 65 samples in 1 holes; 3640 measurements</span></span>
+<span><span class="co">#&gt;   methods: PAM (650), SRA (390), XRD (780), XRF (1820)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/plot_depth_profile.html">plot_depth_profile</a></span><span class="op">(</span><span class="va">cu</span>, <span class="st">"SRA"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOC"</span>, <span class="st">"S1"</span>, <span class="st">"S2"</span>, <span class="st">"Tmax"</span>, <span class="st">"HI"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plot_pam.html">plot_pam</a></span><span class="op">(</span><span class="va">cu</span><span class="op">)</span>                                             <span class="co"># stacked multi-ramp pyrolysis fractions</span></span>
+<span><span class="fu"><a href="reference/gc_hole_summary.html">gc_hole_summary</a></span><span class="op">(</span><span class="va">cu</span>, <span class="st">"SRA"</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hole_id"</span>, <span class="st">"formation"</span><span class="op">)</span>, analytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOC"</span>, <span class="st">"HI"</span>, <span class="st">"Tmax"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="reference/figures/cuttings_sra.png" alt="Cuttings well pyrolysis"><div class="figcaption">Cuttings well pyrolysis</div>
+</div>
+<p><img src="reference/figures/cuttings_pam.png" width="32%" alt="PAM log"><img src="reference/figures/cuttings_mineralogy.png" width="34%" alt="Mineralogy"><img src="reference/figures/cuttings_ternary.png" width="32%" alt="Ternary by formation"></p>
+<p><em>One cuttings well through four formations: <code><a href="reference/plot_pam.html">plot_pam()</a></code> (light hydrocarbons at the base of each bar, kerogen on top), <code><a href="reference/plot_mineralogy.html">plot_mineralogy()</a></code>, and the quartz–carbonate–clay ternary coloured by formation.</em></p>
+<p><strong>Three separate tables.</strong> Otherwise one wide table per method — one row per sample — is all a lab usually sends. The readers match column names case-insensitively, with aliases, and tell you what they ignored.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_samples.html">read_samples</a></span><span class="op">(</span><span class="st">"locations.csv"</span><span class="op">)</span></span>
 <span><span class="co">#   sample_id | hole (or well / borehole / station / api) | x, y (or easting, northing, lon, lat)</span></span>
 <span><span class="co">#   z (elevation, optional) | depth_top (or depth / top / from) | depth_base (optional) | sample_type</span></span>
@@ -108,7 +125,7 @@
 <h2 id="gallery">Gallery<a class="anchor" aria-label="anchor" href="#gallery"></a>
 </h2>
 <p><img src="reference/figures/kerogen_hi_oi.png" width="49%" alt="Pseudo-van Krevelen"><img src="reference/figures/kerogen_hi_tmax.png" width="49%" alt="HI vs Tmax"></p>
-<p><em><code><a href="reference/plot_kerogen.html">plot_kerogen()</a></code>: pseudo-van Krevelen (HI vs OI) with Type I / II / III trends, and HI vs Tmax with immature / oil / gas windows, coloured by depth.</em></p>
+<p><em><code><a href="reference/plot_kerogen.html">plot_kerogen()</a></code>: pseudo-van Krevelen (HI vs OI) with Type I / II / III trends, and HI vs Tmax with immature / oil / gas windows for the cuttings well, coloured by formation.</em></p>
 <p><img src="reference/figures/ternary.png" width="49%" alt="Ternary"><img src="reference/figures/map_mo.png" width="49%" alt="Mo map"></p>
 <p><em><code><a href="reference/plot_ternary.html">plot_ternary()</a></code>: quartz – carbonate – clay from the XRD, no extra package. <code>plot_map(fun = max)</code>: hottest Mo sample per hole over the mudstone.</em></p>
 <div class="float">
@@ -157,7 +174,7 @@
 <tr>
 <td><strong>Depth</strong></td>
 <td>
-<code><a href="reference/plot_depth_profile.html">plot_depth_profile()</a></code>, <code><a href="reference/plot_depth_heatmap.html">plot_depth_heatmap()</a></code>, <code><a href="reference/plot_section.html">plot_section()</a></code> (IDW on a distance–depth grid), <code><a href="reference/plot_mineralogy.html">plot_mineralogy()</a></code>
+<code><a href="reference/plot_depth_profile.html">plot_depth_profile()</a></code>, <code><a href="reference/plot_depth_heatmap.html">plot_depth_heatmap()</a></code>, <code><a href="reference/plot_section.html">plot_section()</a></code> (IDW on a distance–depth grid), <code><a href="reference/plot_stacked_depth.html">plot_stacked_depth()</a></code>, <code><a href="reference/plot_mineralogy.html">plot_mineralogy()</a></code>, <code><a href="reference/plot_pam.html">plot_pam()</a></code>
 </td>
 </tr>
 <tr>
@@ -172,14 +189,25 @@
 <code><a href="reference/plot_ternary.html">plot_ternary()</a></code>, <code><a href="reference/plot_kerogen.html">plot_kerogen()</a></code> (HI–OI, HI–Tmax with maturity windows, S2–TOC)</td>
 </tr>
 <tr>
+<td><strong>Look</strong></td>
+<td>
+<code><a href="reference/theme_gc.html">theme_gc()</a></code>, <code><a href="reference/theme_gc.html">scale_colour_gc()</a></code> / <code><a href="reference/theme_gc.html">scale_fill_gc()</a></code> / <code>..._gc_c()</code>, <code><a href="reference/theme_gc.html">gc_colours()</a></code>, <code><a href="reference/theme_gc.html">gc_pal()</a></code>
+</td>
+</tr>
+<tr>
 <td><strong>Data</strong></td>
 <td>
-<code>gc_example</code> (synthetic), <code>gc_minerals</code>, <code>gc_oxides</code>, <code>gc_sra_analytes</code>
+<code>gc_example</code> (12 holes), <code>gc_cuttings</code> (one cuttings well + its workbook), <code>gc_minerals</code>, <code>gc_oxides</code>, <code>gc_sra_analytes</code>, <code>gc_pam_analytes</code>
 </td>
 </tr>
 </tbody>
 </table>
 <p>Every plot returns a <code>ggplot</code> you can keep styling.</p>
+</div>
+<div class="section level2">
+<h2 id="the-look">The look<a class="anchor" aria-label="anchor" href="#the-look"></a>
+</h2>
+<p>Plots are drawn with <code><a href="reference/theme_gc.html">theme_gc()</a></code>: a parchment page, brown ink, a tan-to-espresso palette with a rust accent, serif type — a sibling of the <em>academic</em> style in <a href="https://github.com/mjorden/econscape" class="external-link">econscape</a> — with Tufte’s restraint layered on: no panel fill behind the data, no gridlines unless asked for, hairline axes with outward ticks, muted axis titles, a legend that reads as a row of labels, and on depth profiles of two or three holes the hole names written at the bottom of each trace instead of a legend. <code>theme_gc(grid = "y", panel = "parchment")</code> moves it back toward econscape; <code><a href="reference/theme_gc.html">gc_colours()</a></code> and <code><a href="reference/theme_gc.html">gc_pal()</a></code> expose the palette.</p>
 </div>
 <div class="section level2">
 <h2 id="notes-on-the-science">Notes on the science<a class="anchor" aria-label="anchor" href="#notes-on-the-science"></a>
@@ -202,9 +230,10 @@
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span>; <span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span><span class="op">)</span>   <span class="co"># 147 tests</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span>; <span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span><span class="op">)</span>   <span class="co"># 210 tests</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"data-raw/make_example.R"</span><span class="op">)</span>                               <span class="co"># rebuild gc_example</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"data-raw/make_cuttings.R"</span><span class="op">)</span>                              <span class="co"># rebuild gc_cuttings + its workbook</span></span>
 <span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span><span class="op">)</span>                                           <span class="co"># the documentation site</span></span></code></pre></div>
 <p>Pure R, no compiled code. Suggested: <code>readxl</code> for Excel input, <code>sf</code> if you want to reproject coordinates before mapping. The README figures are rendered from <code>gc_example</code> by a script, so they cannot drift from what the code draws.</p>
 </div>

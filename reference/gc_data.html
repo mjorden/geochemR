@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
 
 
 <dt id="arg-depth-unit">depth_unit<a class="anchor" aria-label="anchor" href="#arg-depth-unit"></a></dt>
-<dd><p><code>"ft"</code> or <code>"m"</code> — only carried as metadata.</p></dd>
+<dd><p><code>"ft"</code> or <code>"m"</code> - only carried as metadata.</p></dd>
 
 
 <dt id="arg-sources">sources<a class="anchor" aria-label="anchor" href="#arg-sources"></a></dt>
@@ -83,14 +83,15 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
-<ul><li><p><code>samples</code> — one row per physical sample: <code>sample_id</code>, <code>hole_id</code>, <code>x</code>, <code>y</code>
+<ul><li><p><code>samples</code> - one row per physical sample: <code>sample_id</code>, <code>hole_id</code>, <code>x</code>, <code>y</code>
 (map coordinates), <code>z</code> (surface elevation, optional), <code>depth_top</code>,
-<code>depth_base</code>, <code>depth_mid</code>, <code>sample_type</code>, <code>date</code> (optional).</p></li>
-<li><p><code>measurements</code> — one row per (sample, analyte): <code>sample_id</code>, <code>method</code>
+<code>depth_base</code>, <code>depth_mid</code>, <code>sample_type</code>, <code>formation</code> and <code>zone</code>
+(optional stratigraphic labels), <code>date</code> (optional).</p></li>
+<li><p><code>measurements</code> - one row per (sample, analyte): <code>sample_id</code>, <code>method</code>
 (<code>"XRD"</code>, <code>"XRF"</code>, <code>"SRA"</code> or your own), <code>analyte</code>, <code>value</code>, <code>unit</code>,
 <code>lod</code> (detection limit, <code>NA</code> if none), <code>qualifier</code> (<code>"&lt;"</code> when censored
 below <code>lod</code>, <code>"&gt;"</code> above range, <code>NA</code> otherwise), <code>lab</code>.</p></li>
-<li><p><code>meta</code> — a list: <code>crs</code> (EPSG code or <code>NA</code>), <code>depth_unit</code>, <code>sources</code>.</p></li>
+<li><p><code>meta</code> - a list: <code>crs</code> (EPSG code or <code>NA</code>), <code>depth_unit</code>, <code>sources</code>.</p></li>
 </ul><p>Lab results are <em>samples</em>, not curves: tens per hole, at a depth or over an
 interval, from a lab by a method. Keeping every method in one long table
 means one set of tools for validation, joins and plotting.</p>
@@ -107,7 +108,7 @@ means one set of tools for validation, joins and plotting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   depth: 0-154 ft</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="gc_samples.html">gc_samples</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 12</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sample_id hole_id       x        y     z depth_top depth_base sample_type</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> H01-000   H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999. <span style="text-decoration: underline;">1</span>254.         0         10 core       </span>
@@ -116,7 +117,7 @@ means one set of tools for validation, joins and plotting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> H01-030   H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999. <span style="text-decoration: underline;">1</span>254.        30         40 core       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> H01-040   H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999. <span style="text-decoration: underline;">1</span>254.        40         50 cuttings   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> H01-050   H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999. <span style="text-decoration: underline;">1</span>254.        50         60 cuttings   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: date &lt;date&gt;, depth_mid &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: formation &lt;lgl&gt;, zone &lt;lgl&gt;, date &lt;date&gt;, depth_mid &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="gc_samples.html">gc_measurements</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sample_id method analyte value unit    lod qualifier lab             source   </span>

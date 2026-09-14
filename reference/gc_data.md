@@ -32,7 +32,7 @@ gc_data(
 
 - depth_unit:
 
-  `"ft"` or `"m"` — only carried as metadata.
+  `"ft"` or `"m"` - only carried as metadata.
 
 - sources:
 
@@ -44,16 +44,17 @@ An object of class `gc_data`.
 
 ## Details
 
-- `samples` — one row per physical sample: `sample_id`, `hole_id`, `x`,
+- `samples` - one row per physical sample: `sample_id`, `hole_id`, `x`,
   `y` (map coordinates), `z` (surface elevation, optional), `depth_top`,
-  `depth_base`, `depth_mid`, `sample_type`, `date` (optional).
+  `depth_base`, `depth_mid`, `sample_type`, `formation` and `zone`
+  (optional stratigraphic labels), `date` (optional).
 
-- `measurements` — one row per (sample, analyte): `sample_id`, `method`
+- `measurements` - one row per (sample, analyte): `sample_id`, `method`
   (`"XRD"`, `"XRF"`, `"SRA"` or your own), `analyte`, `value`, `unit`,
   `lod` (detection limit, `NA` if none), `qualifier` (`"<"` when
   censored below `lod`, `">"` above range, `NA` otherwise), `lab`.
 
-- `meta` — a list: `crs` (EPSG code or `NA`), `depth_unit`, `sources`.
+- `meta` - a list: `crs` (EPSG code or `NA`), `depth_unit`, `sources`.
 
 Lab results are *samples*, not curves: tens per hole, at a depth or over
 an interval, from a lab by a method. Keeping every method in one long
@@ -71,7 +72,7 @@ ds
 #>   depth: 0-154 ft
 #>   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)
 head(gc_samples(ds))
-#> # A tibble: 6 × 10
+#> # A tibble: 6 × 12
 #>   sample_id hole_id       x        y     z depth_top depth_base sample_type
 #>   <chr>     <chr>     <dbl>    <dbl> <dbl>     <dbl>      <dbl> <chr>      
 #> 1 H01-000   H01     500019. 4199999. 1254.         0         10 core       
@@ -80,7 +81,7 @@ head(gc_samples(ds))
 #> 4 H01-030   H01     500019. 4199999. 1254.        30         40 core       
 #> 5 H01-040   H01     500019. 4199999. 1254.        40         50 cuttings   
 #> 6 H01-050   H01     500019. 4199999. 1254.        50         60 cuttings   
-#> # ℹ 2 more variables: date <date>, depth_mid <dbl>
+#> # ℹ 4 more variables: formation <lgl>, zone <lgl>, date <date>, depth_mid <dbl>
 head(gc_measurements(ds))
 #> # A tibble: 6 × 9
 #>   sample_id method analyte value unit    lod qualifier lab             source   

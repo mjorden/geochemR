@@ -1,7 +1,7 @@
 # Read a laboratory results table into long measurements
 
-`read_xrd()`, `read_xrf()` and `read_sra()` read a *wide* table — one
-row per sample, one column per mineral / element / pyrolysis parameter —
+`read_xrd()`, `read_xrf()` and `read_sra()` read a *wide* table - one
+row per sample, one column per mineral / element / pyrolysis parameter -
 and return the long `measurements` form used by
 [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md).
 `read_geochem()` is the generic behind them.

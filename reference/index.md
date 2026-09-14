@@ -26,10 +26,15 @@ One tidy object for every method’s results
 - [`gc_example`](https://mjorden.github.io/geochemR/reference/gc_example.md)
   : Synthetic example dataset
 
+- [`gc_cuttings`](https://mjorden.github.io/geochemR/reference/gc_cuttings.md)
+  : Synthetic cuttings-analysis well
+
 ## Reading laboratory tables
 
-Wide spreadsheets in, long measurements out
+A whole deliverable workbook in one call, or wide tables per method
 
+- [`read_workbook()`](https://mjorden.github.io/geochemR/reference/read_workbook.md)
+  : Read a multi-method laboratory workbook
 - [`read_samples()`](https://mjorden.github.io/geochemR/reference/read_samples.md)
   : Read a sample / location table
 - [`read_geochem()`](https://mjorden.github.io/geochemR/reference/read_geochem.md)
@@ -45,6 +50,7 @@ Wide spreadsheets in, long measurements out
 - [`gc_minerals`](https://mjorden.github.io/geochemR/reference/dictionaries.md)
   [`gc_oxides`](https://mjorden.github.io/geochemR/reference/dictionaries.md)
   [`gc_sra_analytes`](https://mjorden.github.io/geochemR/reference/dictionaries.md)
+  [`gc_pam_analytes`](https://mjorden.github.io/geochemR/reference/dictionaries.md)
   : Analyte dictionaries
 
 ## Processing
@@ -64,7 +70,7 @@ Wide spreadsheets in, long measurements out
 - [`gc_interval_stats()`](https://mjorden.github.io/geochemR/reference/gc_interval_stats.md)
   : Interval statistics per hole
 - [`gc_hole_summary()`](https://mjorden.github.io/geochemR/reference/gc_hole_summary.md)
-  : Per-hole summary
+  : Per-hole (or per-formation) summary
 
 ## Derived indices
 
@@ -79,8 +85,12 @@ Wide spreadsheets in, long measurements out
   : Hole-by-depth heatmap
 - [`plot_section()`](https://mjorden.github.io/geochemR/reference/plot_section.md)
   : Interpolated cross-section along a line of holes
+- [`plot_stacked_depth()`](https://mjorden.github.io/geochemR/reference/plot_stacked_depth.md)
+  : Stacked composition against depth
 - [`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md)
   : Stacked mineralogy bars
+- [`plot_pam()`](https://mjorden.github.io/geochemR/reference/plot_pam.md)
+  : PAM pyrolysis log
 
 ## Plots in plan and cross-plots
 
@@ -92,6 +102,21 @@ Wide spreadsheets in, long measurements out
   : Kerogen-type and maturity plots from pyrolysis
 - [`gc_idw()`](https://mjorden.github.io/geochemR/reference/gc_idw.md) :
   Inverse-distance-weighted interpolation to a grid
+
+## The look
+
+Parchment, brown ink, Tufte restraint
+
+- [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_colour_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_fill_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_colour_gc_c()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_fill_gc_c()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_color_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  [`scale_color_gc_c()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  : The geochemR look: academic parchment, Tufte restraint
 
 ## Package
 

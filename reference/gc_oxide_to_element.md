@@ -1,7 +1,7 @@
 # Oxide / element conversion for XRF
 
-`gc_oxide_to_element()` rewrites oxide rows (`SiO2`, `Al2O3`, …) as
-their element (`Si`, `Al`, …) using the mass factors in
+`gc_oxide_to_element()` rewrites oxide rows (`SiO2`, `Al2O3`, ...) as
+their element (`Si`, `Al`, ...) using the mass factors in
 [gc_oxides](https://mjorden.github.io/geochemR/reference/dictionaries.md);
 `gc_element_to_oxide()` does the reverse for elements that have a
 conventional oxide. Units are unchanged (a wt% oxide gives a wt%

@@ -1,7 +1,7 @@
 # Ternary diagram
 
 Three parts of a composition (renormalised to 100 per sample) plotted in
-barycentric coordinates — no extra package needed. Typical uses:
+barycentric coordinates - no extra package needed. Typical uses:
 `c("quartz", "carbonate", "clay")` after
 [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md),
 or `c("SiO2", "Al2O3", "CaO")`.
@@ -28,8 +28,8 @@ plot_ternary(ds, method, parts, colour = "hole_id", holes = NULL)
 
 - colour:
 
-  Column of the sample table (or `"hole_id"`, `"depth_mid"`) to colour
-  by.
+  Column of the sample table (or `"hole_id"`, `"depth_mid"`,
+  `"formation"`) to colour by.
 
 - holes:
 
@@ -45,4 +45,6 @@ A ggplot.
 plot_ternary(gc_indices(gc_example), "XRD", c("quartz", "carbonate", "clay"), colour = "depth_mid")
 #> Warning: Removed 69 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
+
+plot_ternary(gc_indices(gc_cuttings), "XRD", c("quartz", "carbonate", "clay"), colour = "formation")
 ```

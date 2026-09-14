@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,10 +83,17 @@
 
         </dt>
         <dd>Synthetic example dataset</dd>
+
+        <dt>
+
+          <code><a href="gc_cuttings.html">gc_cuttings</a></code>
+
+        </dt>
+        <dd>Synthetic cuttings-analysis well</dd>
       </dl></div><div class="section level2">
       <h2 id="reading-laboratory-tables">Reading laboratory tables<a class="anchor" aria-label="anchor" href="#reading-laboratory-tables"></a></h2>
 
-      <div class="section-desc"><p>Wide spreadsheets in, long measurements out</p></div>
+      <div class="section-desc"><p>A whole deliverable workbook in one call, or wide tables per method</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -94,6 +101,13 @@
 
 
       <dl><dt>
+
+          <code><a href="read_workbook.html">read_workbook()</a></code>
+
+        </dt>
+        <dd>Read a multi-method laboratory workbook</dd>
+
+        <dt>
 
           <code><a href="read_samples.html">read_samples()</a></code>
 
@@ -123,7 +137,7 @@
 
         <dt>
 
-          <code><a href="dictionaries.html">gc_minerals</a></code> <code><a href="dictionaries.html">gc_oxides</a></code> <code><a href="dictionaries.html">gc_sra_analytes</a></code>
+          <code><a href="dictionaries.html">gc_minerals</a></code> <code><a href="dictionaries.html">gc_oxides</a></code> <code><a href="dictionaries.html">gc_sra_analytes</a></code> <code><a href="dictionaries.html">gc_pam_analytes</a></code>
 
         </dt>
         <dd>Analyte dictionaries</dd>
@@ -184,7 +198,7 @@
           <code><a href="gc_hole_summary.html">gc_hole_summary()</a></code>
 
         </dt>
-        <dd>Per-hole summary</dd>
+        <dd>Per-hole (or per-formation) summary</dd>
       </dl></div><div class="section level2">
       <h2 id="derived-indices">Derived indices<a class="anchor" aria-label="anchor" href="#derived-indices"></a></h2>
 
@@ -234,10 +248,24 @@
 
         <dt>
 
+          <code><a href="plot_stacked_depth.html">plot_stacked_depth()</a></code>
+
+        </dt>
+        <dd>Stacked composition against depth</dd>
+
+        <dt>
+
           <code><a href="plot_mineralogy.html">plot_mineralogy()</a></code>
 
         </dt>
         <dd>Stacked mineralogy bars</dd>
+
+        <dt>
+
+          <code><a href="plot_pam.html">plot_pam()</a></code>
+
+        </dt>
+        <dd>PAM pyrolysis log</dd>
       </dl></div><div class="section level2">
       <h2 id="plots-in-plan-and-cross-plots">Plots in plan and cross-plots<a class="anchor" aria-label="anchor" href="#plots-in-plan-and-cross-plots"></a></h2>
 
@@ -275,6 +303,22 @@
 
         </dt>
         <dd>Inverse-distance-weighted interpolation to a grid</dd>
+      </dl></div><div class="section level2">
+      <h2 id="the-look">The look<a class="anchor" aria-label="anchor" href="#the-look"></a></h2>
+
+      <div class="section-desc"><p>Parchment, brown ink, Tufte restraint</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="theme_gc.html">theme_gc()</a></code> <code><a href="theme_gc.html">gc_colours()</a></code> <code><a href="theme_gc.html">gc_pal()</a></code> <code><a href="theme_gc.html">scale_colour_gc()</a></code> <code><a href="theme_gc.html">scale_fill_gc()</a></code> <code><a href="theme_gc.html">scale_colour_gc_c()</a></code> <code><a href="theme_gc.html">scale_fill_gc_c()</a></code> <code><a href="theme_gc.html">scale_color_gc()</a></code> <code><a href="theme_gc.html">scale_color_gc_c()</a></code>
+
+        </dt>
+        <dd>The geochemR look: academic parchment, Tufte restraint</dd>
       </dl></div><div class="section level2">
       <h2 id="package">Package<a class="anchor" aria-label="anchor" href="#package"></a></h2>
 

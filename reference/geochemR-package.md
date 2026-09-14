@@ -1,7 +1,7 @@
 # geochemR: import, process and map geochemical data
 
-Sample-based geochemistry — XRD mineralogy, XRF element / oxide
-chemistry and source-rock analyzer (Rock-Eval) pyrolysis — kept in one
+Sample-based geochemistry - XRD mineralogy, XRF element / oxide
+chemistry and source-rock analyzer (Rock-Eval) pyrolysis - kept in one
 tidy data model
 ([`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md)),
 read from laboratory spreadsheets
@@ -31,6 +31,8 @@ and
 Useful links:
 
 - <https://github.com/mjorden/geochemR>
+
+- <https://mjorden.github.io/geochemR/>
 
 - Report bugs at <https://github.com/mjorden/geochemR/issues>
 

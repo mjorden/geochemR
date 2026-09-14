@@ -1,5 +1,45 @@
 # Changelog
 
+## geochemR 0.2.0
+
+- **Laboratory workbook reader.**
+  [`read_workbook()`](https://mjorden.github.io/geochemR/reference/read_workbook.md)
+  reads the multi-method cuttings-analysis deliverable layout — a group
+  / analyte / unit header block, a QC row, then one sample per row with
+  bottom depths and formation / zone labels — into a `gc_data` object in
+  one call. Groups map to methods (TOC + pyrolysis → SRA, PAM → PAM, XRD
+  bulk + clay speciation → XRD, XRF elements → XRF); lab-calculated
+  columns are dropped by default so
+  [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md)
+  stays the single source of derived values; clay speciation reported
+  relative to total clay is converted to bulk wt% (auto-detected).
+- **PAM pyrolysis** is a method: `Oil1` … `Oil4`, `K1` and their `Tmax`;
+  [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md)
+  adds `Oil_total`, `Oil_TOC` and the fraction ratios;
+  [`plot_pam()`](https://mjorden.github.io/geochemR/reference/plot_pam.md)
+  draws the stacked pyrolysis log. `gc_pam_analytes`.
+- `formation` and `zone` on the sample table; `gc_hole_summary(by = )`
+  for stratigraphic summaries.
+- [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md):
+  weighted brittleness `BI_w`; `min_toc` cutoff for HI / OI / S1/TOC on
+  lean samples.
+- **The look.**
+  [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+  and the `scale_*_gc()` scales replace the default ggplot2 styling: a
+  parchment page, brown ink, tan-to-espresso palette and serif type in
+  the manner of econscape’s academic style, with Tufte’s restraint — no
+  panel fill or gridlines, hairline axes, muted titles, direct labels on
+  depth profiles where they fit.
+  [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md),
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
+- [`plot_stacked_depth()`](https://mjorden.github.io/geochemR/reference/plot_stacked_depth.md)
+  (generic stacked-bar-by-depth;
+  [`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md)
+  now uses it).
+- Second example dataset `gc_cuttings` — one well, 65 cuttings samples,
+  all methods — shipped both as data and as the Excel workbook it was
+  read from (`inst/extdata/cuttings_workbook.xlsx`).
+
 ## geochemR 0.1.0
 
 First release.

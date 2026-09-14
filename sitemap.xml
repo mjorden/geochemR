@@ -13,6 +13,7 @@
 <url><loc>https://mjorden.github.io/geochemR/reference/gc_bind.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/gc_clr.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/gc_convert_units.html</loc></url>
+<url><loc>https://mjorden.github.io/geochemR/reference/gc_cuttings.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/gc_data.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/gc_example.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/gc_hole_summary.html</loc></url>
@@ -32,10 +33,14 @@
 <url><loc>https://mjorden.github.io/geochemR/reference/plot_kerogen.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/plot_map.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/plot_mineralogy.html</loc></url>
+<url><loc>https://mjorden.github.io/geochemR/reference/plot_pam.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/plot_section.html</loc></url>
+<url><loc>https://mjorden.github.io/geochemR/reference/plot_stacked_depth.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/plot_ternary.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/read_geochem.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/read_samples.html</loc></url>
+<url><loc>https://mjorden.github.io/geochemR/reference/read_workbook.html</loc></url>
+<url><loc>https://mjorden.github.io/geochemR/reference/theme_gc.html</loc></url>
 <url><loc>https://mjorden.github.io/geochemR/reference/validate_gc.html</loc></url>
 </urlset>
 

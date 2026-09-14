@@ -1,7 +1,7 @@
 # Synthetic example dataset
 
 Twelve holes on a 3 x 4 grid (400 m spacing, EPSG:26914), each with
-fifteen 10-ft intervals through three units — a quartz-rich sandstone,
+fifteen 10-ft intervals through three units - a quartz-rich sandstone,
 an organic-rich calcareous mudstone whose TOC increases eastward, and a
 limestone. Every sample has XRD mineralogy (10 minerals + total clay)
 and XRF chemistry (9 oxides + LOI in wt%, Zr / V / Mo / Ni in ppm, with

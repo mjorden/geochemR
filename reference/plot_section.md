@@ -20,7 +20,7 @@ plot_section(
   maxdist = Inf,
   nmax = 12,
   aspect = 0.05,
-  palette = "viridis"
+  palette = "browns"
 )
 ```
 
@@ -59,7 +59,8 @@ plot_section(
 
 - palette:
 
-  Viridis option.
+  Sequential palette for
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
 
 ## Value
 

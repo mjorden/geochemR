@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,14 +124,14 @@ and validates them.</p>
 <span><span class="co">#&gt;   depth: 50-70 ft</span></span>
 <span><span class="co">#&gt;   x: 500100-500100  y: 4200100-4200100  (EPSG:26914)</span></span>
 <span><span class="fu"><a href="../reference/gc_wide.html">gc_wide</a></span><span class="op">(</span><span class="va">ds</span>, <span class="st">"XRD"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 16</span></span></span>
-<span><span class="co">#&gt;   sample_id hole_id      x       y depth_top depth_base sample_type     z</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A1        W1      <span style="text-decoration: underline;">500</span>100 4<span style="text-decoration: underline;">200</span>100        50         60 <span style="color: #BB0000;">NA</span>             <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A2        W1      <span style="text-decoration: underline;">500</span>100 4<span style="text-decoration: underline;">200</span>100        60         70 <span style="color: #BB0000;">NA</span>             <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more variables: depth_mid &lt;dbl&gt;, quartz &lt;dbl&gt;, k_feldspar &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   illite &lt;dbl&gt;, mixed_layer &lt;dbl&gt;, calcite &lt;dbl&gt;, pyrite &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   total_clay &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 18</span></span></span>
+<span><span class="co">#&gt;   sample_id hole_id      x       y depth_top depth_base sample_type formation</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A1        W1      <span style="text-decoration: underline;">500</span>100 4<span style="text-decoration: underline;">200</span>100        50         60 <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A2        W1      <span style="text-decoration: underline;">500</span>100 4<span style="text-decoration: underline;">200</span>100        60         70 <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 10 more variables: zone &lt;chr&gt;, z &lt;dbl&gt;, depth_mid &lt;dbl&gt;, quartz &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   k_feldspar &lt;dbl&gt;, illite &lt;dbl&gt;, mixed_layer &lt;dbl&gt;, calcite &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   pyrite &lt;dbl&gt;, total_clay &lt;dbl&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-example-dataset">2. The example dataset<a class="anchor" aria-label="anchor" href="#the-example-dataset"></a>
@@ -233,25 +233,85 @@ draws an inverse-distance surface under the points.</p>
 <p><img src="geochemR_files/figure-html/cross-3.png" class="r-plt" alt="geochemR plot of the synthetic example dataset" width="540"></p>
 </div>
 <div class="section level2">
-<h2 id="summaries-for-reports">7. Summaries for reports<a class="anchor" aria-label="anchor" href="#summaries-for-reports"></a>
+<h2 id="a-whole-laboratory-workbook-at-once">7. A whole laboratory workbook at once<a class="anchor" aria-label="anchor" href="#a-whole-laboratory-workbook-at-once"></a>
 </h2>
+<p>Commercial cuttings-analysis deliverables put every method on one
+sheet under a group / analyte / unit header.
+<code><a href="../reference/read_workbook.html">read_workbook()</a></code> reads that layout directly; the package
+ships a synthetic one in exactly that form.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"cuttings_workbook.xlsx"</span>, package <span class="op">=</span> <span class="st">"geochemR"</span><span class="op">)</span></span>
+<span><span class="va">cu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_workbook.html">read_workbook</a></span><span class="op">(</span><span class="va">f</span>, hole_id <span class="op">=</span> <span class="st">"EX-1"</span>, lab <span class="op">=</span> <span class="st">"Example Cuttings Lab"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/gc_indices.html">gc_indices</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; read_workbook(): clay speciation reported relative to total clay; converted to bulk wt%</span></span>
+<span><span class="va">cu</span></span>
+<span><span class="co">#&gt; &lt;gc_data&gt; 65 samples in 1 holes; 4787 measurements</span></span>
+<span><span class="co">#&gt;   methods: PAM (953), SRA (649), XRD (1105), XRF (2080)</span></span>
+<span><span class="co">#&gt;   analytes per method: PAM=15, SRA=11, XRD=17, XRF=32</span></span>
+<span><span class="co">#&gt;   censored (&lt;LOD): 55</span></span>
+<span><span class="co">#&gt;   depth: 6000-7950 ft</span></span>
+<span><span class="fu"><a href="../reference/gc_samples.html">gc_analytes</a></span><span class="op">(</span><span class="va">cu</span><span class="op">)</span><span class="op">$</span><span class="va">PAM</span></span>
+<span><span class="co">#&gt;  [1] "Oil1"      "Tmax_Oil1" "Oil2"      "Tmax_Oil2" "Oil3"      "Tmax_Oil3"</span></span>
+<span><span class="co">#&gt;  [7] "Oil4"      "Tmax_Oil4" "K1"        "Tmax_K1"   "Oil_total" "Oil3_Oil2"</span></span>
+<span><span class="co">#&gt; [13] "Oil4_Oil3" "K1_Oil4"   "Oil_TOC"</span></span></code></pre></div>
+<p>Bottom-only depths become intervals, formation and zone come along,
+the clay speciation (reported as % of total clay) is converted to bulk
+wt%, and the lab’s own calculated columns are dropped so that
+<code><a href="../reference/gc_indices.html">gc_indices()</a></code> is the one source of derived values.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_depth_profile.html">plot_depth_profile</a></span><span class="op">(</span><span class="va">cu</span>, <span class="st">"SRA"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOC"</span>, <span class="st">"S1"</span>, <span class="st">"S2"</span>, <span class="st">"Tmax"</span>, <span class="st">"HI"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="geochemR_files/figure-html/cuttings-plots-1.png" class="r-plt" alt="geochemR plot of the synthetic example dataset" width="720"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_pam.html">plot_pam</a></span><span class="op">(</span><span class="va">cu</span><span class="op">)</span></span></code></pre></div>
+<p><img src="geochemR_files/figure-html/cuttings-plots-2.png" class="r-plt" alt="geochemR plot of the synthetic example dataset" width="720"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_kerogen.html">plot_kerogen</a></span><span class="op">(</span><span class="va">cu</span>, <span class="st">"hi_tmax"</span>, colour <span class="op">=</span> <span class="st">"formation"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 22 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
+<p><img src="geochemR_files/figure-html/cuttings-plots-3.png" class="r-plt" alt="geochemR plot of the synthetic example dataset" width="720"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gc_hole_summary.html">gc_hole_summary</a></span><span class="op">(</span><span class="va">cu</span>, <span class="st">"SRA"</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hole_id"</span>, <span class="st">"formation"</span><span class="op">)</span>, analytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOC"</span>, <span class="st">"HI"</span>, <span class="st">"Tmax"</span>, <span class="st">"Ro_eq"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 11</span></span></span>
+<span><span class="co">#&gt;   hole_id formation        x     y     n depth_top depth_base   TOC  Tmax    HI</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EX-1    Carbonate       <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    17      <span style="text-decoration: underline;">7</span>080       <span style="text-decoration: underline;">7</span>590 0.351  448.  153.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EX-1    Lower Sand      <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    12      <span style="text-decoration: underline;">7</span>590       <span style="text-decoration: underline;">7</span>950 0.365  454.  102.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> EX-1    Target Shale    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    20      <span style="text-decoration: underline;">6</span>480       <span style="text-decoration: underline;">7</span>080 4.75   442.  421.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> EX-1    Upper Shale     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    16      <span style="text-decoration: underline;">6</span>000       <span style="text-decoration: underline;">6</span>480 1.11   435.  219.</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: Ro_eq &lt;dbl&gt;</span></span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="the-look">8. The look<a class="anchor" aria-label="anchor" href="#the-look"></a>
+</h2>
+<p>Every plot uses <code><a href="../reference/theme_gc.html">theme_gc()</a></code> — parchment page, brown ink,
+serif type, tan-to-espresso palette — and the <code>scale_*_gc()</code>
+scales. They are ordinary ggplot2 objects, so add layers or override
+anything:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ds</span>, <span class="st">"SRA"</span>, <span class="st">"TOC"</span>, depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">110</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Where the organic-rich mudstone is richest"</span>,</span>
+<span>                caption <span class="op">=</span> <span class="st">"Synthetic example; mean TOC per hole, inverse-distance surface"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="geochemR_files/figure-html/look-1.png" class="r-plt" alt="geochemR plot of the synthetic example dataset" width="720"></p>
+</div>
+<div class="section level2">
+<h2 id="summaries-for-reports">9. Summaries for reports<a class="anchor" aria-label="anchor" href="#summaries-for-reports"></a>
+</h2>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gc_hole_summary.html">gc_hole_summary</a></span><span class="op">(</span><span class="va">ds</span>, <span class="st">"SRA"</span>, depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">110</span><span class="op">)</span>, analytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOC"</span>, <span class="st">"HI"</span>, <span class="st">"Tmax"</span>, <span class="st">"Ro_eq"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 8</span></span></span>
-<span><span class="co">#&gt;    hole_id       x        y     n   TOC  Tmax    HI Ro_eq</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999.     6  2.49  436.  514. 0.679</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> H02     <span style="text-decoration: underline;">500</span>415. 4<span style="text-decoration: underline;">199</span>999.     6  3.38  436   455. 0.688</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> H03     <span style="text-decoration: underline;">500</span>773. 4<span style="text-decoration: underline;">199</span>989.     6  2.57  442.  424. 0.805</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> H04     <span style="text-decoration: underline;">501</span>230. 4<span style="text-decoration: underline;">199</span>966.     6  3.52  443   382. 0.814</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> H05     <span style="text-decoration: underline;">500</span>011. 4<span style="text-decoration: underline;">200</span>389.     6  2.47  438.  499. 0.719</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> H06     <span style="text-decoration: underline;">500</span>427. 4<span style="text-decoration: underline;">200</span>410.     6  2.47  439.  458. 0.737</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> H07     <span style="text-decoration: underline;">500</span>812. 4<span style="text-decoration: underline;">200</span>448.     6  2.95  438.  423. 0.730</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> H08     <span style="text-decoration: underline;">501</span>190. 4<span style="text-decoration: underline;">200</span>400.     6  3.69  442.  389. 0.800</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> H09     <span style="text-decoration: underline;">500</span>007. 4<span style="text-decoration: underline;">200</span>776.     6  2.60  437.  497. 0.713</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> H10     <span style="text-decoration: underline;">500</span>420. 4<span style="text-decoration: underline;">200</span>792.     6  3.42  439   440. 0.742</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> H11     <span style="text-decoration: underline;">500</span>814. 4<span style="text-decoration: underline;">200</span>799.     6  3.82  442.  442. 0.789</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> H12     <span style="text-decoration: underline;">501</span>203. 4<span style="text-decoration: underline;">200</span>768.     6  4.69  442.  387. 0.805</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 10</span></span></span>
+<span><span class="co">#&gt;    hole_id       x        y     n depth_top depth_base   TOC  Tmax    HI Ro_eq</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999.     6        50        110  2.49  436.  514. 0.679</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> H02     <span style="text-decoration: underline;">500</span>415. 4<span style="text-decoration: underline;">199</span>999.     6        52        112  3.38  436   455. 0.688</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> H03     <span style="text-decoration: underline;">500</span>773. 4<span style="text-decoration: underline;">199</span>989.     6        50        110  2.57  442.  424. 0.805</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> H04     <span style="text-decoration: underline;">501</span>230. 4<span style="text-decoration: underline;">199</span>966.     6        51        111  3.52  443   382. 0.814</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> H05     <span style="text-decoration: underline;">500</span>011. 4<span style="text-decoration: underline;">200</span>389.     6        51        111  2.47  438.  499. 0.719</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> H06     <span style="text-decoration: underline;">500</span>427. 4<span style="text-decoration: underline;">200</span>410.     6        53        113  2.47  439.  458. 0.737</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> H07     <span style="text-decoration: underline;">500</span>812. 4<span style="text-decoration: underline;">200</span>448.     6        54        114  2.95  438.  423. 0.730</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> H08     <span style="text-decoration: underline;">501</span>190. 4<span style="text-decoration: underline;">200</span>400.     6        50        110  3.69  442.  389. 0.800</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> H09     <span style="text-decoration: underline;">500</span>007. 4<span style="text-decoration: underline;">200</span>776.     6        53        113  2.60  437.  497. 0.713</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> H10     <span style="text-decoration: underline;">500</span>420. 4<span style="text-decoration: underline;">200</span>792.     6        52        112  3.42  439   440. 0.742</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> H11     <span style="text-decoration: underline;">500</span>814. 4<span style="text-decoration: underline;">200</span>799.     6        53        113  3.82  442.  442. 0.789</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> H12     <span style="text-decoration: underline;">501</span>203. 4<span style="text-decoration: underline;">200</span>768.     6        53        113  4.69  442.  387. 0.805</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/gc_interval_stats.html">gc_interval_stats</a></span><span class="op">(</span><span class="va">ds</span>, <span class="st">"XRD"</span>, breaks <span class="op">=</span> <span class="fl">50</span>, analytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quartz"</span>, <span class="st">"carbonate"</span>, <span class="st">"clay"</span>, <span class="st">"BI_min"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 10</span></span></span>
 <span><span class="co">#&gt;   hole_id       x        y bin_top bin_base     n quartz carbonate  clay BI_min</span></span>

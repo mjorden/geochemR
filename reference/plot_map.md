@@ -21,7 +21,7 @@ plot_map(
   maxdist = Inf,
   contours = 6,
   label = TRUE,
-  palette = "viridis"
+  palette = "browns"
 )
 ```
 
@@ -62,7 +62,8 @@ plot_map(
 
 - palette:
 
-  Viridis option.
+  Sequential palette for
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
 
 ## Value
 

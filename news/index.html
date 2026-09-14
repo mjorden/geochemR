@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,22 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="geochemr-020">geochemR 0.2.0<a class="anchor" aria-label="anchor" href="#geochemr-020"></a></h2>
+<ul><li>
+<strong>Laboratory workbook reader.</strong> <code><a href="../reference/read_workbook.html">read_workbook()</a></code> reads the multi-method cuttings-analysis deliverable layout — a group / analyte / unit header block, a QC row, then one sample per row with bottom depths and formation / zone labels — into a <code>gc_data</code> object in one call. Groups map to methods (TOC + pyrolysis → SRA, PAM → PAM, XRD bulk + clay speciation → XRD, XRF elements → XRF); lab-calculated columns are dropped by default so <code><a href="../reference/gc_indices.html">gc_indices()</a></code> stays the single source of derived values; clay speciation reported relative to total clay is converted to bulk wt% (auto-detected).</li>
+<li>
+<strong>PAM pyrolysis</strong> is a method: <code>Oil1</code> … <code>Oil4</code>, <code>K1</code> and their <code>Tmax</code>; <code><a href="../reference/gc_indices.html">gc_indices()</a></code> adds <code>Oil_total</code>, <code>Oil_TOC</code> and the fraction ratios; <code><a href="../reference/plot_pam.html">plot_pam()</a></code> draws the stacked pyrolysis log. <code>gc_pam_analytes</code>.</li>
+<li>
+<code>formation</code> and <code>zone</code> on the sample table; <code>gc_hole_summary(by = )</code> for stratigraphic summaries.</li>
+<li>
+<code><a href="../reference/gc_indices.html">gc_indices()</a></code>: weighted brittleness <code>BI_w</code>; <code>min_toc</code> cutoff for HI / OI / S1/TOC on lean samples.</li>
+<li>
+<strong>The look.</strong> <code><a href="../reference/theme_gc.html">theme_gc()</a></code> and the <code>scale_*_gc()</code> scales replace the default ggplot2 styling: a parchment page, brown ink, tan-to-espresso palette and serif type in the manner of econscape’s academic style, with Tufte’s restraint — no panel fill or gridlines, hairline axes, muted titles, direct labels on depth profiles where they fit. <code><a href="../reference/theme_gc.html">gc_colours()</a></code>, <code><a href="../reference/theme_gc.html">gc_pal()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_stacked_depth.html">plot_stacked_depth()</a></code> (generic stacked-bar-by-depth; <code><a href="../reference/plot_mineralogy.html">plot_mineralogy()</a></code> now uses it).</li>
+<li>Second example dataset <code>gc_cuttings</code> — one well, 65 cuttings samples, all methods — shipped both as data and as the Excel workbook it was read from (<code>inst/extdata/cuttings_workbook.xlsx</code>).</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="geochemr-010">geochemR 0.1.0<a class="anchor" aria-label="anchor" href="#geochemr-010"></a></h2>
 <p>First release.</p>
 <ul><li>
@@ -45,7 +61,8 @@
 <li>Plots: depth profiles, hole-by-depth heatmap, IDW cross-section, stacked mineralogy, planar map with IDW surface, ternary, kerogen-type plots.</li>
 <li>Synthetic <code>gc_example</code> dataset (12 holes, three units, all three methods).</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

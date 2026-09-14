@@ -12,7 +12,7 @@ plot_depth_heatmap(
   analyte,
   breaks = NULL,
   order = "x",
-  palette = "viridis"
+  palette = "browns"
 )
 ```
 
@@ -38,7 +38,8 @@ plot_depth_heatmap(
 
 - palette:
 
-  A viridis option name (`"viridis"`, `"magma"`, …).
+  A sequential palette name for
+  [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md).
 
 ## Value
 

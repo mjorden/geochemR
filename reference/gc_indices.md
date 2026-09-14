@@ -6,7 +6,7 @@ raw data. What is computed depends on what is present:
 ## Usage
 
 ``` r
-gc_indices(ds, which = c("sra", "xrf", "xrd"), min_toc = 0.5)
+gc_indices(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 ```
 
 ## Arguments
@@ -21,7 +21,7 @@ gc_indices(ds, which = c("sra", "xrf", "xrd"), min_toc = 0.5)
 
 - min_toc:
 
-  TOC (wt%) below which HI, OI and S1/TOC are not reported — the ratios
+  TOC (wt%) below which HI, OI and S1/TOC are not reported - the ratios
   blow up on lean samples and laboratories conventionally leave them
   blank below about 0.5 %.
 
@@ -43,7 +43,7 @@ available):
   migrated oil)
 
 - `Ro_eq = 0.0180 * Tmax - 7.16` (Jarvie et al. 2001), `NA` outside
-  400-500 °C
+  400-500 degC
 
 **XRF** (oxides in wt%; elements are converted to oxides for the
 calculation):
@@ -66,6 +66,17 @@ calculation):
 - `BI_min = (quartz + dolomite) / (quartz + dolomite + calcite + clay)`
   (Wang & Gale 2009 mineralogical brittleness, 0-1)
 
+- `BI_w = 100 * (1.5*QFM + 1.5*carbonate) / (1.5*QFM + 1.5*carbonate + 2*clay)`
+
+  - a weighted brittleness of the kind cuttings-analysis laboratories
+    report, 0-100; brittle phases weighted 1.5, clay 2
+
+**PAM** (multi-ramp pyrolysis fractions, needs `Oil1` ... `K1`):
+
+- `Oil_total = Oil1 + Oil2 + Oil3 + Oil4`, `Oil3_Oil2`, `Oil4_Oil3`,
+  `K1_Oil4` and `Oil_TOC = 100 * Oil_total / TOC` when an SRA TOC exists
+  for the sample
+
 ## Examples
 
 ``` r
@@ -79,6 +90,7 @@ gc_analytes(ds)
 #>  [1] "quartz"      "k_feldspar"  "plagioclase" "calcite"     "dolomite"   
 #>  [6] "pyrite"      "illite"      "mixed_layer" "kaolinite"   "chlorite"   
 #> [11] "total_clay"  "carbonate"   "clay"        "QFM"         "BI_min"     
+#> [16] "BI_w"       
 #> 
 #> $XRF
 #>  [1] "SiO2"  "Al2O3" "CaO"   "MgO"   "K2O"   "Na2O"  "Fe2O3" "TiO2"  "LOI"  

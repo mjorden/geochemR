@@ -13,6 +13,8 @@ gc_minerals
 gc_oxides
 
 gc_sra_analytes
+
+gc_pam_analytes
 ```
 
 ## Format
@@ -23,8 +25,12 @@ gc_sra_analytes
 by mass, so `element = oxide * factor`). `gc_sra_analytes`: `analyte`,
 `unit`, `low`, `high`.
 
-An object of class `data.frame` with 81 rows and 3 columns.
+An object of class `data.frame` with 85 rows and 3 columns.
 
 An object of class `data.frame` with 20 rows and 3 columns.
 
-An object of class `data.frame` with 11 rows and 4 columns.
+An object of class `data.frame` with 14 rows and 4 columns.
+
+`gc_pam_analytes`: the multi-ramp (PAM) pyrolysis fractions - `Oil1` ...
+`Oil4` and `K1` in mg HC/g with the carbon range each fraction
+represents, plus one `Tmax_*` per fraction.

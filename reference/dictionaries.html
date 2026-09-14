@@ -11,7 +11,7 @@ the pyrolysis parameters with units and plausible ranges."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,9 @@ the pyrolysis parameters with units and plausible ranges.</p>
 <span></span>
 <span><span class="va">gc_oxides</span></span>
 <span></span>
-<span><span class="va">gc_sra_analytes</span></span></code></pre></div>
+<span><span class="va">gc_sra_analytes</span></span>
+<span></span>
+<span><span class="va">gc_pam_analytes</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,9 +62,12 @@ the pyrolysis parameters with units and plausible ranges.</p>
 <code>gc_oxides</code>: <code>oxide</code>, <code>element</code>, <code>factor</code> (element fraction of the oxide
 by mass, so <code>element = oxide * factor</code>). <code>gc_sra_analytes</code>: <code>analyte</code>,
 <code>unit</code>, <code>low</code>, <code>high</code>.</p>
-<p>An object of class <code>data.frame</code> with 81 rows and 3 columns.</p>
+<p>An object of class <code>data.frame</code> with 85 rows and 3 columns.</p>
 <p>An object of class <code>data.frame</code> with 20 rows and 3 columns.</p>
-<p>An object of class <code>data.frame</code> with 11 rows and 4 columns.</p>
+<p>An object of class <code>data.frame</code> with 14 rows and 4 columns.</p>
+<p><code>gc_pam_analytes</code>: the multi-ramp (PAM) pyrolysis fractions  -
+<code>Oil1</code> ... <code>Oil4</code> and <code>K1</code> in mg HC/g with the carbon range each fraction
+represents, plus one <code>Tmax_*</code> per fraction.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

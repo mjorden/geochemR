@@ -62,9 +62,47 @@ interpolated cross-section along H01 → H04, sample bins marked.*
 
 ## Your own data
 
-Three wide tables — one row per sample — are all a lab usually sends.
-The readers match column names case-insensitively, with aliases, and
-tell you what they ignored.
+**A whole deliverable workbook.** Commercial cuttings-analysis reports
+put every method on one sheet — a *group* row (`SAMPLE INFO`, `TOC`,
+`TRADITIONAL PYROLYSIS`, `PAM PYROLYSIS`, `XRD BULK MINERALOGY`,
+`XRD CLAY SPECIATION`, `XRF ELEMENTAL CONCENTRATIONS`), an *analyte*
+row, a *unit* row, a QC row, then one sample per row with the bottom
+depth of each cuttings interval and formation / zone labels.
+[`read_workbook()`](https://mjorden.github.io/geochemR/reference/read_workbook.md)
+reads that layout in one call; the package ships a synthetic workbook in
+exactly that form.
+
+``` r
+
+f  <- system.file("extdata", "cuttings_workbook.xlsx", package = "geochemR")
+cu <- read_workbook(f, hole_id = "EX-1", lab = "Example Cuttings Lab") |> gc_indices()
+#> read_workbook(): clay speciation reported relative to total clay; converted to bulk wt%
+cu
+#> <gc_data> 65 samples in 1 holes; 3640 measurements
+#>   methods: PAM (650), SRA (390), XRD (780), XRF (1820)
+
+plot_depth_profile(cu, "SRA", c("TOC", "S1", "S2", "Tmax", "HI"))
+plot_pam(cu)                                             # stacked multi-ramp pyrolysis fractions
+gc_hole_summary(cu, "SRA", by = c("hole_id", "formation"), analytes = c("TOC", "HI", "Tmax"))
+```
+
+![Cuttings well pyrolysis](reference/figures/cuttings_sra.png)
+
+Cuttings well pyrolysis
+
+![PAM
+log](reference/figures/cuttings_pam.png)![Mineralogy](reference/figures/cuttings_mineralogy.png)![Ternary
+by formation](reference/figures/cuttings_ternary.png)
+
+*One cuttings well through four formations:
+[`plot_pam()`](https://mjorden.github.io/geochemR/reference/plot_pam.md)
+(light hydrocarbons at the base of each bar, kerogen on top),
+[`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md),
+and the quartz–carbonate–clay ternary coloured by formation.*
+
+**Three separate tables.** Otherwise one wide table per method — one row
+per sample — is all a lab usually sends. The readers match column names
+case-insensitively, with aliases, and tell you what they ignored.
 
 ``` r
 
@@ -100,7 +138,8 @@ Tmax](reference/figures/kerogen_hi_tmax.png)
 
 *[`plot_kerogen()`](https://mjorden.github.io/geochemR/reference/plot_kerogen.md):
 pseudo-van Krevelen (HI vs OI) with Type I / II / III trends, and HI vs
-Tmax with immature / oil / gas windows, coloured by depth.*
+Tmax with immature / oil / gas windows for the cuttings well, coloured
+by formation.*
 
 ![Ternary](reference/figures/ternary.png)![Mo
 map](reference/figures/map_mo.png)
@@ -132,12 +171,31 @@ on XRF: major oxides and censored trace elements.*
 | **Model** | [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md), [`validate_gc()`](https://mjorden.github.io/geochemR/reference/validate_gc.md), [`gc_samples()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_measurements()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_analytes()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_wide()`](https://mjorden.github.io/geochemR/reference/gc_wide.md), [`gc_bind()`](https://mjorden.github.io/geochemR/reference/gc_bind.md) |
 | **Process** | [`gc_substitute_lod()`](https://mjorden.github.io/geochemR/reference/gc_substitute_lod.md) (half / √2 / LOD / zero), [`gc_convert_units()`](https://mjorden.github.io/geochemR/reference/gc_convert_units.md) (wt% ↔︎ ppm ↔︎ ppb), [`gc_oxide_to_element()`](https://mjorden.github.io/geochemR/reference/gc_oxide_to_element.md) / [`gc_element_to_oxide()`](https://mjorden.github.io/geochemR/reference/gc_oxide_to_element.md), [`gc_renormalize()`](https://mjorden.github.io/geochemR/reference/gc_renormalize.md), [`gc_clr()`](https://mjorden.github.io/geochemR/reference/gc_clr.md) / [`gc_alr()`](https://mjorden.github.io/geochemR/reference/gc_clr.md) (log-ratio transforms for compositional data), [`gc_interval_stats()`](https://mjorden.github.io/geochemR/reference/gc_interval_stats.md), [`gc_hole_summary()`](https://mjorden.github.io/geochemR/reference/gc_hole_summary.md) |
 | **Indices** | [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md): HI, OI, PI, S1/TOC, Ro-equivalent from Tmax (Jarvie 2001); CIA, Si/Al, K/Al, Ti/Al; carbonate, clay, QFM, mineralogical brittleness (Wang & Gale 2009) |
-| **Depth** | [`plot_depth_profile()`](https://mjorden.github.io/geochemR/reference/plot_depth_profile.md), [`plot_depth_heatmap()`](https://mjorden.github.io/geochemR/reference/plot_depth_heatmap.md), [`plot_section()`](https://mjorden.github.io/geochemR/reference/plot_section.md) (IDW on a distance–depth grid), [`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md) |
+| **Depth** | [`plot_depth_profile()`](https://mjorden.github.io/geochemR/reference/plot_depth_profile.md), [`plot_depth_heatmap()`](https://mjorden.github.io/geochemR/reference/plot_depth_heatmap.md), [`plot_section()`](https://mjorden.github.io/geochemR/reference/plot_section.md) (IDW on a distance–depth grid), [`plot_stacked_depth()`](https://mjorden.github.io/geochemR/reference/plot_stacked_depth.md), [`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md), [`plot_pam()`](https://mjorden.github.io/geochemR/reference/plot_pam.md) |
 | **Plan** | [`plot_map()`](https://mjorden.github.io/geochemR/reference/plot_map.md) (per-hole summary over a depth window, IDW surface + contours), [`gc_idw()`](https://mjorden.github.io/geochemR/reference/gc_idw.md) |
 | **Cross-plots** | [`plot_ternary()`](https://mjorden.github.io/geochemR/reference/plot_ternary.md), [`plot_kerogen()`](https://mjorden.github.io/geochemR/reference/plot_kerogen.md) (HI–OI, HI–Tmax with maturity windows, S2–TOC) |
-| **Data** | `gc_example` (synthetic), `gc_minerals`, `gc_oxides`, `gc_sra_analytes` |
+| **Look** | [`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`scale_colour_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) / [`scale_fill_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) / `..._gc_c()`, [`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md), [`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md) |
+| **Data** | `gc_example` (12 holes), `gc_cuttings` (one cuttings well + its workbook), `gc_minerals`, `gc_oxides`, `gc_sra_analytes`, `gc_pam_analytes` |
 
 Every plot returns a `ggplot` you can keep styling.
+
+## The look
+
+Plots are drawn with
+[`theme_gc()`](https://mjorden.github.io/geochemR/reference/theme_gc.md):
+a parchment page, brown ink, a tan-to-espresso palette with a rust
+accent, serif type — a sibling of the *academic* style in
+[econscape](https://github.com/mjorden/econscape) — with Tufte’s
+restraint layered on: no panel fill behind the data, no gridlines unless
+asked for, hairline axes with outward ticks, muted axis titles, a legend
+that reads as a row of labels, and on depth profiles of two or three
+holes the hole names written at the bottom of each trace instead of a
+legend. `theme_gc(grid = "y", panel = "parchment")` moves it back toward
+econscape;
+[`gc_colours()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+and
+[`gc_pal()`](https://mjorden.github.io/geochemR/reference/theme_gc.md)
+expose the palette.
 
 ## Notes on the science
 
@@ -168,8 +226,9 @@ Every plot returns a `ggplot` you can keep styling.
 
 ``` r
 
-devtools::load_all(); testthat::test_dir("tests/testthat")   # 147 tests
+devtools::load_all(); testthat::test_dir("tests/testthat")   # 210 tests
 source("data-raw/make_example.R")                               # rebuild gc_example
+source("data-raw/make_cuttings.R")                              # rebuild gc_cuttings + its workbook
 pkgdown::build_site()                                           # the documentation site
 ```
 

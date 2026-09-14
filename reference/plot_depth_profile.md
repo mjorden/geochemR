@@ -1,8 +1,11 @@
 # Depth profiles
 
 One panel per analyte, holes as colours, depth increasing downward.
-Interval samples are drawn as vertical bars over their interval with a
-point at the mid-depth; censored values are hollow.
+Interval samples are drawn as a bar over their interval with a point at
+the mid-depth; censored values are hollow. With `direct_labels` (the
+default for two or three holes) each trace is named at its deepest
+sample and no legend is drawn; a single hole needs no label at all, and
+more than three get a legend.
 
 ## Usage
 
@@ -13,7 +16,8 @@ plot_depth_profile(
   analytes = NULL,
   holes = NULL,
   free_x = TRUE,
-  connect = TRUE
+  connect = TRUE,
+  direct_labels = NULL
 )
 ```
 
@@ -25,7 +29,7 @@ plot_depth_profile(
 
 - method:
 
-  Method (`"XRD"`, `"XRF"`, `"SRA"`).
+  Method (`"XRD"`, `"XRF"`, `"SRA"`, `"PAM"`).
 
 - analytes:
 
@@ -43,6 +47,11 @@ plot_depth_profile(
 
   Join a hole's samples with a line.
 
+- direct_labels:
+
+  Label traces at their deepest sample instead of a legend; `NULL`
+  decides by the number of holes.
+
 ## Value
 
 A ggplot.
@@ -51,4 +60,6 @@ A ggplot.
 
 ``` r
 plot_depth_profile(gc_example, "SRA", c("TOC", "Tmax"), holes = c("H01", "H05"))
+
+plot_depth_profile(gc_cuttings, "SRA", c("TOC", "S2", "Tmax"))
 ```
