@@ -15,7 +15,7 @@ Description: A tidy data model and toolkit for sample-based geochemistry from
     heatmaps, interpolated cross-sections, planar maps with inverse-distance
     surfaces, ternary diagrams and kerogen-type plots, all as 'ggplot2' objects.
 License: MIT + file LICENSE
-URL: https://github.com/mjorden/geochemR
+URL: https://github.com/mjorden/geochemR, https://mjorden.github.io/geochemR/
 BugReports: https://github.com/mjorden/geochemR/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

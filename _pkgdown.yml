@@ -1,0 +1,64 @@
+url: https://mjorden.github.io/geochemR/
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: geochemR — import, process and map XRD, XRF and pyrolysis data
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+
+reference:
+  - title: Data model
+    desc: One tidy object for every method's results
+    contents:
+      - gc_data
+      - validate_gc
+      - gc_samples
+      - gc_wide
+      - gc_bind
+      - gc_example
+  - title: Reading laboratory tables
+    desc: Wide spreadsheets in, long measurements out
+    contents:
+      - read_samples
+      - read_geochem
+      - gc_mineral_name
+      - .parse_values
+      - dictionaries
+  - title: Processing
+    contents:
+      - gc_substitute_lod
+      - gc_convert_units
+      - gc_oxide_to_element
+      - gc_renormalize
+      - gc_clr
+      - gc_interval_stats
+      - gc_hole_summary
+  - title: Derived indices
+    contents:
+      - gc_indices
+  - title: Plots in depth
+    contents:
+      - plot_depth_profile
+      - plot_depth_heatmap
+      - plot_section
+      - plot_mineralogy
+  - title: Plots in plan and cross-plots
+    contents:
+      - plot_map
+      - plot_ternary
+      - plot_kerogen
+      - gc_idw
+  - title: Package
+    contents:
+      - geochemR-package
+
+articles:
+  - title: Get started
+    navbar: ~
+    contents:
+      - geochemR
