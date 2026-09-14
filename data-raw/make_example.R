@@ -38,7 +38,7 @@ kaol    <- c(2, 2, 0.3)[unit + 1] + noise(0.5)
 chl     <- c(1.5, 2, 0.2)[unit + 1] + noise(0.4)
 xrd <- data.frame(sample_id = samples$sample_id, Quartz = quartz, "K-Feldspar" = kspar, Plagioclase = plag, Calcite = calcite,
                   Dolomite = dolomite, Pyrite = pyrite, Illite = illite, "I/S" = ml, Kaolinite = kaol, Chlorite = chl, check.names = FALSE)
-xrd[, -1] <- pmax(xrd[, -1], 0)
+xrd[, -1] <- lapply(xrd[, -1], pmax, 0)   # column-wise: pmax() on a data frame injects NA (#1)
 xrd[, -1] <- round(100 * xrd[, -1] / rowSums(xrd[, -1]), 1)
 xrd$`Total Clay` <- round(rowSums(xrd[, c("Illite", "I/S", "Kaolinite", "Chlorite")]), 1)
 

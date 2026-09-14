@@ -4,10 +4,13 @@
 \alias{.parse_values}
 \title{Parse laboratory value strings}
 \usage{
-.parse_values(x)
+.parse_values(x, decimal_mark = ".", grouping_mark = ",")
 }
 \arguments{
 \item{x}{A character or numeric vector.}
+
+\item{decimal_mark, grouping_mark}{Decimal and thousands separators used in
+the file, as in \code{\link[readr:locale]{readr::locale()}}.}
 }
 \value{
 A list with numeric \code{value}, numeric \code{lod}, character \code{qualifier}.
@@ -15,10 +18,20 @@ A list with numeric \code{value}, numeric \code{lod}, character \code{qualifier}
 \description{
 \code{"<5"} becomes \verb{value = 5, lod = 5, qualifier = "<"}; \code{">1000"} becomes
 \verb{value = 1000, qualifier = ">"}; \code{"n.d."}, \code{"nd"}, \code{"bdl"}, \code{"-"}, \code{""} and
-\code{"NA"} become \code{NA}; everything else is coerced to a number (a thousands
-comma is removed).
+\code{"NA"} become \code{NA}; everything else is coerced to a number after the
+grouping mark and any whitespace are removed and the decimal mark is
+normalised to \code{"."}.
+}
+\details{
+With the defaults (\code{decimal_mark = "."}, \code{grouping_mark = ","}) \code{"1,250"}
+is 1250 - and so is \code{"2,5"} read as 25. A sheet written with a decimal
+comma must be read with \code{decimal_mark = ","} (and usually
+\code{grouping_mark = " "} or \code{"."}); when a column looks like that (every
+comma is followed by one or two digits and there is no \code{"."} anywhere) a
+warning says so.
 }
 \examples{
 .parse_values(c("12.5", "<5", ">1000", "n.d.", "1,250"))
+.parse_values(c("2,5", "1 250,75"), decimal_mark = ",", grouping_mark = " ")
 }
 \keyword{internal}

@@ -69,3 +69,36 @@ test_that("interval stats and hole summaries aggregate as expected", {
   hm <- gc_hole_summary(gc_example, "SRA", fun = max, analytes = "TOC")
   expect_true(all(hm$TOC >= hs$TOC[match(hm$hole_id, hs$hole_id)] - 1e-9))
 })
+
+test_that("interval stats never return -Inf / NaN for an empty bin (#5)", {
+  # one hole, TOC only on the deep sample: the shallow bin has samples but no TOC
+  s <- data.frame(sample_id = c("A", "B"), hole_id = "H", x = 0, y = 0, depth_top = c(0, 50), depth_base = c(10, 60))
+  m <- data.frame(sample_id = c("A", "B", "B"), method = "SRA", analyte = c("S1", "TOC", "S1"), value = c(0.1, 2, 0.2))
+  ds <- gc_data(s, m)
+  for (f in list(max, mean, min, median)) {
+    st <- gc_interval_stats(ds, "SRA", breaks = 10, fun = f)
+    expect_false(any(is.nan(st$TOC)) || any(is.infinite(st$TOC)))
+    expect_true(is.na(st$TOC[st$bin_top == 0]))
+    expect_equal(st$TOC[st$bin_top == 50], 2)
+  }
+  # and on the example data with a coarse binning
+  st <- gc_interval_stats(gc_example, "SRA", breaks = 5, fun = max)
+  expect_false(any(is.infinite(as.matrix(st[, -(1:6)]))))
+})
+
+test_that("gc_convert_units touches XRF only unless told otherwise (#7)", {
+  ds <- gc_example
+  p <- gc_convert_units(ds, "ppm")
+  m <- gc_measurements(p)
+  expect_true(all(m$unit[m$method == "XRF" & m$analyte == "SiO2"] == "ppm"))
+  expect_true(all(m$unit[m$method == "SRA" & m$analyte == "TOC"] == "wt%"))
+  expect_true(all(m$unit[m$method == "XRD"] == "wt%"))
+  # indices are unaffected by an XRF conversion
+  expect_equal(gc_wide(gc_indices(p), "SRA")$HI, gc_wide(gc_indices(ds), "SRA")$HI)
+  # converting everything is possible but gc_indices() then refuses the SRA / XRD inputs
+  all_ppm <- gc_convert_units(ds, "ppm", method = NULL)
+  expect_true(all(gc_measurements(all_ppm, "SRA")$unit[gc_measurements(all_ppm, "SRA")$analyte == "TOC"] == "ppm"))
+  expect_error(gc_indices(all_ppm, "sra"), "TOC is in ppm")
+  expect_error(gc_indices(all_ppm, "xrd"), "expect wt%")
+  expect_silent(gc_indices(all_ppm, "xrf"))
+})

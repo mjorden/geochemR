@@ -19,7 +19,9 @@ read_workbook(
   crs = NA,
   depth_unit = "ft",
   lab = NA_character_,
-  source = NA_character_
+  source = NA_character_,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 }
 \arguments{
@@ -50,6 +52,9 @@ or \code{NULL} to detect.}
 \item{x, y, z}{Optional coordinates / elevation stored on every sample.}
 
 \item{crs, depth_unit, lab, source}{Passed to \code{\link[=gc_data]{gc_data()}} / stored on rows.}
+
+\item{decimal_mark, grouping_mark}{Number format of the sheet (see
+\code{\link[=.parse_values]{.parse_values()}}); a decimal-comma workbook needs \code{decimal_mark = ","}.}
 }
 \value{
 A \code{gc_data} object. The samples table carries \code{formation} and

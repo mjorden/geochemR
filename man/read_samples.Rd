@@ -4,7 +4,7 @@
 \alias{read_samples}
 \title{Read a sample / location table}
 \usage{
-read_samples(path, sheet = 1, ...)
+read_samples(path, sheet = 1, ..., decimal_mark = ".", grouping_mark = ",")
 }
 \arguments{
 \item{path}{A file path, or a data frame.}
@@ -12,6 +12,9 @@ read_samples(path, sheet = 1, ...)
 \item{sheet}{Excel sheet (name or number) when \code{path} is a workbook.}
 
 \item{...}{Extra column-name mappings as \code{canonical = "column in file"}.}
+
+\item{decimal_mark, grouping_mark}{Number format of the coordinate and
+depth columns (see \code{\link[=.parse_values]{.parse_values()}}).}
 }
 \value{
 A tibble with the canonical sample columns.

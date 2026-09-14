@@ -46,6 +46,8 @@
 #' @param data_start First data row (1-based), or `NULL` to detect.
 #' @param x,y,z Optional coordinates / elevation stored on every sample.
 #' @param crs,depth_unit,lab,source Passed to [gc_data()] / stored on rows.
+#' @param decimal_mark,grouping_mark Number format of the sheet (see
+#'   [.parse_values()]); a decimal-comma workbook needs `decimal_mark = ","`.
 #' @return A `gc_data` object. The samples table carries `formation` and
 #'   `zone` when the sheet has them.
 #' @examples
@@ -59,7 +61,7 @@
 read_workbook <- function(path, sheet = 1, hole_id = "well", interval = "previous", keep_calculated = FALSE,
                           clay_basis = c("auto", "bulk", "relative"), header_row = NULL, data_start = NULL,
                           x = NA_real_, y = NA_real_, z = NA_real_, crs = NA, depth_unit = "ft",
-                          lab = NA_character_, source = NA_character_) {
+                          lab = NA_character_, source = NA_character_, decimal_mark = ".", grouping_mark = ",") {
   clay_basis <- match.arg(clay_basis)
   raw <- if (is.data.frame(path)) as.data.frame(path, stringsAsFactors = FALSE) else {
     if (!requireNamespace("readxl", quietly = TRUE)) stop("read_workbook needs the readxl package", call. = FALSE)
@@ -130,7 +132,7 @@ read_workbook <- function(path, sheet = 1, hole_id = "well", interval = "previou
     an <- .workbook_analyte(names_r[j], methods[j])
     if (is.na(an)) next
     m <- if (methods[j] == "XRD_CLAY") "XRD" else methods[j]
-    p <- .parse_values(body[[j]])
+    p <- .parse_values(body[[j]], decimal_mark, grouping_mark)
     if (all(is.na(p$value))) next
     is_calc <- an %in% calc
     if (is_calc && !keep_calculated) next

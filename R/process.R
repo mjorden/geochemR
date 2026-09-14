@@ -27,17 +27,25 @@ gc_substitute_lod <- function(ds, method = c("half", "sqrt2", "lod", "zero", "na
 #' (and `mg/kg`, treated as ppm). Values, detection limits and the `unit`
 #' column all change.
 #'
+#' Only rows of `method` (default `"XRF"`) are touched: mineral percentages
+#' (XRD) and pyrolysis TOC (SRA) are also in wt%, but nothing downstream
+#' expects them in ppm, and [gc_indices()] refuses inputs in the wrong unit.
+#' Pass `method = NULL` to convert every convertible row regardless.
+#'
 #' @param ds A `gc_data` object.
 #' @param to Target unit.
 #' @param analytes Optional subset of analytes to convert (default: all rows
 #'   whose unit is convertible).
+#' @param method Method whose rows are converted (default `"XRF"`); `NULL`
+#'   for all methods.
 #' @return `ds`.
 #' @export
-gc_convert_units <- function(ds, to = c("wt%", "ppm", "ppb"), analytes = NULL) {
+gc_convert_units <- function(ds, to = c("wt%", "ppm", "ppb"), analytes = NULL, method = "XRF") {
   to <- match.arg(to)
   f <- c("wt%" = 1e4, ppm = 1, "mg/kg" = 1, ppb = 1e-3)  # to ppm
   m <- ds$measurements
-  sel <- m$unit %in% names(f) & (is.null(analytes) | m$analyte %in% analytes)
+  sel <- m$unit %in% names(f) & (is.null(analytes) | m$analyte %in% analytes) &
+    (is.null(method) | m$method %in% toupper(method))
   scale <- f[m$unit[sel]] / f[[to]]
   m$value[sel] <- m$value[sel] * scale
   m$lod[sel] <- m$lod[sel] * scale
@@ -164,8 +172,9 @@ gc_alr <- function(x, denominator, zero_replace = 0.65) {
 #' @param breaks Depth-bin breaks (a numeric vector), or a single bin width.
 #' @param fun Summary function (default `mean`).
 #' @param analytes Optional subset.
-#' @return A tibble: `hole_id`, `x`, `y`, `bin_top`, `bin_base`, `n`, then one
-#'   column per analyte.
+#' @return A tibble: `hole_id`, `x`, `y`, `bin_top`, `bin_base`, `n` (samples
+#'   whose midpoint falls in the bin), then one column per analyte. A bin with
+#'   no observation of an analyte is `NA`, never `NaN` or `-Inf`.
 #' @examples
 #' gc_interval_stats(gc_example, "SRA", breaks = 50)
 #' @export
@@ -181,7 +190,7 @@ gc_interval_stats <- function(ds, method, breaks = 10, fun = mean, analytes = NU
   w <- w[!is.na(w$bin), ]
   out <- dplyr::group_by(w, .data$hole_id, .data$bin)
   out <- dplyr::summarise(out, x = mean(.data$x), y = mean(.data$y), n = dplyr::n(),
-                          dplyr::across(dplyr::all_of(an), ~ fun(.x[!is.na(.x)])), .groups = "drop")
+                          dplyr::across(dplyr::all_of(an), ~ .safe_fun(.x, fun)), .groups = "drop")
   lv <- as.integer(out$bin)
   out$bin_top <- breaks[lv]
   out$bin_base <- breaks[lv + 1]
@@ -210,5 +219,13 @@ gc_hole_summary <- function(ds, method, depth = NULL, fun = mean, analytes = NUL
   out <- dplyr::group_by(w, dplyr::across(dplyr::all_of(by)))
   dplyr::summarise(out, x = mean(.data$x), y = mean(.data$y), n = dplyr::n(),
                    depth_top = min(.data$depth_top, na.rm = TRUE), depth_base = max(.data$depth_base, na.rm = TRUE),
-                   dplyr::across(dplyr::all_of(an), ~ if (all(is.na(.x))) NA_real_ else fun(.x[!is.na(.x)])), .groups = "drop")
+                   dplyr::across(dplyr::all_of(an), ~ .safe_fun(.x, fun)), .groups = "drop")
+}
+
+# summarise the non-missing values, NA (not NaN / -Inf) when there are none
+.safe_fun <- function(x, fun) {
+  x <- x[!is.na(x)]
+  if (!length(x)) return(NA_real_)
+  out <- fun(x)
+  if (length(out) != 1 || !is.finite(out)) NA_real_ else as.numeric(out)
 }

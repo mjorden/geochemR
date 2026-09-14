@@ -18,8 +18,9 @@ gc_interval_stats(ds, method, breaks = 10, fun = mean, analytes = NULL)
 \item{analytes}{Optional subset.}
 }
 \value{
-A tibble: \code{hole_id}, \code{x}, \code{y}, \code{bin_top}, \code{bin_base}, \code{n}, then one
-column per analyte.
+A tibble: \code{hole_id}, \code{x}, \code{y}, \code{bin_top}, \code{bin_base}, \code{n} (samples
+whose midpoint falls in the bin), then one column per analyte. A bin with
+no observation of an analyte is \code{NA}, never \code{NaN} or \code{-Inf}.
 }
 \description{
 Aggregates one method's analytes into depth bins per hole - the step

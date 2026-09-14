@@ -15,7 +15,9 @@ read_geochem(
   units = "wt\%",
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 
 read_xrd(
@@ -23,7 +25,9 @@ read_xrd(
   sample_id = NULL,
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 
 read_xrf(
@@ -32,7 +36,9 @@ read_xrf(
   units = "wt\%",
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 
 read_sra(
@@ -40,7 +46,9 @@ read_sra(
   sample_id = NULL,
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 }
 \arguments{
@@ -60,6 +68,9 @@ columns without a suffix (default \code{"wt\%"}).}
 \item{lab, source}{Filled into every row.}
 
 \item{sheet}{Excel sheet.}
+
+\item{decimal_mark, grouping_mark}{Number format of the file (see
+\code{\link[=.parse_values]{.parse_values()}}); a decimal-comma sheet needs \code{decimal_mark = ","}.}
 }
 \value{
 A tibble of measurements (see \code{\link[=gc_data]{gc_data()}}).
