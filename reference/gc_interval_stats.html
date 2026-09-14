@@ -9,7 +9,7 @@ between sample tables and anything gridded or mapped."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,9 @@ between sample tables and anything gridded or mapped.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A tibble: <code>hole_id</code>, <code>x</code>, <code>y</code>, <code>bin_top</code>, <code>bin_base</code>, <code>n</code>, then one
-column per analyte.</p>
+    <p>A tibble: <code>hole_id</code>, <code>x</code>, <code>y</code>, <code>bin_top</code>, <code>bin_base</code>, <code>n</code> (samples
+whose midpoint falls in the bin), then one column per analyte. A bin with
+no observation of an analyte is <code>NA</code>, never <code>NaN</code> or <code>-Inf</code>.</p>
     </div>
 
     <div class="section level2">
@@ -90,7 +91,7 @@ column per analyte.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> H02     5.00<span style="color: #949494;">e</span>5 4.20<span style="color: #949494;">e</span>6     100      150     5 0.98  0.362   3.88   0.545  436 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> H03     5.01<span style="color: #949494;">e</span>5 4.20<span style="color: #949494;">e</span>6       0       50     5 0.37  0.046<span style="text-decoration: underline;">7</span>  0.353  0.65   430.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> H03     5.01<span style="color: #949494;">e</span>5 4.20<span style="color: #949494;">e</span>6      50      100     5 3.80  1.47   16.1    0.335  442.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> H03     5.01<span style="color: #949494;">e</span>5 4.20<span style="color: #949494;">e</span>6     100      150     5 0.103 0.03    0.083<span style="text-decoration: underline;">3</span> 0.797  <span style="color: #BB0000;">NaN</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> H03     5.01<span style="color: #949494;">e</span>5 4.20<span style="color: #949494;">e</span>6     100      150     5 0.103 0.03    0.083<span style="text-decoration: underline;">3</span> 0.797   <span style="color: #BB0000;">NA</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> H04     5.01<span style="color: #949494;">e</span>5 4.20<span style="color: #949494;">e</span>6       0       50     5 1.40  0.452   4.72   0.538  435.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 26 more rows</span></span>
 </code></pre></div>

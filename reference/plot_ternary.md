@@ -43,8 +43,6 @@ A ggplot.
 
 ``` r
 plot_ternary(gc_indices(gc_example), "XRD", c("quartz", "carbonate", "clay"), colour = "depth_mid")
-#> Warning: Removed 69 rows containing missing values or values outside the scale range
-#> (`geom_point()`).
 
 plot_ternary(gc_indices(gc_cuttings), "XRD", c("quartz", "carbonate", "clay"), colour = "formation")
 ```

@@ -21,7 +21,7 @@ read_workbook() reads that layout into a gc_data() object in one call."></head><
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,9 @@ one sample per row below. Sample rows carry a sample number, the
 <span>  crs <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  depth_unit <span class="op">=</span> <span class="st">"ft"</span>,</span>
 <span>  lab <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  source <span class="op">=</span> <span class="cn">NA_character_</span></span>
+<span>  source <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
+<span>  decimal_mark <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  grouping_mark <span class="op">=</span> <span class="st">","</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -130,6 +132,11 @@ or <code>NULL</code> to detect.</p></dd>
 
 <dt id="arg-crs-depth-unit-lab-source">crs, depth_unit, lab, source<a class="anchor" aria-label="anchor" href="#arg-crs-depth-unit-lab-source"></a></dt>
 <dd><p>Passed to <code><a href="gc_data.html">gc_data()</a></code> / stored on rows.</p></dd>
+
+
+<dt id="arg-decimal-mark-grouping-mark">decimal_mark, grouping_mark<a class="anchor" aria-label="anchor" href="#arg-decimal-mark-grouping-mark"></a></dt>
+<dd><p>Number format of the sheet (see
+<code><a href="dot-parse_values.html">.parse_values()</a></code>); a decimal-comma workbook needs <code>decimal_mark = ","</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

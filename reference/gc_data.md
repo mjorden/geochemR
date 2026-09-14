@@ -65,8 +65,8 @@ table means one set of tools for validation, joins and plotting.
 ``` r
 ds <- gc_example
 ds
-#> <gc_data> 180 samples in 12 holes; 4192 measurements
-#>   methods: SRA (631), XRD (1221), XRF (2340)
+#> <gc_data> 180 samples in 12 holes; 4951 measurements
+#>   methods: SRA (631), XRD (1980), XRF (2340)
 #>   analytes per method: SRA=5, XRD=11, XRF=13
 #>   censored (<LOD): 85
 #>   depth: 0-154 ft
@@ -87,9 +87,9 @@ head(gc_measurements(ds))
 #>   sample_id method analyte value unit    lod qualifier lab             source   
 #>   <chr>     <chr>  <chr>   <dbl> <chr> <dbl> <chr>     <chr>           <chr>    
 #> 1 H01-000   XRD    quartz   60   wt%      NA NA        Example XRD Lab synthetic
-#> 2 H01-020   XRD    quartz   67.5 wt%      NA NA        Example XRD Lab synthetic
-#> 3 H01-030   XRD    quartz   65.2 wt%      NA NA        Example XRD Lab synthetic
-#> 4 H01-050   XRD    quartz   21.1 wt%      NA NA        Example XRD Lab synthetic
-#> 5 H01-060   XRD    quartz   22.4 wt%      NA NA        Example XRD Lab synthetic
-#> 6 H01-070   XRD    quartz   23.4 wt%      NA NA        Example XRD Lab synthetic
+#> 2 H01-010   XRD    quartz   70.2 wt%      NA NA        Example XRD Lab synthetic
+#> 3 H01-020   XRD    quartz   67.5 wt%      NA NA        Example XRD Lab synthetic
+#> 4 H01-030   XRD    quartz   65.2 wt%      NA NA        Example XRD Lab synthetic
+#> 5 H01-040   XRD    quartz   68.3 wt%      NA NA        Example XRD Lab synthetic
+#> 6 H01-050   XRD    quartz   21.1 wt%      NA NA        Example XRD Lab synthetic
 ```

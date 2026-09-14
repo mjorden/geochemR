@@ -17,7 +17,9 @@ read_geochem(
   units = "wt%",
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 
 read_xrd(
@@ -25,7 +27,9 @@ read_xrd(
   sample_id = NULL,
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 
 read_xrf(
@@ -34,7 +38,9 @@ read_xrf(
   units = "wt%",
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 
 read_sra(
@@ -42,7 +48,9 @@ read_sra(
   sample_id = NULL,
   lab = NA_character_,
   source = NA_character_,
-  sheet = 1
+  sheet = 1,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 ```
 
@@ -78,6 +86,12 @@ read_sra(
 - sheet:
 
   Excel sheet.
+
+- decimal_mark, grouping_mark:
+
+  Number format of the file (see
+  [`.parse_values()`](https://mjorden.github.io/geochemR/reference/dot-parse_values.md));
+  a decimal-comma sheet needs `decimal_mark = ","`.
 
 ## Value
 

@@ -33,8 +33,9 @@ gc_interval_stats(ds, method, breaks = 10, fun = mean, analytes = NULL)
 
 ## Value
 
-A tibble: `hole_id`, `x`, `y`, `bin_top`, `bin_base`, `n`, then one
-column per analyte.
+A tibble: `hole_id`, `x`, `y`, `bin_top`, `bin_base`, `n` (samples whose
+midpoint falls in the bin), then one column per analyte. A bin with no
+observation of an analyte is `NA`, never `NaN` or `-Inf`.
 
 ## Examples
 
@@ -51,7 +52,7 @@ gc_interval_stats(gc_example, "SRA", breaks = 50)
 #>  6 H02     5.00e5 4.20e6     100      150     5 0.98  0.362   3.88   0.545  436 
 #>  7 H03     5.01e5 4.20e6       0       50     5 0.37  0.0467  0.353  0.65   430.
 #>  8 H03     5.01e5 4.20e6      50      100     5 3.80  1.47   16.1    0.335  442.
-#>  9 H03     5.01e5 4.20e6     100      150     5 0.103 0.03    0.0833 0.797  NaN 
+#>  9 H03     5.01e5 4.20e6     100      150     5 0.103 0.03    0.0833 0.797   NA 
 #> 10 H04     5.01e5 4.20e6       0       50     5 1.40  0.452   4.72   0.538  435.
 #> # ℹ 26 more rows
 ```

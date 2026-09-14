@@ -29,7 +29,9 @@ read_workbook(
   crs = NA,
   depth_unit = "ft",
   lab = NA_character_,
-  source = NA_character_
+  source = NA_character_,
+  decimal_mark = ".",
+  grouping_mark = ","
 )
 ```
 
@@ -84,6 +86,12 @@ read_workbook(
   Passed to
   [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md)
   / stored on rows.
+
+- decimal_mark, grouping_mark:
+
+  Number format of the sheet (see
+  [`.parse_values()`](https://mjorden.github.io/geochemR/reference/dot-parse_values.md));
+  a decimal-comma workbook needs `decimal_mark = ","`.
 
 ## Value
 

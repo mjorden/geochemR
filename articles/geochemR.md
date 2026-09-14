@@ -94,8 +94,8 @@ core and most cuttings have pyrolysis.
 
 ds <- gc_example
 ds
-#> <gc_data> 180 samples in 12 holes; 4192 measurements
-#>   methods: SRA (631), XRD (1221), XRF (2340)
+#> <gc_data> 180 samples in 12 holes; 4951 measurements
+#>   methods: SRA (631), XRD (1980), XRF (2340)
 #>   analytes per method: SRA=5, XRD=11, XRF=13
 #>   censored (<LOD): 85
 #>   depth: 0-154 ft
@@ -130,13 +130,13 @@ gc_analytes(ds)$SRA
 
 w <- gc_wide(ds, "XRD", c("quartz", "carbonate", "clay"))
 head(gc_clr(w[, c("quartz", "carbonate", "clay")]))
-#>          quartz   carbonate       clay
-#> [1,]  1.0277429 -0.54890522 -0.4788377
-#> [2,]         NA  0.23978654 -0.2397865
-#> [3,]  1.3469931 -0.67908321 -0.6679099
-#> [4,]  1.2488181 -0.86177865 -0.3870394
-#> [5,]         NA  0.23978654 -0.2397865
-#> [6,] -0.3332545  0.03191509  0.3013394
+#>          quartz   carbonate        clay
+#> [1,]  1.0277429 -0.54890522 -0.47883765
+#> [2,]  2.4854769 -3.40062709  0.91515016
+#> [3,]  1.3469931 -0.67908321 -0.66790991
+#> [4,]  1.2488181 -0.86177865 -0.38703941
+#> [5,]  1.7510788 -1.77968379  0.02860499
+#> [6,] -0.3332545  0.03191509  0.30133939
 ```
 
 ## 4. Depth
@@ -220,8 +220,6 @@ dataset](geochemR_files/figure-html/cross-2.png)
 ``` r
 
 plot_ternary(ds, "XRD", c("quartz", "carbonate", "clay"), colour = "depth_mid")
-#> Warning: Removed 69 rows containing missing values or values outside the scale range
-#> (`geom_point()`).
 ```
 
 ![geochemR plot of the synthetic example
@@ -339,10 +337,10 @@ head(gc_interval_stats(ds, "XRD", breaks = 50, analytes = c("quartz", "carbonate
 #> # A tibble: 6 × 10
 #>   hole_id       x        y bin_top bin_base     n quartz carbonate  clay BI_min
 #>   <chr>     <dbl>    <dbl>   <dbl>    <dbl> <int>  <dbl>     <dbl> <dbl>  <dbl>
-#> 1 H01     500019. 4199999.       0       50     5   64.2      5.84  7     0.786
-#> 2 H01     500019. 4199999.      50      100     5   23.7     33.8  32.7   0.333
-#> 3 H01     500019. 4199999.     100      150     5   13.6     24.8   7.02  0.244
-#> 4 H02     500415. 4199999.       0       50     5   61.8      4.72  9.06  0.764
-#> 5 H02     500415. 4199999.      50      100     5   24.4     32.7  33.5   0.327
-#> 6 H02     500415. 4199999.     100      150     5   26.4      7.26  5.84  0.347
+#> 1 H01     500019. 4199999.       0       50     5  66.2       6.24 12.4   0.808
+#> 2 H01     500019. 4199999.      50      100     5  23.7      33.8  32.7   0.333
+#> 3 H01     500019. 4199999.     100      150     5  11.3      75.0   9.1   0.208
+#> 4 H02     500415. 4199999.       0       50     5  62.8       7.42 14.6   0.770
+#> 5 H02     500415. 4199999.      50      100     5  24.4      32.7  33.5   0.327
+#> 6 H02     500415. 4199999.     100      150     5   9.88     77.3   8.86  0.187
 ```

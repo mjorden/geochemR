@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,18 @@
       <small>Source: <a href="https://github.com/mjorden/geochemR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.2" id="geochemr-022">geochemR 0.2.2<a class="anchor" aria-label="anchor" href="#geochemr-022"></a></h2>
+<p>Bug fixes from the adversarial review: four ways the package produced wrong numbers without saying so.</p>
+<ul><li>
+<code>gc_example</code> now has XRD on all 180 samples (<a href="https://github.com/mjorden/geochemR/issues/1" class="external-link">#1</a>). The generator clamped a data frame with <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax()</a></code>, which injected <code>NA</code>, so 69 samples (most of the limestone) had no mineralogy and every XRD figure was drawn on a biased subset. Data, figures and the counts in the README are regenerated; a test asserts every sample has every method.</li>
+<li>Readers take <code>decimal_mark</code> / <code>grouping_mark</code> (<a href="https://github.com/mjorden/geochemR/issues/2" class="external-link">#2</a>). <code><a href="../reference/dot-parse_values.html">.parse_values()</a></code> used to strip every comma, so a decimal-comma sheet read <code>"2,5"</code> as 25; it also failed on <code>"1 250"</code>. <code><a href="../reference/read_geochem.html">read_xrd()</a></code>, <code><a href="../reference/read_geochem.html">read_xrf()</a></code>, <code><a href="../reference/read_geochem.html">read_sra()</a></code>, <code><a href="../reference/read_geochem.html">read_geochem()</a></code>, <code><a href="../reference/read_samples.html">read_samples()</a></code> and <code><a href="../reference/read_workbook.html">read_workbook()</a></code> all accept the marks, and a column that looks like decimal commas under the default locale raises a warning.</li>
+<li>
+<code><a href="../reference/gc_interval_stats.html">gc_interval_stats()</a></code> returns <code>NA</code> for a bin with no observation instead of <code>-Inf</code> (<code>fun = max</code>) or <code>NaN</code> (<code>fun = mean</code>) (<a href="https://github.com/mjorden/geochemR/issues/5" class="external-link">#5</a>); shared <code>.safe_fun()</code> with <code><a href="../reference/gc_hole_summary.html">gc_hole_summary()</a></code>.</li>
+<li>
+<code><a href="../reference/gc_convert_units.html">gc_convert_units()</a></code> converts XRF rows only by default (<code>method = "XRF"</code>; <code>NULL</code> for all) (<a href="https://github.com/mjorden/geochemR/issues/7" class="external-link">#7</a>). Converting to ppm used to sweep up SRA TOC and XRD wt% too, after which <code><a href="../reference/gc_indices.html">gc_indices()</a></code> reported HI of about 0.02 without complaint. <code><a href="../reference/gc_indices.html">gc_indices()</a></code> now checks the units of its inputs and stops with a message naming the analyte and unit.</li>
+<li>The README figure script is in the package: <code>data-raw/make_figures.R</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="geochemr-021">geochemR 0.2.1<a class="anchor" aria-label="anchor" href="#geochemr-021"></a></h2>
 <ul><li>

@@ -11,7 +11,7 @@ matched case-insensitively against common spellings: `sample_id`
 ## Usage
 
 ``` r
-read_samples(path, sheet = 1, ...)
+read_samples(path, sheet = 1, ..., decimal_mark = ".", grouping_mark = ",")
 ```
 
 ## Arguments
@@ -27,6 +27,11 @@ read_samples(path, sheet = 1, ...)
 - ...:
 
   Extra column-name mappings as `canonical = "column in file"`.
+
+- decimal_mark, grouping_mark:
+
+  Number format of the coordinate and depth columns (see
+  [`.parse_values()`](https://mjorden.github.io/geochemR/reference/dot-parse_values.md)).
 
 ## Value
 

@@ -24,8 +24,8 @@ A `gc_data` object; see
 
 ``` r
 gc_example
-#> <gc_data> 180 samples in 12 holes; 4192 measurements
-#>   methods: SRA (631), XRD (1221), XRF (2340)
+#> <gc_data> 180 samples in 12 holes; 4951 measurements
+#>   methods: SRA (631), XRD (1980), XRF (2340)
 #>   analytes per method: SRA=5, XRD=11, XRF=13
 #>   censored (<LOD): 85
 #>   depth: 0-154 ft
