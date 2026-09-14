@@ -4,7 +4,14 @@
 \alias{gc_wide}
 \title{Wide table of one method's results joined to the sample table}
 \usage{
-gc_wide(ds, method, analytes = NULL, values = "value")
+gc_wide(
+  ds,
+  method,
+  analytes = NULL,
+  values = "value",
+  prefer = c("measured", "reported", "derived"),
+  fun = NULL
+)
 }
 \arguments{
 \item{ds}{A \code{gc_data} object.}
@@ -15,12 +22,25 @@ gc_wide(ds, method, analytes = NULL, values = "value")
 \item{analytes}{Optional subset of analytes.}
 
 \item{values}{Which column to spread: \code{"value"} (default) or \code{"qualifier"}.}
+
+\item{prefer}{Origins in order of preference when a key has rows of more
+than one origin (default \code{c("measured", "reported", "derived")}).}
+
+\item{fun}{Function to combine rows that remain duplicated after \code{prefer}
+(e.g. \code{mean}); \code{NULL} (default) makes them an error.}
 }
 \value{
 A tibble: sample columns, then one column per analyte.
 }
 \description{
-Wide table of one method's results joined to the sample table
+One row per sample, one column per analyte. A (sample, analyte) key that
+has more than one row is resolved by \code{prefer}: the first origin in the
+vector that is present wins (so a laboratory's own HI beats the one
+\code{\link[=gc_indices]{gc_indices()}} computed, and both beat nothing). Rows that still collide
+after that - the same analyte from two labs, or exact duplicates - are an
+error unless \code{fun} says how to combine them; \code{gc_wide()} never averages
+silently. Analytes reported in more than one unit across the surviving
+rows are an error too: convert with \code{\link[=gc_convert_units]{gc_convert_units()}} first.
 }
 \examples{
 head(gc_wide(gc_example, "SRA"))

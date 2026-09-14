@@ -18,13 +18,15 @@ gc_data(
 
 \item{measurements}{A data frame with at least \code{sample_id}, \code{method},
 \code{analyte}, \code{value}; \code{unit}, \code{lod}, \code{qualifier}, \code{lab} are filled with
-\code{NA} when absent.}
+\code{NA} and \code{origin} with \code{"measured"} when absent. A \code{source} column (the
+readers fill it with the file name) is harvested into \code{meta$sources}.}
 
 \item{crs}{Coordinate reference system of \code{x}/\code{y} as an EPSG code, or \code{NA}.}
 
 \item{depth_unit}{\code{"ft"} or \code{"m"} - only carried as metadata.}
 
-\item{sources}{Character vector recording where the data came from.}
+\item{sources}{Where the data came from: file paths (hashed when they
+exist), free text, or a data frame with a \code{path} column.}
 }
 \value{
 An object of class \code{gc_data}.
@@ -41,17 +43,27 @@ A \code{gc_data} object is two tibbles and a little metadata:
 \item \code{measurements} - one row per (sample, analyte): \code{sample_id}, \code{method}
 (\code{"XRD"}, \code{"XRF"}, \code{"SRA"} or your own), \code{analyte}, \code{value}, \code{unit},
 \code{lod} (detection limit, \code{NA} if none), \code{qualifier} (\code{"<"} when censored
-below \code{lod}, \code{">"} above range, \code{NA} otherwise), \code{lab}.
-\item \code{meta} - a list: \code{crs} (EPSG code or \code{NA}), \code{depth_unit}, \code{sources}.
+below \code{lod}, \code{">"} above range, \code{NA} otherwise), \code{lab} (who measured
+it), \code{origin} (\code{"measured"}, \code{"reported"} for a value the laboratory
+calculated from others, \code{"derived"} for one \code{\link[=gc_indices]{gc_indices()}} computed).
+\item \code{meta} - a list: \code{crs} (EPSG code or \code{NA}), \code{depth_unit}, \code{sources} (a
+tibble of input files with \code{md5}, \code{size} and \code{mtime} when the file
+exists), \code{schema_version}, \code{package_version}, \code{created}, and \code{history}
+(the processing steps applied so far; see \code{\link[=gc_history]{gc_history()}}).
 }
 
 Lab results are \emph{samples}, not curves: tens per hole, at a depth or over an
 interval, from a lab by a method. Keeping every method in one long table
 means one set of tools for validation, joins and plotting.
+
+Objects saved by geochemR < 0.3.0 (no \code{origin} column, \code{lab} holding
+\code{"derived"} / \code{"reported"}) are upgraded in place the first time any
+function touches them.
 }
 \examples{
 ds <- gc_example
 ds
 head(gc_samples(ds))
 head(gc_measurements(ds))
+gc_history(ds)
 }

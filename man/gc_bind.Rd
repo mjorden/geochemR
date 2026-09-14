@@ -16,5 +16,6 @@ A \code{gc_data} object.
 }
 \description{
 Appends the measurements of \code{...} to \code{ds} (samples must already be known
-to \code{ds}, or be supplied in the new objects and merged).
+to \code{ds}, or be supplied in the new objects and merged). Sources and
+processing history are carried over from every \code{gc_data} input.
 }

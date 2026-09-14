@@ -26,7 +26,10 @@
 #' Columns the laboratory *calculates* from others (HI, OI, PI, S1/TOC, S2/S3,
 #' KQ, Q+F, total carbonate, brittleness, PAM ratios, majors + LE) are dropped
 #' by default so that [gc_indices()] is the single source of derived values;
-#' `keep_calculated = TRUE` keeps them with `lab = "reported"`.
+#' `keep_calculated = TRUE` keeps them with `origin = "reported"`.
+#'
+#' The workbook's path, MD5 hash, size and modification time go into
+#' `meta$sources`, and the call into the processing history ([gc_history()]).
 #'
 #' @param path Workbook path (`.xlsx`) or a data frame read with no header
 #'   (`header = FALSE`).
@@ -67,7 +70,7 @@ read_workbook <- function(path, sheet = 1, hole_id = "well", interval = "previou
     if (!requireNamespace("readxl", quietly = TRUE)) stop("read_workbook needs the readxl package", call. = FALSE)
     as.data.frame(readxl::read_excel(path, sheet = sheet, col_names = FALSE, col_types = "text", .name_repair = "minimal"))
   }
-  if (is.na(source) && !is.data.frame(path)) source <- basename(path)
+  if (is.na(source) && !is.data.frame(path)) source <- path   # the full path, so it matches the hashed meta$sources row
   cell <- function(i, j) { v <- raw[i, j]; if (is.na(v)) "" else trimws(as.character(v)) }
   n <- nrow(raw)
   if (is.null(header_row)) {
@@ -138,7 +141,8 @@ read_workbook <- function(path, sheet = 1, hole_id = "well", interval = "previou
     if (is_calc && !keep_calculated) next
     out[[length(out) + 1]] <- tibble::tibble(sample_id = samples$sample_id, method = m, analyte = an, value = p$value,
                                              unit = .workbook_unit(units_r[j], an, m), lod = p$lod, qualifier = p$qualifier,
-                                             lab = if (is_calc) "reported" else lab, source = source, group = groups_r[j])
+                                             lab = lab, origin = if (is_calc) "reported" else "measured", source = source,
+                                             group = groups_r[j])
   }
   meas <- dplyr::bind_rows(out)
   meas <- meas[!is.na(meas$value) | !is.na(meas$qualifier), ]
@@ -158,7 +162,11 @@ read_workbook <- function(path, sheet = 1, hole_id = "well", interval = "previou
     }
   }
   meas$group <- NULL
-  gc_data(samples, meas, crs = crs, depth_unit = depth_unit, sources = source)
+  src <- if (is.character(path)) .source_table(path, sheet = as.character(sheet)) else .source_table(source)
+  ds <- gc_data(samples, meas, crs = crs, depth_unit = depth_unit, sources = src)
+  .log_step(ds, "read_workbook", list(path = if (is.character(path)) basename(path) else "<data frame>", sheet = sheet,
+                                      hole_id = hole_id, interval = interval, keep_calculated = keep_calculated,
+                                      clay_basis = clay_basis, samples = nrow(samples)))
 }
 
 .workbook_analyte <- function(name, method) {

@@ -36,16 +36,20 @@
 #' @param min_toc TOC (wt%) below which HI, OI and S1/TOC are not reported  - 
 #'   the ratios blow up on lean samples and laboratories conventionally
 #'   leave them blank below about 0.5 %.
-#' @return `ds` with extra rows, `method` set to `"SRA"`, `"XRF"` or `"XRD"`
-#'   and `lab = "derived"`.
+#' @return `ds` with extra rows, `method` set to `"SRA"`, `"XRF"`, `"XRD"` or
+#'   `"PAM"` and `origin = "derived"`. Calling it again recomputes: the
+#'   derived rows of the methods in `which` are replaced, other methods'
+#'   derived rows are left alone.
 #' @examples
 #' ds <- gc_indices(gc_example)
 #' gc_analytes(ds)
 #' @export
 gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5) {
   which <- match.arg(which, several.ok = TRUE)
+  ds <- .ensure_schema(ds)
   m <- ds$measurements
-  m <- m[!(m$lab %in% "derived"), ]
+  # recompute: drop only the derived rows of the methods asked for
+  m <- m[!(m$origin == "derived" & m$method %in% toupper(which)), ]
   ds$measurements <- m
   new <- list()
   if ("sra" %in% which && any(m$method == "SRA")) new <- c(new, list(.sra_indices(ds, min_toc)))
@@ -54,20 +58,14 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
   if ("pam" %in% which && any(m$method == "PAM")) new <- c(new, list(.pam_indices(ds, min_toc)))
   new <- dplyr::bind_rows(new)
   if (nrow(new)) ds$measurements <- dplyr::bind_rows(m, new)
-  ds
-}
-
-.rows <- function(sample_id, method, values, unit) {
-  keep <- !is.na(values)
-  tibble::tibble(sample_id = sample_id[keep], method = method, analyte = names(values)[1] %||% NA, value = unname(values[keep]),
-                 unit = unit, lod = NA_real_, qualifier = NA_character_, lab = "derived")
+  .log_step(ds, "gc_indices", list(which = which, min_toc = min_toc, rows = nrow(new)))
 }
 
 .derived <- function(w, method, name, values, unit) {
   keep <- !is.na(values) & is.finite(values)
   if (!any(keep)) return(NULL)
   tibble::tibble(sample_id = w$sample_id[keep], method = method, analyte = name, value = unname(values[keep]),
-                 unit = unit, lod = NA_real_, qualifier = NA_character_, lab = "derived")
+                 unit = unit, lod = NA_real_, qualifier = NA_character_, lab = NA_character_, origin = "derived")
 }
 
 .col <- function(w, name) if (name %in% names(w)) w[[name]] else rep(NA_real_, nrow(w))
@@ -77,7 +75,7 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 # recorded are trusted.
 .check_units <- function(ds, method, expected) {
   m <- ds$measurements
-  m <- m[m$method == method & m$analyte %in% names(expected) & !is.na(m$unit) & !(m$lab %in% "derived"), ]
+  m <- m[m$method == method & m$analyte %in% names(expected) & !is.na(m$unit) & m$origin != "derived", ]
   for (a in unique(m$analyte)) {
     u <- unique(m$unit[m$analyte == a])
     bad <- setdiff(tolower(u), tolower(expected[[a]]))
@@ -131,7 +129,7 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 }
 
 .xrd_indices <- function(ds) {
-  xrd_an <- unique(ds$measurements$analyte[ds$measurements$method == "XRD" & !(ds$measurements$lab %in% "derived")])
+  xrd_an <- unique(ds$measurements$analyte[ds$measurements$method == "XRD" & ds$measurements$origin != "derived"])
   .check_units(ds, "XRD", stats::setNames(rep(list(.pct), length(xrd_an)), xrd_an))
   w <- gc_wide(ds, "XRD")
   s <- function(...) {

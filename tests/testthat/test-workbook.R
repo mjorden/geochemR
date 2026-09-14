@@ -41,10 +41,31 @@ test_that("keep_calculated keeps lab-reported derived columns tagged as such", {
   ds <- suppressMessages(read_workbook(f, hole_id = "EX-1", keep_calculated = TRUE))
   m <- gc_measurements(ds)
   expect_true(all(c("HI", "OI", "PI", "S1_TOC", "S2_S3", "KQ", "QFM", "carbonate", "BI", "majors_LE", "Oil3_Oil2") %in% m$analyte))
-  expect_equal(unique(m$lab[m$analyte == "HI"]), "reported")
+  expect_equal(unique(m$origin[m$analyte == "HI"]), "reported")
+  expect_true(all(is.na(m$lab)))                       # lab is the laboratory, not a sentinel (#8)
   # gc_indices adds its own HI as 'derived' alongside the reported one
   di <- gc_measurements(gc_indices(ds))
-  expect_setequal(unique(di$lab[di$analyte == "HI"]), c("reported", "derived"))
+  expect_setequal(unique(di$origin[di$analyte == "HI"]), c("reported", "derived"))
+  # gc_wide resolves the two by origin and says so, rather than averaging (#3)
+  expect_message(w <- gc_wide(gc_indices(ds), "SRA"), "HI.*reported")
+  rep_hi <- di$value[di$analyte == "HI" & di$origin == "reported"]
+  expect_equal(w$HI[match(di$sample_id[di$analyte == "HI" & di$origin == "reported"], w$sample_id)], rep_hi)
+  w2 <- suppressMessages(gc_wide(gc_indices(ds), "SRA", prefer = "derived"))
+  expect_false(isTRUE(all.equal(w2$HI, w$HI)))
+})
+
+test_that("read_workbook records provenance (#14)", {
+  ds <- suppressMessages(read_workbook(f, hole_id = "EX-1"))
+  src <- ds$meta$sources
+  expect_equal(nrow(src), 1)
+  expect_equal(basename(src$path), "cuttings_workbook.xlsx")
+  expect_match(src$md5, "^[0-9a-f]{32}$")
+  expect_true(src$size > 0)
+  h <- gc_history(ds)
+  expect_equal(h$step, c("gc_data", "read_workbook"))
+  expect_match(h$args[2], "hole_id = EX-1")
+  expect_equal(ds$meta$schema_version, 2L)
+  expect_output(print(ds), "cuttings_workbook.xlsx \\[[0-9a-f]{8}\\]")
 })
 
 test_that("interval options and clay_basis override", {

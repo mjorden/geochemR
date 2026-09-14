@@ -19,5 +19,6 @@ from 100.}
 Errors on structural problems (unknown \code{sample_id}s in the measurements,
 inverted depths, non-numeric values); warns on things worth a look (XRD
 totals far from 100, values below their own detection limit without a
-\code{"<"} qualifier, duplicate sample/method/analyte rows).
+\code{"<"} qualifier, duplicate sample/method/analyte rows, and keys measured
+by more than one lab - which \code{\link[=gc_wide]{gc_wide()}} cannot resolve on its own).
 }
