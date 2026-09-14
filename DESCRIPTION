@@ -1,0 +1,42 @@
+Package: geochemR
+Title: Import, Process and Map Geochemical Data (XRD, XRF, Pyrolysis)
+Version: 0.1.0
+Authors@R:
+    person("Matthew", "Jorden", , "matthew.jorden@gmail.com", role = c("aut", "cre"))
+Description: A tidy data model and toolkit for sample-based geochemistry from
+    boreholes, wells and outcrops: X-ray diffraction mineralogy (XRD), X-ray
+    fluorescence element and oxide chemistry (XRF), and source-rock analyzer /
+    Rock-Eval pyrolysis (S1, S2, S3, Tmax, TOC). Readers turn wide laboratory
+    spreadsheets into one validated long table with detection-limit handling;
+    processing covers unit and oxide-element conversion, renormalisation,
+    compositional (log-ratio) transforms and derived indices (HI, OI, PI,
+    vitrinite-reflectance equivalent, chemical index of alteration,
+    mineralogical brittleness); and plotting covers depth profiles, hole-by-depth
+    heatmaps, interpolated cross-sections, planar maps with inverse-distance
+    surfaces, ternary diagrams and kerogen-type plots, all as 'ggplot2' objects.
+License: MIT + file LICENSE
+URL: https://github.com/mjorden/geochemR
+BugReports: https://github.com/mjorden/geochemR/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.1)
+Imports:
+    dplyr,
+    ggplot2 (>= 3.4),
+    readr,
+    rlang,
+    stats,
+    tibble,
+    tidyr,
+    utils
+Suggests:
+    knitr,
+    readxl,
+    rmarkdown,
+    sf,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+LazyData: true
+VignetteBuilder: knitr

@@ -1,0 +1,110 @@
+---
+title: "From lab spreadsheets to maps with geochemR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{From lab spreadsheets to maps with geochemR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8, fig.height = 5, dpi = 90)
+```
+
+```{r setup}
+library(geochemR)
+```
+
+## 1. Reading what the lab sent
+
+Laboratories deliver *wide* tables — one row per sample, one column per
+mineral, oxide or pyrolysis parameter — with their own spellings and unit
+conventions. The readers accept that as-is:
+
+```{r read}
+xrd <- data.frame(Sample = c("A1", "A2"), Quartz = c(40, 12), "K-Feldspar" = c(5, 1),
+                  "Illite/Mica" = c(25, 3), "I/S" = c(6, 1), Calcite = c(20, 80), Pyrite = c(2, 1),
+                  "Total Clay (wt%)" = c(31, 4), check.names = FALSE)
+read_xrd(xrd, lab = "Lab A")
+
+xrf <- data.frame(Sample = c("A1", "A2"), SiO2 = c(62.1, 8.3), CaO = c(9.9, 48.2),
+                  Zr_ppm = c("180", "<5"), "Ba (ppm)" = c(410, 95), check.names = FALSE)
+read_xrf(xrf, lab = "Lab B")
+```
+
+`"<5"` became `value = 5, lod = 5, qualifier = "<"`. Units were taken from
+the column suffixes. Column names that are not analytes are reported, not
+silently dropped.
+
+A sample table gives every `sample_id` a hole, coordinates and a depth
+interval; `gc_data()` puts the pieces together and validates them.
+
+```{r model}
+samples <- data.frame(sample_id = c("A1", "A2"), hole_id = "W1", x = 500100, y = 4200100,
+                      depth_top = c(50, 60), depth_base = c(60, 70))
+ds <- gc_data(samples, dplyr::bind_rows(read_xrd(xrd), read_xrf(xrf)), crs = 26914)
+ds
+gc_wide(ds, "XRD")
+```
+
+## 2. The example dataset
+
+`gc_example` is synthetic: twelve holes on a grid, fifteen 10-ft intervals
+each, through a sandstone, an organic-rich calcareous mudstone whose TOC
+rises eastward, and a limestone. Every sample has XRD and XRF; core and most
+cuttings have pyrolysis.
+
+```{r example}
+ds <- gc_example
+ds
+gc_analytes(ds)
+```
+
+## 3. Processing
+
+Substitute censored values, add the derived indices, and — for anything
+statistical on compositions — take log-ratios.
+
+```{r process}
+ds <- ds |>
+  gc_substitute_lod("half") |>
+  gc_indices()
+gc_analytes(ds)$SRA
+
+w <- gc_wide(ds, "XRD", c("quartz", "carbonate", "clay"))
+head(gc_clr(w[, c("quartz", "carbonate", "clay")]))
+```
+
+## 4. Depth
+
+```{r depth, fig.height = 5}
+plot_depth_profile(ds, "SRA", c("TOC", "S2", "Tmax", "HI"), holes = c("H01", "H04", "H09", "H12"))
+plot_depth_heatmap(ds, "SRA", "TOC")
+plot_section(ds, "SRA", "TOC", holes = c("H01", "H02", "H03", "H04"))
+plot_mineralogy(ds, holes = c("H01", "H12"))
+```
+
+## 5. Plan
+
+`plot_map()` summarises each hole over a depth window and draws an
+inverse-distance surface under the points.
+
+```{r map, fig.width = 6, fig.height = 5.5}
+plot_map(ds, "SRA", "TOC", depth = c(50, 110))
+plot_map(ds, "XRF", "Mo", depth = c(50, 110), fun = max)
+```
+
+## 6. Cross-plots
+
+```{r cross, fig.width = 6, fig.height = 5}
+plot_kerogen(ds, "hi_oi")
+plot_kerogen(ds, "hi_tmax", colour = "depth_mid")
+plot_ternary(ds, "XRD", c("quartz", "carbonate", "clay"), colour = "depth_mid")
+```
+
+## 7. Summaries for reports
+
+```{r summaries}
+gc_hole_summary(ds, "SRA", depth = c(50, 110), analytes = c("TOC", "HI", "Tmax", "Ro_eq"))
+head(gc_interval_stats(ds, "XRD", breaks = 50, analytes = c("quartz", "carbonate", "clay", "BI_min")))
+```
