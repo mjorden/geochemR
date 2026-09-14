@@ -36,7 +36,18 @@ test_that("theme and scales", {
   expect_length(gc_pal()(3), 3)
   expect_length(gc_pal("academic")(20), 20)     # interpolates beyond 11
   expect_length(gc_pal("browns", reverse = TRUE)(7), 7)
+  expect_length(gc_pal("scholar")(9), 9); expect_length(gc_pal("divergent")(5), 5)
   expect_s3_class(scale_colour_gc(), "Scale"); expect_s3_class(scale_fill_gc_c(), "Scale")
+  # categorical palette: eleven distinct hues, none too close to its neighbour
+  pal <- gc_pal("academic")(11)
+  expect_equal(length(unique(pal)), 11)
+  rgb <- t(grDevices::col2rgb(pal))
+  expect_true(all(sqrt(rowSums(diff(rgb)^2)) > 60))     # neighbouring colours far apart in RGB
+  # scholar ramp: luminance falls monotonically so it reads as a sequence
+  lum <- apply(grDevices::col2rgb(gc_pal("scholar")(8)), 2, function(v) 0.299 * v[1] + 0.587 * v[2] + 0.114 * v[3])
+  expect_true(all(diff(lum) < 0))
+  expect_s3_class(scale_fill_minerals(c("quartz", "unobtainium")), "Scale")
+  expect_equal(unname(gc_mineral_colours["calcite"]), "#3F6E8C")
   expect_plot(plot_pam(gc_cuttings))
   expect_plot(plot_pam(gc_cuttings, normalize = TRUE))
   expect_plot(plot_stacked_depth(gc_cuttings, "XRD", c("quartz", "calcite", "total_clay"), normalize = TRUE))

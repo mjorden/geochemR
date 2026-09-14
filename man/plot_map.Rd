@@ -17,7 +17,7 @@ plot_map(
   maxdist = Inf,
   contours = 6,
   label = TRUE,
-  palette = "browns"
+  palette = "scholar"
 )
 }
 \arguments{
@@ -38,7 +38,7 @@ plot_map(
 
 \item{label}{Label the points with the hole id.}
 
-\item{palette}{Sequential palette for \code{\link[=gc_pal]{gc_pal()}}.}
+\item{palette}{Sequential palette for \code{\link[=gc_pal]{gc_pal()}} (default \code{"scholar"}).}
 }
 \value{
 A ggplot with \code{coord_equal()}.

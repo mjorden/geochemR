@@ -69,12 +69,12 @@ plot_depth_profile <- function(ds, method, analytes = NULL, holes = NULL, free_x
 #' @param breaks Depth-bin width (or vector of breaks) passed to
 #'   [gc_interval_stats()]; `NULL` uses each sample's own interval.
 #' @param order Hole order: `"x"`, `"y"`, or a character vector.
-#' @param palette A sequential palette name for [gc_pal()].
+#' @param palette A sequential palette name for [gc_pal()] (default `"scholar"`).
 #' @return A ggplot.
 #' @examples
 #' plot_depth_heatmap(gc_example, "SRA", "TOC")
 #' @export
-plot_depth_heatmap <- function(ds, method, analyte, breaks = NULL, order = "x", palette = "browns") {
+plot_depth_heatmap <- function(ds, method, analyte, breaks = NULL, order = "x", palette = "scholar") {
   if (is.null(breaks)) {
     d <- .long_for_plot(ds, method, analyte)
     d <- d[, c("hole_id", "x", "y", "depth_top", "depth_base", "value")]
@@ -117,13 +117,13 @@ plot_depth_heatmap <- function(ds, method, analyte, breaks = NULL, order = "x", 
 #' @param aspect Depth units per distance unit used to make the IDW search
 #'   isotropic (e.g. 0.05 when 1 ft of depth should count like 20 ft
 #'   laterally).
-#' @param palette Sequential palette for [gc_pal()].
+#' @param palette Sequential palette for [gc_pal()] (default `"scholar"`).
 #' @return A ggplot with the hole positions marked along the top.
 #' @examples
 #' plot_section(gc_example, "SRA", "TOC", holes = c("H01", "H02", "H03", "H04"))
 #' @export
 plot_section <- function(ds, method, analyte, holes, breaks = 10, n_x = 120, n_z = 80, power = 2, maxdist = Inf, nmax = 12,
-                         aspect = 0.05, palette = "browns") {
+                         aspect = 0.05, palette = "scholar") {
   if (length(holes) < 2) stop("a section needs at least two holes", call. = FALSE)
   st <- gc_interval_stats(ds, method, breaks, analytes = analyte)
   st <- st[st$hole_id %in% holes, ]
@@ -142,7 +142,8 @@ plot_section <- function(ds, method, analyte, holes, breaks = 10, n_x = 120, n_z
     ggplot2::geom_raster(interpolate = TRUE) +
     ggplot2::geom_point(data = st, ggplot2::aes(x = .data$dist, y = .data$mid, fill = .data[[analyte]]), shape = 21, size = 1.8, colour = gc_hex[["parchment"]], stroke = 0.4) +
     ggplot2::geom_vline(xintercept = dist, colour = gc_hex[["ink"]], linewidth = 0.25, alpha = 0.6) +
-    ggplot2::annotate("text", x = dist, y = min(gz), label = holes, vjust = -0.5, size = 3, family = "serif", colour = gc_hex[["ink"]]) +
+    ggplot2::annotate("text", x = dist, y = min(gz), label = holes, vjust = -0.5, size = 3, family = "serif", colour = gc_hex[["ink"]],
+                      hjust = c(0, rep(0.5, max(length(holes) - 2, 0)), 1)[seq_along(holes)]) +
     ggplot2::scale_y_reverse(expand = ggplot2::expansion(mult = c(0, 0.06))) +
     ggplot2::scale_x_continuous(expand = ggplot2::expansion(0)) +
     scale_fill_gc_c(palette, name = analyte, na.value = "transparent") +
@@ -162,9 +163,11 @@ plot_section <- function(ds, method, analyte, holes, breaks = 10, n_x = 120, n_z
 #' @param holes Optional subset.
 #' @param normalize Rescale each sample to 100 %.
 #' @param xlab x-axis label.
+#' @param fill_scale A ggplot2 fill scale to use instead of [scale_fill_gc()]
+#'   (e.g. [scale_fill_minerals()]).
 #' @return A ggplot.
 #' @export
-plot_stacked_depth <- function(ds, method, analytes, holes = NULL, normalize = FALSE, xlab = NULL) {
+plot_stacked_depth <- function(ds, method, analytes, holes = NULL, normalize = FALSE, xlab = NULL, fill_scale = NULL) {
   d <- .long_for_plot(ds, method, analytes, holes)
   d <- d[!(d$lab %in% "derived"), ]
   if (normalize) {
@@ -183,7 +186,7 @@ plot_stacked_depth <- function(ds, method, analytes, holes = NULL, normalize = F
                        colour = gc_hex[["parchment"]], linewidth = 0.15) +
     ggplot2::scale_y_reverse(expand = ggplot2::expansion(0)) +
     ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.02))) +
-    scale_fill_gc(name = NULL) +
+    (fill_scale %||% scale_fill_gc(name = NULL)) +
     ggplot2::facet_wrap(~ .data$hole_id, scales = "free_y") +
     ggplot2::labs(x = xlab %||% if (normalize) "%" else NULL, y = .depth_lab(ds)) +
     theme_gc(axis = "y")
@@ -208,7 +211,7 @@ plot_mineralogy <- function(ds, holes = NULL, exclude = c("total_clay", "total",
   grp[is.na(grp)] <- "other"
   order <- c("tectosilicate", "carbonate", "sulfide", "other", "clay")
   an <- an[order(match(grp, order), an)]
-  plot_stacked_depth(ds, "XRD", an, holes = holes, xlab = "wt%")
+  plot_stacked_depth(ds, "XRD", an, holes = holes, xlab = "wt%", fill_scale = scale_fill_minerals(an, name = NULL))
 }
 
 #' PAM pyrolysis log

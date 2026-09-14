@@ -10,7 +10,8 @@ plot_stacked_depth(
   analytes,
   holes = NULL,
   normalize = FALSE,
-  xlab = NULL
+  xlab = NULL,
+  fill_scale = NULL
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ plot_stacked_depth(
 \item{normalize}{Rescale each sample to 100 \%.}
 
 \item{xlab}{x-axis label.}
+
+\item{fill_scale}{A ggplot2 fill scale to use instead of \code{\link[=scale_fill_gc]{scale_fill_gc()}}
+(e.g. \code{\link[=scale_fill_minerals]{scale_fill_minerals()}}).}
 }
 \value{
 A ggplot.

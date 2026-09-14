@@ -13,14 +13,14 @@
 #' @param n,power,nmax,maxdist Grid resolution and IDW controls.
 #' @param contours Number of contour bins on the surface (0 for none).
 #' @param label Label the points with the hole id.
-#' @param palette Sequential palette for [gc_pal()].
+#' @param palette Sequential palette for [gc_pal()] (default `"scholar"`).
 #' @return A ggplot with `coord_equal()`.
 #' @examples
 #' plot_map(gc_example, "SRA", "TOC", depth = c(60, 120))
 #' plot_map(gc_example, "XRD", "quartz", interp = FALSE)
 #' @export
 plot_map <- function(ds, method, analyte, depth = NULL, fun = mean, interp = TRUE, n = 80, power = 2, nmax = 12,
-                     maxdist = Inf, contours = 6, label = TRUE, palette = "browns") {
+                     maxdist = Inf, contours = 6, label = TRUE, palette = "scholar") {
   h <- gc_hole_summary(ds, method, depth, fun, analytes = analyte)
   h <- h[!is.na(h$x) & !is.na(h[[analyte]]), ]
   if (!nrow(h)) stop("no holes with coordinates and ", analyte, " values", call. = FALSE)

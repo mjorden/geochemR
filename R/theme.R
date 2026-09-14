@@ -1,21 +1,24 @@
-#' The geochemR look: academic parchment, Tufte restraint
+#' The geochemR look: academic parchment, Tufte restraint, colour where it counts
 #'
 #' Every plot in the package is drawn with [theme_gc()] and the `scale_*_gc()`
-#' scales. The palette is a sibling of the *academic* style in
+#' scales. The furniture is a sibling of the *academic* style in
 #' [econscape](https://github.com/mjorden/econscape): parchment surfaces,
-#' brown ink, a tan-to-espresso categorical palette, a rust accent, serif
-#' type. The furniture follows Tufte rather than a newspaper: no panel fill
-#' behind the data (the parchment is the page, not the chart), no gridlines
-#' unless asked for, hairline axes with outward ticks, muted axis titles, a
-#' legend that reads as a row of labels - or, on depth profiles, no legend at
-#' all and the hole names written at the bottom of each trace.
+#' brown ink, serif type. It follows Tufte rather than a newspaper: no panel
+#' fill behind the data (the parchment is the page, not the chart), no
+#' gridlines unless asked for, hairline axes with outward ticks, muted axis
+#' titles, a legend that reads as a row of labels - or, on depth profiles of
+#' two or three holes, no legend at all and the hole names written at the
+#' bottom of each trace. The furniture being monochrome is what lets the data
+#' carry colour: the categorical palette rotates through distinct hues muted
+#' to sit on parchment, and continuous scales use a multi-hue ramp so that
+#' both level and gradient read.
 #'
 #' @section Colours:
-#' `gc_colours()` returns the dictionary. Categorical: `espresso`, `tan`,
-#' `sand`, `walnut`, `parchment_dark`, `bark`, `stone`, then `rust`, `moss`,
-#' `slate`, `ochre` for more than seven groups. Surfaces: `parchment`,
-#' `parchment_grid`; ink: `ink`, `muted`; accent: `rust`; maturity windows:
-#' `window_immature`, `window_oil`, `window_gas`.
+#' `gc_colours()` returns the dictionary. Categorical hues: `espresso`,
+#' `rust`, `slate`, `moss`, `ochre`, `plum`, `teal`, `tan`, `indigo`, `brick`,
+#' `sage`. Surfaces: `parchment`, `parchment_grid`; ink: `ink`, `muted`;
+#' maturity windows: `window_immature`, `window_oil`, `window_gas`.
+#' `gc_mineral_colours` colours XRD minerals by kind.
 #'
 #' @param base_size Base font size in points.
 #' @param base_family Font family; `"serif"` by default.
@@ -82,14 +85,18 @@ theme_gc <- function(base_size = 11, base_family = "serif", grid = c("none", "y"
 }
 
 gc_hex <- c(
-  espresso = "#5C4033", tan = "#A47551", sand = "#C9A87C", walnut = "#7B5E3B", parchment_dark = "#D8C3A5",
-  bark = "#3E2F23", stone = "#9C8B7A", rust = "#8B3A2F", moss = "#6B7A5A", slate = "#5A6E78", ochre = "#B9946A",
+  # categorical: distinct hues, each muted enough to sit on parchment
+  espresso = "#5C4033", rust = "#A23E2E", slate = "#3F6E8C", moss = "#5F7F3F", ochre = "#D29A2B", plum = "#7A4F7D",
+  teal = "#2F8F86", tan = "#B9946A", indigo = "#4B4A8A", brick = "#C86A4A", sage = "#8FA37A",
+  # browns kept for sequential work
+  sand = "#C9A87C", walnut = "#7B5E3B", parchment_dark = "#D8C3A5", bark = "#3E2F23", stone = "#9C8B7A",
   parchment = "#F4EEE2", parchment_grid = "#E3D9C6", ink = "#2E2622", muted = "#7A6B5D",
   window_immature = "#EFE6D6", window_oil = "#E8D2B8", window_gas = "#E2C2B7"
 )
 
 #' @rdname theme_gc
 #' @param ... For `gc_colours()`: colour names; none returns the dictionary.
+#'   For the scales: passed to the ggplot2 scale.
 #' @export
 gc_colours <- function(...) {
   nm <- c(...)
@@ -100,18 +107,44 @@ gc_colours <- function(...) {
 }
 
 gc_palettes <- list(
-  academic = unname(gc_hex[c("espresso", "tan", "sand", "walnut", "parchment_dark", "bark", "stone", "rust", "moss", "slate", "ochre")]),
+  # categorical, ordered for maximum separation between neighbours
+  academic = unname(gc_hex[c("espresso", "rust", "slate", "moss", "ochre", "plum", "teal", "tan", "indigo", "brick", "sage")]),
+  # sequential, multi-hue: sand through ochre and rust to plum and ink -
+  # luminance falls monotonically while the hue rotates, so level and gradient both read
+  scholar = c("#EAD9BF", "#DDB86A", "#D29A2B", "#B65E2A", "#A23E2E", "#7A3A55", "#4B2F4E", "#2E2622"),
+  # sequential, cool: sand through sage and teal to slate and indigo
+  tide = c("#EAD9BF", "#B9C99A", "#7FAE8C", "#3F8F86", "#3F6E8C", "#3C4F7A", "#2E2A4A"),
+  # single-hue ramps
   browns = c("#EAD9BF", "#D3B58C", "#B98F62", "#95693F", "#6E4A2E", "#4A3222", "#2E2622"),
   rust = c("#F0E1D8", "#DDB5A6", "#C7877A", "#A95A4B", "#8B3A2F", "#5E2620"),
-  moss = c("#E4E8DC", "#C1CBB1", "#9CAB85", "#7A8B62", "#5B6D45", "#3D4B2E")
+  moss = c("#E4E8DC", "#C1CBB1", "#9CAB85", "#7A8B62", "#5B6D45", "#3D4B2E"),
+  # diverging: slate - parchment - rust, for anomalies about a centre
+  divergent = c("#3F6E8C", "#8FB0C4", "#D6DCE0", "#F4EEE2", "#E8C9B8", "#C9806E", "#A23E2E")
 )
 
 #' @rdname theme_gc
-#' @param palette `"academic"` (categorical, 11 colours), or a sequential
-#'   ramp: `"browns"` (default for continuous scales), `"rust"`, `"moss"`.
+#' @format `gc_mineral_colours`: fill colours for XRD minerals keyed by
+#'   canonical name, grouped by kind so a stacked bar reads at a glance -
+#'   tectosilicates in warm yellows and tans, carbonates in blues, clays in
+#'   greens, sulfides dark, everything else grey or violet.
+#' @export
+gc_mineral_colours <- c(
+  quartz = "#E3C46E", k_feldspar = "#D29A2B", plagioclase = "#B9946A", amorphous = "#EAD9BF",
+  calcite = "#3F6E8C", dolomite = "#7FA6C0", ankerite = "#5A88A6", siderite = "#2E4A66", aragonite = "#A9C4D6",
+  illite = "#5F7F3F", smectite = "#8FA37A", mixed_layer = "#3E6B4A", kaolinite = "#B7C79B", chlorite = "#2F6F5E", glauconite = "#6F8F5A", total_clay = "#5F7F3F",
+  pyrite = "#2E2622", marcasite = "#4A3A3A",
+  apatite = "#7A4F7D", anhydrite = "#C9BFC8", gypsum = "#DDD3DC", halite = "#EDE7EE", barite = "#9C8B7A", hematite = "#A23E2E", goethite = "#C86A4A", other = "#B5ADA4"
+)
+
+#' @rdname theme_gc
+#' @param palette `"academic"` (categorical: espresso, rust, slate, moss,
+#'   ochre, plum, teal, tan, indigo, brick, sage); sequential ramps
+#'   `"scholar"` (default for continuous scales: sand through ochre and rust
+#'   to plum and ink), `"tide"` (sand through sage and teal to indigo),
+#'   `"browns"`, `"rust"`, `"moss"`; or `"divergent"` (slate - parchment - rust).
 #' @param reverse Reverse the palette.
-#' @return `gc_pal()` returns a function of `n`; categorical palettes
-#'   interpolate beyond their length rather than error.
+#' @return `gc_pal()` returns a function of `n`; the categorical palette
+#'   interpolates beyond its length rather than error.
 #' @export
 gc_pal <- function(palette = "academic", reverse = FALSE) {
   palette <- match.arg(palette, names(gc_palettes))
@@ -137,14 +170,29 @@ scale_fill_gc <- function(palette = "academic", reverse = FALSE, ...) {
 
 #' @rdname theme_gc
 #' @export
-scale_colour_gc_c <- function(palette = "browns", reverse = FALSE, ...) {
+scale_colour_gc_c <- function(palette = "scholar", reverse = FALSE, ...) {
   ggplot2::scale_colour_gradientn(colours = gc_pal(palette, reverse)(256), ...)
 }
 
 #' @rdname theme_gc
 #' @export
-scale_fill_gc_c <- function(palette = "browns", reverse = FALSE, ...) {
+scale_fill_gc_c <- function(palette = "scholar", reverse = FALSE, ...) {
   ggplot2::scale_fill_gradientn(colours = gc_pal(palette, reverse)(256), ...)
+}
+
+#' @rdname theme_gc
+#' @param minerals Mineral names present in the data; any not in
+#'   `gc_mineral_colours` get colours from the categorical palette.
+#' @return `scale_fill_minerals()` is a manual fill scale keyed by canonical
+#'   mineral name.
+#' @export
+scale_fill_minerals <- function(minerals = NULL, ...) {
+  vals <- gc_mineral_colours
+  if (!is.null(minerals)) {
+    extra <- setdiff(minerals, names(vals))
+    if (length(extra)) vals <- c(vals, stats::setNames(gc_pal("academic")(length(extra)), extra))
+  }
+  ggplot2::scale_fill_manual(values = vals, na.value = gc_hex[["stone"]], ...)
 }
 
 #' @rdname theme_gc
