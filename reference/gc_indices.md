@@ -27,8 +27,10 @@ gc_indices(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 
 ## Value
 
-`ds` with extra rows, `method` set to `"SRA"`, `"XRF"` or `"XRD"` and
-`lab = "derived"`.
+`ds` with extra rows, `method` set to `"SRA"`, `"XRF"`, `"XRD"` or
+`"PAM"` and `origin = "derived"`. Calling it again recomputes: the
+derived rows of the methods in `which` are replaced, other methods'
+derived rows are left alone.
 
 ## Details
 

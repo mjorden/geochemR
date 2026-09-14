@@ -39,6 +39,8 @@ gc_cuttings
 #>   censored (<LOD): 55
 #>   depth: 6000-7950 ft
 #>   x: 512300-512300  y: 3898200-3898200  (EPSG:26914)
+#>   sources: cuttings_workbook.xlsx [2c5a48ef]; synthetic example built by data-raw/make_cuttings.R
+#>   history: 2 step(s), last read_workbook
 gc_hole_summary(gc_cuttings, "SRA", by = c("hole_id", "formation"), analytes = c("TOC", "Tmax"))
 #> # A tibble: 4 × 9
 #>   hole_id formation         x       y     n depth_top depth_base   TOC  Tmax

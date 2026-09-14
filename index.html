@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,7 +119,15 @@
 <span><span class="co">#   sample | TOC (wt%) | S1 | S2 | S3 | Tmax  (Ro / VR optional)</span></span>
 <span></span>
 <span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gc_data.html">gc_data</a></span><span class="op">(</span><span class="va">samples</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">xrd</span>, <span class="va">xrf</span>, <span class="va">sra</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">26914</span>, depth_unit <span class="op">=</span> <span class="st">"ft"</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="reference/gc_data.html">gc_data()</a></code> validates on construction — unknown sample ids and inverted depths are errors; XRD totals far from 100, values below their own detection limit without a <code>&lt;</code>, and duplicate rows are warnings — so a spreadsheet problem surfaces at import, not on a map. <code>gc_wide(ds, "XRF")</code> gets you back to one row per sample whenever you want it.</p>
+<p><code><a href="reference/gc_data.html">gc_data()</a></code> validates on construction — unknown sample ids and inverted depths are errors; XRD totals far from 100, values below their own detection limit without a <code>&lt;</code>, and duplicate rows are warnings — so a spreadsheet problem surfaces at import, not on a map. <code>gc_wide(ds, "XRF")</code> gets you back to one row per sample whenever you want it - and refuses to average two labs’ values of the same analyte unless you tell it how.</p>
+<p>Every measurement row says where it came from (<code>lab</code>, and <code>origin</code> = measured / lab-reported / derived), every input file is recorded with its MD5 hash in <code>meta$sources</code>, and every processing step is logged:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gc_history.html">gc_history</a></span><span class="op">(</span><span class="va">cu</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3 x 4</span></span>
+<span><span class="co">#&gt;   step          args                                                   time                version</span></span>
+<span><span class="co">#&gt;   gc_data       samples = 65, measurements = 3640                      2026-09-14 ...      0.3.0</span></span>
+<span><span class="co">#&gt;   read_workbook path = cuttings_workbook.xlsx, sheet = 1, hole_id = ...  2026-09-14 ...      0.3.0</span></span>
+<span><span class="co">#&gt;   gc_indices    which = sra,xrf,xrd,pam, min_toc = 0.5, rows = 1170    2026-09-14 ...      0.3.0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="gallery">Gallery<a class="anchor" aria-label="anchor" href="#gallery"></a>
@@ -157,7 +165,7 @@
 <tr>
 <td><strong>Model</strong></td>
 <td>
-<code><a href="reference/gc_data.html">gc_data()</a></code>, <code><a href="reference/validate_gc.html">validate_gc()</a></code>, <code><a href="reference/gc_samples.html">gc_samples()</a></code>, <code><a href="reference/gc_samples.html">gc_measurements()</a></code>, <code><a href="reference/gc_samples.html">gc_analytes()</a></code>, <code><a href="reference/gc_wide.html">gc_wide()</a></code>, <code><a href="reference/gc_bind.html">gc_bind()</a></code>
+<code><a href="reference/gc_data.html">gc_data()</a></code>, <code><a href="reference/validate_gc.html">validate_gc()</a></code>, <code><a href="reference/gc_samples.html">gc_samples()</a></code>, <code><a href="reference/gc_samples.html">gc_measurements()</a></code>, <code><a href="reference/gc_samples.html">gc_analytes()</a></code>, <code><a href="reference/gc_wide.html">gc_wide()</a></code>, <code><a href="reference/gc_bind.html">gc_bind()</a></code>, <code><a href="reference/gc_history.html">gc_history()</a></code>
 </td>
 </tr>
 <tr>
@@ -231,7 +239,7 @@
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span>; <span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span><span class="op">)</span>   <span class="co"># 219 tests</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"data-raw/make_example.R"</span><span class="op">)</span>                               <span class="co"># rebuild gc_example</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"data-raw/make_cuttings.R"</span><span class="op">)</span>                              <span class="co"># rebuild gc_cuttings + its workbook</span></span>

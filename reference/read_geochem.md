@@ -81,7 +81,9 @@ read_sra(
 
 - lab, source:
 
-  Filled into every row.
+  Filled into every row; `source` defaults to the file path, which
+  [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md)
+  hashes into `meta$sources`.
 
 - sheet:
 

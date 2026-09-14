@@ -1,11 +1,28 @@
 # Wide table of one method's results joined to the sample table
 
-Wide table of one method's results joined to the sample table
+One row per sample, one column per analyte. A (sample, analyte) key that
+has more than one row is resolved by `prefer`: the first origin in the
+vector that is present wins (so a laboratory's own HI beats the one
+[`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md)
+computed, and both beat nothing). Rows that still collide after that -
+the same analyte from two labs, or exact duplicates - are an error
+unless `fun` says how to combine them; `gc_wide()` never averages
+silently. Analytes reported in more than one unit across the surviving
+rows are an error too: convert with
+[`gc_convert_units()`](https://mjorden.github.io/geochemR/reference/gc_convert_units.md)
+first.
 
 ## Usage
 
 ``` r
-gc_wide(ds, method, analytes = NULL, values = "value")
+gc_wide(
+  ds,
+  method,
+  analytes = NULL,
+  values = "value",
+  prefer = c("measured", "reported", "derived"),
+  fun = NULL
+)
 ```
 
 ## Arguments
@@ -26,6 +43,16 @@ gc_wide(ds, method, analytes = NULL, values = "value")
 - values:
 
   Which column to spread: `"value"` (default) or `"qualifier"`.
+
+- prefer:
+
+  Origins in order of preference when a key has rows of more than one
+  origin (default `c("measured", "reported", "derived")`).
+
+- fun:
+
+  Function to combine rows that remain duplicated after `prefer` (e.g.
+  `mean`); `NULL` (default) makes them an error.
 
 ## Value
 

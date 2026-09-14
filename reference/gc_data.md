@@ -24,7 +24,9 @@ gc_data(
 - measurements:
 
   A data frame with at least `sample_id`, `method`, `analyte`, `value`;
-  `unit`, `lod`, `qualifier`, `lab` are filled with `NA` when absent.
+  `unit`, `lod`, `qualifier`, `lab` are filled with `NA` and `origin`
+  with `"measured"` when absent. A `source` column (the readers fill it
+  with the file name) is harvested into `meta$sources`.
 
 - crs:
 
@@ -36,7 +38,8 @@ gc_data(
 
 - sources:
 
-  Character vector recording where the data came from.
+  Where the data came from: file paths (hashed when they exist), free
+  text, or a data frame with a `path` column.
 
 ## Value
 
@@ -52,13 +55,25 @@ An object of class `gc_data`.
 - `measurements` - one row per (sample, analyte): `sample_id`, `method`
   (`"XRD"`, `"XRF"`, `"SRA"` or your own), `analyte`, `value`, `unit`,
   `lod` (detection limit, `NA` if none), `qualifier` (`"<"` when
-  censored below `lod`, `">"` above range, `NA` otherwise), `lab`.
+  censored below `lod`, `">"` above range, `NA` otherwise), `lab` (who
+  measured it), `origin` (`"measured"`, `"reported"` for a value the
+  laboratory calculated from others, `"derived"` for one
+  [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md)
+  computed).
 
-- `meta` - a list: `crs` (EPSG code or `NA`), `depth_unit`, `sources`.
+- `meta` - a list: `crs` (EPSG code or `NA`), `depth_unit`, `sources` (a
+  tibble of input files with `md5`, `size` and `mtime` when the file
+  exists), `schema_version`, `package_version`, `created`, and `history`
+  (the processing steps applied so far; see
+  [`gc_history()`](https://mjorden.github.io/geochemR/reference/gc_history.md)).
 
 Lab results are *samples*, not curves: tens per hole, at a depth or over
 an interval, from a lab by a method. Keeping every method in one long
 table means one set of tools for validation, joins and plotting.
+
+Objects saved by geochemR \< 0.3.0 (no `origin` column, `lab` holding
+`"derived"` / `"reported"`) are upgraded in place the first time any
+function touches them.
 
 ## Examples
 
@@ -71,6 +86,8 @@ ds
 #>   censored (<LOD): 85
 #>   depth: 0-154 ft
 #>   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)
+#>   sources: synthetic example built by data-raw/make_example.R; synthetic
+#>   history: 1 step(s), last gc_data
 head(gc_samples(ds))
 #> # A tibble: 6 × 12
 #>   sample_id hole_id       x        y     z depth_top depth_base sample_type
@@ -83,13 +100,18 @@ head(gc_samples(ds))
 #> 6 H01-050   H01     500019. 4199999. 1254.        50         60 cuttings   
 #> # ℹ 4 more variables: formation <lgl>, zone <lgl>, date <date>, depth_mid <dbl>
 head(gc_measurements(ds))
-#> # A tibble: 6 × 9
-#>   sample_id method analyte value unit    lod qualifier lab             source   
-#>   <chr>     <chr>  <chr>   <dbl> <chr> <dbl> <chr>     <chr>           <chr>    
-#> 1 H01-000   XRD    quartz   60   wt%      NA NA        Example XRD Lab synthetic
-#> 2 H01-010   XRD    quartz   70.2 wt%      NA NA        Example XRD Lab synthetic
-#> 3 H01-020   XRD    quartz   67.5 wt%      NA NA        Example XRD Lab synthetic
-#> 4 H01-030   XRD    quartz   65.2 wt%      NA NA        Example XRD Lab synthetic
-#> 5 H01-040   XRD    quartz   68.3 wt%      NA NA        Example XRD Lab synthetic
-#> 6 H01-050   XRD    quartz   21.1 wt%      NA NA        Example XRD Lab synthetic
+#> # A tibble: 6 × 10
+#>   sample_id method analyte value unit    lod qualifier lab         origin source
+#>   <chr>     <chr>  <chr>   <dbl> <chr> <dbl> <chr>     <chr>       <chr>  <chr> 
+#> 1 H01-000   XRD    quartz   60   wt%      NA NA        Example XR… measu… synth…
+#> 2 H01-010   XRD    quartz   70.2 wt%      NA NA        Example XR… measu… synth…
+#> 3 H01-020   XRD    quartz   67.5 wt%      NA NA        Example XR… measu… synth…
+#> 4 H01-030   XRD    quartz   65.2 wt%      NA NA        Example XR… measu… synth…
+#> 5 H01-040   XRD    quartz   68.3 wt%      NA NA        Example XR… measu… synth…
+#> 6 H01-050   XRD    quartz   21.1 wt%      NA NA        Example XR… measu… synth…
+gc_history(ds)
+#> # A tibble: 1 × 4
+#>   step    args                               time                version
+#>   <chr>   <chr>                              <dttm>              <chr>  
+#> 1 gc_data samples = 180, measurements = 4951 2026-09-14 21:28:01 0.3.0  
 ```

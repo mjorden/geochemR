@@ -129,7 +129,22 @@ validates on construction — unknown sample ids and inverted depths are
 errors; XRD totals far from 100, values below their own detection limit
 without a `<`, and duplicate rows are warnings — so a spreadsheet
 problem surfaces at import, not on a map. `gc_wide(ds, "XRF")` gets you
-back to one row per sample whenever you want it.
+back to one row per sample whenever you want it - and refuses to average
+two labs’ values of the same analyte unless you tell it how.
+
+Every measurement row says where it came from (`lab`, and `origin` =
+measured / lab-reported / derived), every input file is recorded with
+its MD5 hash in `meta$sources`, and every processing step is logged:
+
+``` r
+
+gc_history(cu)
+#> # A tibble: 3 x 4
+#>   step          args                                                   time                version
+#>   gc_data       samples = 65, measurements = 3640                      2026-09-14 ...      0.3.0
+#>   read_workbook path = cuttings_workbook.xlsx, sheet = 1, hole_id = ...  2026-09-14 ...      0.3.0
+#>   gc_indices    which = sra,xrf,xrd,pam, min_toc = 0.5, rows = 1170    2026-09-14 ...      0.3.0
+```
 
 ## Gallery
 
@@ -168,7 +183,7 @@ on XRF: major oxides and censored trace elements.*
 |  | Functions |
 |----|----|
 | **Read** | [`read_samples()`](https://mjorden.github.io/geochemR/reference/read_samples.md), [`read_xrd()`](https://mjorden.github.io/geochemR/reference/read_geochem.md), [`read_xrf()`](https://mjorden.github.io/geochemR/reference/read_geochem.md), [`read_sra()`](https://mjorden.github.io/geochemR/reference/read_geochem.md), [`read_geochem()`](https://mjorden.github.io/geochemR/reference/read_geochem.md); [`gc_mineral_name()`](https://mjorden.github.io/geochemR/reference/gc_mineral_name.md) for lab spellings; [`.parse_values()`](https://mjorden.github.io/geochemR/reference/dot-parse_values.md) for `<5` / `n.d.` |
-| **Model** | [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md), [`validate_gc()`](https://mjorden.github.io/geochemR/reference/validate_gc.md), [`gc_samples()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_measurements()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_analytes()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_wide()`](https://mjorden.github.io/geochemR/reference/gc_wide.md), [`gc_bind()`](https://mjorden.github.io/geochemR/reference/gc_bind.md) |
+| **Model** | [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md), [`validate_gc()`](https://mjorden.github.io/geochemR/reference/validate_gc.md), [`gc_samples()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_measurements()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_analytes()`](https://mjorden.github.io/geochemR/reference/gc_samples.md), [`gc_wide()`](https://mjorden.github.io/geochemR/reference/gc_wide.md), [`gc_bind()`](https://mjorden.github.io/geochemR/reference/gc_bind.md), [`gc_history()`](https://mjorden.github.io/geochemR/reference/gc_history.md) |
 | **Process** | [`gc_substitute_lod()`](https://mjorden.github.io/geochemR/reference/gc_substitute_lod.md) (half / √2 / LOD / zero), [`gc_convert_units()`](https://mjorden.github.io/geochemR/reference/gc_convert_units.md) (wt% ↔︎ ppm ↔︎ ppb), [`gc_oxide_to_element()`](https://mjorden.github.io/geochemR/reference/gc_oxide_to_element.md) / [`gc_element_to_oxide()`](https://mjorden.github.io/geochemR/reference/gc_oxide_to_element.md), [`gc_renormalize()`](https://mjorden.github.io/geochemR/reference/gc_renormalize.md), [`gc_clr()`](https://mjorden.github.io/geochemR/reference/gc_clr.md) / [`gc_alr()`](https://mjorden.github.io/geochemR/reference/gc_clr.md) (log-ratio transforms for compositional data), [`gc_interval_stats()`](https://mjorden.github.io/geochemR/reference/gc_interval_stats.md), [`gc_hole_summary()`](https://mjorden.github.io/geochemR/reference/gc_hole_summary.md) |
 | **Indices** | [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md): HI, OI, PI, S1/TOC, Ro-equivalent from Tmax (Jarvie 2001); CIA, Si/Al, K/Al, Ti/Al; carbonate, clay, QFM, mineralogical brittleness (Wang & Gale 2009) |
 | **Depth** | [`plot_depth_profile()`](https://mjorden.github.io/geochemR/reference/plot_depth_profile.md), [`plot_depth_heatmap()`](https://mjorden.github.io/geochemR/reference/plot_depth_heatmap.md), [`plot_section()`](https://mjorden.github.io/geochemR/reference/plot_section.md) (IDW on a distance–depth grid), [`plot_stacked_depth()`](https://mjorden.github.io/geochemR/reference/plot_stacked_depth.md), [`plot_mineralogy()`](https://mjorden.github.io/geochemR/reference/plot_mineralogy.md), [`plot_pam()`](https://mjorden.github.io/geochemR/reference/plot_pam.md) |

@@ -30,6 +30,8 @@ gc_example
 #>   censored (<LOD): 85
 #>   depth: 0-154 ft
 #>   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)
+#>   sources: synthetic example built by data-raw/make_example.R; synthetic
+#>   history: 1 step(s), last gc_data
 gc_analytes(gc_example)
 #> $SRA
 #> [1] "TOC"  "S1"   "S2"   "S3"   "Tmax"

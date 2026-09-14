@@ -1,5 +1,49 @@
 # Changelog
 
+## geochemR 0.3.0
+
+Schema and provenance (adversarial review, phase 2). Objects saved by
+0.2.x are upgraded in place the first time a function touches them.
+
+- **`origin` column** on measurements: `"measured"`, `"reported"` (a
+  value the laboratory calculated) or `"derived"` (computed by
+  [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md)).
+  `lab` is once again only the laboratory - the `"derived"` /
+  `"reported"` sentinels are gone, and a lab called “Derived” is a lab
+  ([\#8](https://github.com/mjorden/geochemR/issues/8)).
+- `gc_indices(which = )` recomputes only the methods asked for; it used
+  to delete every method’s derived rows first
+  ([\#8](https://github.com/mjorden/geochemR/issues/8)).
+- [`gc_wide()`](https://mjorden.github.io/geochemR/reference/gc_wide.md)
+  no longer averages duplicate keys behind your back
+  ([\#3](https://github.com/mjorden/geochemR/issues/3)). Rows of
+  different origin are resolved by `prefer` (default measured \>
+  reported \> derived) with a message; rows of the same origin from two
+  labs are an error unless `fun` says how to combine them; an analyte in
+  two units is an error.
+  [`validate_gc()`](https://mjorden.github.io/geochemR/reference/validate_gc.md)
+  warns about multi-lab keys at construction.
+- [`gc_renormalize()`](https://mjorden.github.io/geochemR/reference/gc_renormalize.md)
+  rescales measured rows only, closes a sample whose clay is reported
+  only as `total_clay` to `total - total_clay`, and warns when a sample
+  is more than `tolerance` away from `total` before rescaling
+  ([\#4](https://github.com/mjorden/geochemR/issues/4)).
+- **Provenance**
+  ([\#14](https://github.com/mjorden/geochemR/issues/14)):
+  `meta$sources` is a table of input files with MD5, size and
+  modification time (readers fill the `source` column with the path and
+  [`gc_data()`](https://mjorden.github.io/geochemR/reference/gc_data.md)
+  hashes it;
+  [`read_workbook()`](https://mjorden.github.io/geochemR/reference/read_workbook.md)
+  records path and sheet); `meta$schema_version`, `package_version`,
+  `created`; and `meta$history` - every constructor, reader and
+  processing step with its arguments and time, read with
+  [`gc_history()`](https://mjorden.github.io/geochemR/reference/gc_history.md)
+  and summarised by [`print()`](https://rdrr.io/r/base/print.html).
+  [`gc_bind()`](https://mjorden.github.io/geochemR/reference/gc_bind.md)
+  merges sources and histories.
+- `grDevices`, `grid` and `tools` declared in Imports.
+
 ## geochemR 0.2.2
 
 Bug fixes from the adversarial review: four ways the package produced

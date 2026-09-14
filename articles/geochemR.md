@@ -72,6 +72,7 @@ ds
 #>   censored (<LOD): 1
 #>   depth: 50-70 ft
 #>   x: 500100-500100  y: 4200100-4200100  (EPSG:26914)
+#>   history: 1 step(s), last gc_data
 gc_wide(ds, "XRD")
 #> # A tibble: 2 × 18
 #>   sample_id hole_id      x       y depth_top depth_base sample_type formation
@@ -100,6 +101,8 @@ ds
 #>   censored (<LOD): 85
 #>   depth: 0-154 ft
 #>   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)
+#>   sources: synthetic example built by data-raw/make_example.R; synthetic
+#>   history: 1 step(s), last gc_data
 gc_analytes(ds)
 #> $SRA
 #> [1] "TOC"  "S1"   "S2"   "S3"   "Tmax"
@@ -243,7 +246,10 @@ cu
 #>   methods: PAM (953), SRA (649), XRD (1105), XRF (2080)
 #>   analytes per method: PAM=15, SRA=11, XRD=17, XRF=32
 #>   censored (<LOD): 55
+#>   derived: 1147
 #>   depth: 6000-7950 ft
+#>   sources: cuttings_workbook.xlsx [2c5a48ef]
+#>   history: 3 step(s), last gc_indices
 gc_analytes(cu)$PAM
 #>  [1] "Oil1"      "Tmax_Oil1" "Oil2"      "Tmax_Oil2" "Oil3"      "Tmax_Oil3"
 #>  [7] "Oil4"      "Tmax_Oil4" "K1"        "Tmax_K1"   "Oil_total" "Oil3_Oil2"

@@ -23,6 +23,11 @@ One tidy object for every method’s results
 - [`gc_bind()`](https://mjorden.github.io/geochemR/reference/gc_bind.md)
   : Combine measurement sets for the same samples
 
+- [`gc_history()`](https://mjorden.github.io/geochemR/reference/gc_history.md)
+  :
+
+  Processing history of a `gc_data` object
+
 - [`gc_example`](https://mjorden.github.io/geochemR/reference/gc_example.md)
   : Synthetic example dataset
 

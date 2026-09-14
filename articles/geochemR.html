@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,6 +123,7 @@ and validates them.</p>
 <span><span class="co">#&gt;   censored (&lt;LOD): 1</span></span>
 <span><span class="co">#&gt;   depth: 50-70 ft</span></span>
 <span><span class="co">#&gt;   x: 500100-500100  y: 4200100-4200100  (EPSG:26914)</span></span>
+<span><span class="co">#&gt;   history: 1 step(s), last gc_data</span></span>
 <span><span class="fu"><a href="../reference/gc_wide.html">gc_wide</a></span><span class="op">(</span><span class="va">ds</span>, <span class="st">"XRD"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 18</span></span></span>
 <span><span class="co">#&gt;   sample_id hole_id      x       y depth_top depth_base sample_type formation</span></span>
@@ -149,6 +150,8 @@ and XRF; core and most cuttings have pyrolysis.</p>
 <span><span class="co">#&gt;   censored (&lt;LOD): 85</span></span>
 <span><span class="co">#&gt;   depth: 0-154 ft</span></span>
 <span><span class="co">#&gt;   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)</span></span>
+<span><span class="co">#&gt;   sources: synthetic example built by data-raw/make_example.R; synthetic</span></span>
+<span><span class="co">#&gt;   history: 1 step(s), last gc_data</span></span>
 <span><span class="fu"><a href="../reference/gc_samples.html">gc_analytes</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $SRA</span></span>
 <span><span class="co">#&gt; [1] "TOC"  "S1"   "S2"   "S3"   "Tmax"</span></span>
@@ -246,7 +249,10 @@ ships a synthetic one in exactly that form.</p>
 <span><span class="co">#&gt;   methods: PAM (953), SRA (649), XRD (1105), XRF (2080)</span></span>
 <span><span class="co">#&gt;   analytes per method: PAM=15, SRA=11, XRD=17, XRF=32</span></span>
 <span><span class="co">#&gt;   censored (&lt;LOD): 55</span></span>
+<span><span class="co">#&gt;   derived: 1147</span></span>
 <span><span class="co">#&gt;   depth: 6000-7950 ft</span></span>
+<span><span class="co">#&gt;   sources: cuttings_workbook.xlsx [2c5a48ef]</span></span>
+<span><span class="co">#&gt;   history: 3 step(s), last gc_indices</span></span>
 <span><span class="fu"><a href="../reference/gc_samples.html">gc_analytes</a></span><span class="op">(</span><span class="va">cu</span><span class="op">)</span><span class="op">$</span><span class="va">PAM</span></span>
 <span><span class="co">#&gt;  [1] "Oil1"      "Tmax_Oil1" "Oil2"      "Tmax_Oil2" "Oil3"      "Tmax_Oil3"</span></span>
 <span><span class="co">#&gt;  [7] "Oil4"      "Tmax_Oil4" "K1"        "Tmax_K1"   "Oil_total" "Oil3_Oil2"</span></span>

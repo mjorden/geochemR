@@ -121,7 +121,11 @@ S2/S3, KQ, Q+F, total carbonate, brittleness, PAM ratios, majors + LE)
 are dropped by default so that
 [`gc_indices()`](https://mjorden.github.io/geochemR/reference/gc_indices.md)
 is the single source of derived values; `keep_calculated = TRUE` keeps
-them with `lab = "reported"`.
+them with `origin = "reported"`.
+
+The workbook's path, MD5 hash, size and modification time go into
+`meta$sources`, and the call into the processing history
+([`gc_history()`](https://mjorden.github.io/geochemR/reference/gc_history.md)).
 
 ## Examples
 

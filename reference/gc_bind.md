@@ -1,7 +1,8 @@
 # Combine measurement sets for the same samples
 
 Appends the measurements of `...` to `ds` (samples must already be known
-to `ds`, or be supplied in the new objects and merged).
+to `ds`, or be supplied in the new objects and merged). Sources and
+processing history are carried over from every `gc_data` input.
 
 ## Usage
 

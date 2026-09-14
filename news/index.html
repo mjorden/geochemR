@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,22 @@
       <small>Source: <a href="https://github.com/mjorden/geochemR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="geochemr-030">geochemR 0.3.0<a class="anchor" aria-label="anchor" href="#geochemr-030"></a></h2>
+<p>Schema and provenance (adversarial review, phase 2). Objects saved by 0.2.x are upgraded in place the first time a function touches them.</p>
+<ul><li>
+<strong><code>origin</code> column</strong> on measurements: <code>"measured"</code>, <code>"reported"</code> (a value the laboratory calculated) or <code>"derived"</code> (computed by <code><a href="../reference/gc_indices.html">gc_indices()</a></code>). <code>lab</code> is once again only the laboratory - the <code>"derived"</code> / <code>"reported"</code> sentinels are gone, and a lab called “Derived” is a lab (<a href="https://github.com/mjorden/geochemR/issues/8" class="external-link">#8</a>).</li>
+<li>
+<code>gc_indices(which = )</code> recomputes only the methods asked for; it used to delete every method’s derived rows first (<a href="https://github.com/mjorden/geochemR/issues/8" class="external-link">#8</a>).</li>
+<li>
+<code><a href="../reference/gc_wide.html">gc_wide()</a></code> no longer averages duplicate keys behind your back (<a href="https://github.com/mjorden/geochemR/issues/3" class="external-link">#3</a>). Rows of different origin are resolved by <code>prefer</code> (default measured &gt; reported &gt; derived) with a message; rows of the same origin from two labs are an error unless <code>fun</code> says how to combine them; an analyte in two units is an error. <code><a href="../reference/validate_gc.html">validate_gc()</a></code> warns about multi-lab keys at construction.</li>
+<li>
+<code><a href="../reference/gc_renormalize.html">gc_renormalize()</a></code> rescales measured rows only, closes a sample whose clay is reported only as <code>total_clay</code> to <code>total - total_clay</code>, and warns when a sample is more than <code>tolerance</code> away from <code>total</code> before rescaling (<a href="https://github.com/mjorden/geochemR/issues/4" class="external-link">#4</a>).</li>
+<li>
+<strong>Provenance</strong> (<a href="https://github.com/mjorden/geochemR/issues/14" class="external-link">#14</a>): <code>meta$sources</code> is a table of input files with MD5, size and modification time (readers fill the <code>source</code> column with the path and <code><a href="../reference/gc_data.html">gc_data()</a></code> hashes it; <code><a href="../reference/read_workbook.html">read_workbook()</a></code> records path and sheet); <code>meta$schema_version</code>, <code>package_version</code>, <code>created</code>; and <code>meta$history</code> - every constructor, reader and processing step with its arguments and time, read with <code><a href="../reference/gc_history.html">gc_history()</a></code> and summarised by <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>. <code><a href="../reference/gc_bind.html">gc_bind()</a></code> merges sources and histories.</li>
+<li>
+<code>grDevices</code>, <code>grid</code> and <code>tools</code> declared in Imports.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.2" id="geochemr-022">geochemR 0.2.2<a class="anchor" aria-label="anchor" href="#geochemr-022"></a></h2>
 <p>Bug fixes from the adversarial review: four ways the package produced wrong numbers without saying so.</p>

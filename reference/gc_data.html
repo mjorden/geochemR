@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">geochemR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,8 @@
 <dt id="arg-measurements">measurements<a class="anchor" aria-label="anchor" href="#arg-measurements"></a></dt>
 <dd><p>A data frame with at least <code>sample_id</code>, <code>method</code>,
 <code>analyte</code>, <code>value</code>; <code>unit</code>, <code>lod</code>, <code>qualifier</code>, <code>lab</code> are filled with
-<code>NA</code> when absent.</p></dd>
+<code>NA</code> and <code>origin</code> with <code>"measured"</code> when absent. A <code>source</code> column (the
+readers fill it with the file name) is harvested into <code>meta$sources</code>.</p></dd>
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
@@ -73,7 +74,8 @@
 
 
 <dt id="arg-sources">sources<a class="anchor" aria-label="anchor" href="#arg-sources"></a></dt>
-<dd><p>Character vector recording where the data came from.</p></dd>
+<dd><p>Where the data came from: file paths (hashed when they
+exist), free text, or a data frame with a <code>path</code> column.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -90,11 +92,19 @@
 <li><p><code>measurements</code> - one row per (sample, analyte): <code>sample_id</code>, <code>method</code>
 (<code>"XRD"</code>, <code>"XRF"</code>, <code>"SRA"</code> or your own), <code>analyte</code>, <code>value</code>, <code>unit</code>,
 <code>lod</code> (detection limit, <code>NA</code> if none), <code>qualifier</code> (<code>"&lt;"</code> when censored
-below <code>lod</code>, <code>"&gt;"</code> above range, <code>NA</code> otherwise), <code>lab</code>.</p></li>
-<li><p><code>meta</code> - a list: <code>crs</code> (EPSG code or <code>NA</code>), <code>depth_unit</code>, <code>sources</code>.</p></li>
+below <code>lod</code>, <code>"&gt;"</code> above range, <code>NA</code> otherwise), <code>lab</code> (who measured
+it), <code>origin</code> (<code>"measured"</code>, <code>"reported"</code> for a value the laboratory
+calculated from others, <code>"derived"</code> for one <code><a href="gc_indices.html">gc_indices()</a></code> computed).</p></li>
+<li><p><code>meta</code> - a list: <code>crs</code> (EPSG code or <code>NA</code>), <code>depth_unit</code>, <code>sources</code> (a
+tibble of input files with <code>md5</code>, <code>size</code> and <code>mtime</code> when the file
+exists), <code>schema_version</code>, <code>package_version</code>, <code>created</code>, and <code>history</code>
+(the processing steps applied so far; see <code><a href="gc_history.html">gc_history()</a></code>).</p></li>
 </ul><p>Lab results are <em>samples</em>, not curves: tens per hole, at a depth or over an
 interval, from a lab by a method. Keeping every method in one long table
 means one set of tools for validation, joins and plotting.</p>
+<p>Objects saved by geochemR &lt; 0.3.0 (no <code>origin</code> column, <code>lab</code> holding
+<code>"derived"</code> / <code>"reported"</code>) are upgraded in place the first time any
+function touches them.</p>
     </div>
 
     <div class="section level2">
@@ -107,6 +117,8 @@ means one set of tools for validation, joins and plotting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   censored (&lt;LOD): 85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   depth: 0-154 ft</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   x: 500007-501230  y: 4199966-4200799  (EPSG:26914)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sources: synthetic example built by data-raw/make_example.R; synthetic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   history: 1 step(s), last gc_data</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="gc_samples.html">gc_samples</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 12</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sample_id hole_id       x        y     z depth_top depth_base sample_type</span>
@@ -119,15 +131,20 @@ means one set of tools for validation, joins and plotting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> H01-050   H01     <span style="text-decoration: underline;">500</span>019. 4<span style="text-decoration: underline;">199</span>999. <span style="text-decoration: underline;">1</span>254.        50         60 cuttings   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: formation &lt;lgl&gt;, zone &lt;lgl&gt;, date &lt;date&gt;, depth_mid &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="gc_samples.html">gc_measurements</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sample_id method analyte value unit    lod qualifier lab             source   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> H01-000   XRD    quartz   60   wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XRD Lab synthetic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> H01-010   XRD    quartz   70.2 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XRD Lab synthetic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> H01-020   XRD    quartz   67.5 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XRD Lab synthetic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> H01-030   XRD    quartz   65.2 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XRD Lab synthetic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> H01-040   XRD    quartz   68.3 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XRD Lab synthetic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> H01-050   XRD    quartz   21.1 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XRD Lab synthetic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sample_id method analyte value unit    lod qualifier lab         origin source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> H01-000   XRD    quartz   60   wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XR… measu… synth…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> H01-010   XRD    quartz   70.2 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XR… measu… synth…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> H01-020   XRD    quartz   67.5 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XR… measu… synth…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> H01-030   XRD    quartz   65.2 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XR… measu… synth…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> H01-040   XRD    quartz   68.3 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XR… measu… synth…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> H01-050   XRD    quartz   21.1 wt%      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        Example XR… measu… synth…</span>
+<span class="r-in"><span><span class="fu"><a href="gc_history.html">gc_history</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   step    args                               time                version</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> gc_data samples = 180, measurements = 4951 2026-09-14 <span style="color: #949494;">21:28:01</span> 0.3.0  </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
