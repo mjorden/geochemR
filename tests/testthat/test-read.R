@@ -8,6 +8,30 @@ test_that(".parse_values handles censoring, blanks and thousands commas", {
   expect_true(all(is.na(n$qualifier)))
 })
 
+test_that(".parse_values honours decimal and grouping marks (#2)", {
+  # decimal comma, space grouping
+  eu <- .parse_values(c("2,5", "1 250,75", "<0,5", "12"), decimal_mark = ",", grouping_mark = " ")
+  expect_equal(eu$value, c(2.5, 1250.75, 0.5, 12))
+  expect_equal(eu$qualifier, c(NA, NA, "<", NA))
+  # decimal comma, point grouping
+  de <- .parse_values(c("1.250,5", "0,25"), decimal_mark = ",", grouping_mark = ".")
+  expect_equal(de$value, c(1250.5, 0.25))
+  # default locale: space grouping is tolerated, a decimal-comma column is flagged
+  expect_equal(.parse_values("1 250")$value, 1250)
+  expect_warning(p <- .parse_values(c("2,5", "0,75", "12")), "decimal comma")
+  expect_equal(p$value, c(25, 75, 12))
+  expect_silent(.parse_values(c("1,250", "2,500.5")))            # real thousands grouping
+  expect_error(.parse_values("1", decimal_mark = ",", grouping_mark = ","), "must differ")
+  # the marks reach the readers
+  xrf <- data.frame(sample = "A", SiO2 = "62,5", Zr_ppm = "1 250", check.names = FALSE)
+  m <- read_xrf(xrf, decimal_mark = ",", grouping_mark = " ")
+  expect_equal(m$value[m$analyte == "SiO2"], 62.5)
+  expect_equal(m$value[m$analyte == "Zr"], 1250)
+  s <- read_samples(data.frame(sample = "A", hole = "H", depth = "10,5", x = "1 000", y = "2 000"),
+                    decimal_mark = ",", grouping_mark = " ")
+  expect_equal(c(s$depth_top, s$x, s$y), c(10.5, 1000, 2000))
+})
+
 test_that("read_xrd maps lab mineral names to canonical ones", {
   xrd <- data.frame(Sample = c("A1", "A2"), Quartz = c(40, 12), "K-Feldspar" = c(5, 1), "Illite/Mica" = c(25, 3),
                     "I/S" = c(6, 1), Calcite = c(20, 80), Pyrite = c(2, 1), "Total Clay (wt%)" = c(31, 4), Comment = c("x", "y"),

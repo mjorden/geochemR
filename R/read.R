@@ -11,9 +11,11 @@
 #' @param path A file path, or a data frame.
 #' @param sheet Excel sheet (name or number) when `path` is a workbook.
 #' @param ... Extra column-name mappings as `canonical = "column in file"`.
+#' @param decimal_mark,grouping_mark Number format of the coordinate and
+#'   depth columns (see [.parse_values()]).
 #' @return A tibble with the canonical sample columns.
 #' @export
-read_samples <- function(path, sheet = 1, ...) {
+read_samples <- function(path, sheet = 1, ..., decimal_mark = ".", grouping_mark = ",") {
   df <- .read_table(path, sheet)
   map <- list(
     sample_id = c("sample_id", "sample", "id", "sample_no", "sample_number", "sampleid", "lab_id"),
@@ -37,7 +39,7 @@ read_samples <- function(path, sheet = 1, ...) {
   }
   if (all(is.na(out$sample_id))) stop("no sample_id column found in ", paste(names(df), collapse = ", "), call. = FALSE)
   out$sample_id <- as.character(out$sample_id)
-  for (k in c("x", "y", "z", "depth_top", "depth_base")) out[[k]] <- suppressWarnings(as.numeric(out[[k]]))
+  for (k in c("x", "y", "z", "depth_top", "depth_base")) out[[k]] <- .parse_values(out[[k]], decimal_mark, grouping_mark)$value
   out
 }
 
@@ -71,6 +73,8 @@ read_samples <- function(path, sheet = 1, ...) {
 #' @param sheet Excel sheet.
 #' @param analytes For `read_geochem()`: a function mapping column names to
 #'   analyte names (`NA` = not an analyte).
+#' @param decimal_mark,grouping_mark Number format of the file (see
+#'   [.parse_values()]); a decimal-comma sheet needs `decimal_mark = ","`.
 #' @return A tibble of measurements (see [gc_data()]).
 #' @examples
 #' xrd <- data.frame(sample = c("A1", "A2"), Quartz = c(40, 12), "Illite/Mica" = c(25, 3),
@@ -81,7 +85,7 @@ read_samples <- function(path, sheet = 1, ...) {
 #' read_xrf(xrf)
 #' @export
 read_geochem <- function(path, method, analytes, sample_id = NULL, units = "wt%", lab = NA_character_,
-                         source = NA_character_, sheet = 1) {
+                         source = NA_character_, sheet = 1, decimal_mark = ".", grouping_mark = ",") {
   df <- .read_table(path, sheet)
   id_col <- sample_id %||% .match_col(names(df), c("sample_id", "sample", "id", "sample_no", "sample_number", "sampleid", "lab_id"))
   if (is.null(id_col) || !id_col %in% names(df)) stop("no sample id column found in ", paste(names(df), collapse = ", "), call. = FALSE)
@@ -93,7 +97,7 @@ read_geochem <- function(path, method, analytes, sample_id = NULL, units = "wt%"
   if (!length(keep)) stop("no analyte columns recognised for ", method, " in ", paste(other, collapse = ", "), call. = FALSE)
   unit_of <- .unit_for(keep, units, an[!is.na(an)])
   rows <- lapply(seq_along(keep), function(i) {
-    p <- .parse_values(df[[keep[i]]])
+    p <- .parse_values(df[[keep[i]]], decimal_mark, grouping_mark)
     tibble::tibble(sample_id = as.character(df[[id_col]]), method = toupper(method), analyte = an[!is.na(an)][i],
                    value = p$value, unit = unit_of[i], lod = p$lod, qualifier = p$qualifier, lab = lab, source = source)
   })
@@ -103,19 +107,22 @@ read_geochem <- function(path, method, analytes, sample_id = NULL, units = "wt%"
 
 #' @rdname read_geochem
 #' @export
-read_xrd <- function(path, sample_id = NULL, lab = NA_character_, source = NA_character_, sheet = 1) {
+read_xrd <- function(path, sample_id = NULL, lab = NA_character_, source = NA_character_, sheet = 1,
+                     decimal_mark = ".", grouping_mark = ",") {
   read_geochem(path, "XRD", analytes = function(cols) {
     key <- tolower(trimws(cols))
     key <- gsub("\\s*\\(.*?\\)\\s*$", "", key)
     key <- sub("_?(wt%|wt\\.%|wt|pct|%)$", "", key)
     out <- gc_minerals$canonical[match(trimws(key), gc_minerals$alias)]
     out
-  }, sample_id = sample_id, units = "wt%", lab = lab, source = source, sheet = sheet)
+  }, sample_id = sample_id, units = "wt%", lab = lab, source = source, sheet = sheet,
+  decimal_mark = decimal_mark, grouping_mark = grouping_mark)
 }
 
 #' @rdname read_geochem
 #' @export
-read_xrf <- function(path, sample_id = NULL, units = "wt%", lab = NA_character_, source = NA_character_, sheet = 1) {
+read_xrf <- function(path, sample_id = NULL, units = "wt%", lab = NA_character_, source = NA_character_, sheet = 1,
+                     decimal_mark = ".", grouping_mark = ",") {
   read_geochem(path, "XRF", analytes = function(cols) {
     base <- .strip_unit_suffix(cols)
     known <- c(gc_oxides$oxide, unique(gc_oxides$element), "LOI", "Total", "S", "C", "Cl", "F", "Rb", "Sr", "Y", "Zr", "Nb", "Mo",
@@ -123,18 +130,21 @@ read_xrf <- function(path, sample_id = NULL, units = "wt%", lab = NA_character_,
     hit <- known[match(tolower(base), tolower(known))]
     hit[tolower(base) == "total"] <- NA  # a lab total is not an analyte
     hit
-  }, sample_id = sample_id, units = units, lab = lab, source = source, sheet = sheet)
+  }, sample_id = sample_id, units = units, lab = lab, source = source, sheet = sheet,
+  decimal_mark = decimal_mark, grouping_mark = grouping_mark)
 }
 
 #' @rdname read_geochem
 #' @export
-read_sra <- function(path, sample_id = NULL, lab = NA_character_, source = NA_character_, sheet = 1) {
+read_sra <- function(path, sample_id = NULL, lab = NA_character_, source = NA_character_, sheet = 1,
+                     decimal_mark = ".", grouping_mark = ",") {
   read_geochem(path, "SRA", analytes = function(cols) {
     key <- gsub("[^a-z0-9]", "", tolower(.strip_unit_suffix(cols)))
     al <- c(toc = "TOC", totalorganiccarbon = "TOC", s1 = "S1", s2 = "S2", s3 = "S3", tmax = "Tmax", hi = "HI", oi = "OI",
             pi = "PI", ro = "Ro", vr = "Ro", vro = "Ro", vitrinite = "Ro", roeq = "Ro_eq")
     unname(al[key])
-  }, sample_id = sample_id, units = stats::setNames(gc_sra_analytes$unit, gc_sra_analytes$analyte), lab = lab, source = source, sheet = sheet)
+  }, sample_id = sample_id, units = stats::setNames(gc_sra_analytes$unit, gc_sra_analytes$analyte), lab = lab, source = source,
+  sheet = sheet, decimal_mark = decimal_mark, grouping_mark = grouping_mark)
 }
 
 # ---- helpers -----------------------------------------------------------------
@@ -188,24 +198,53 @@ read_sra <- function(path, sample_id = NULL, lab = NA_character_, source = NA_ch
 #'
 #' `"<5"` becomes `value = 5, lod = 5, qualifier = "<"`; `">1000"` becomes
 #' `value = 1000, qualifier = ">"`; `"n.d."`, `"nd"`, `"bdl"`, `"-"`, `""` and
-#' `"NA"` become `NA`; everything else is coerced to a number (a thousands
-#' comma is removed).
+#' `"NA"` become `NA`; everything else is coerced to a number after the
+#' grouping mark and any whitespace are removed and the decimal mark is
+#' normalised to `"."`.
+#'
+#' With the defaults (`decimal_mark = "."`, `grouping_mark = ","`) `"1,250"`
+#' is 1250 - and so is `"2,5"` read as 25. A sheet written with a decimal
+#' comma must be read with `decimal_mark = ","` (and usually
+#' `grouping_mark = " "` or `"."`); when a column looks like that (every
+#' comma is followed by one or two digits and there is no `"."` anywhere) a
+#' warning says so.
 #'
 #' @param x A character or numeric vector.
+#' @param decimal_mark,grouping_mark Decimal and thousands separators used in
+#'   the file, as in [readr::locale()].
 #' @return A list with numeric `value`, numeric `lod`, character `qualifier`.
 #' @examples
 #' .parse_values(c("12.5", "<5", ">1000", "n.d.", "1,250"))
+#' .parse_values(c("2,5", "1 250,75"), decimal_mark = ",", grouping_mark = " ")
 #' @keywords internal
 #' @export
-.parse_values <- function(x) {
+.parse_values <- function(x, decimal_mark = ".", grouping_mark = ",") {
   if (is.numeric(x)) return(list(value = as.numeric(x), lod = rep(NA_real_, length(x)), qualifier = rep(NA_character_, length(x))))
+  if (identical(decimal_mark, grouping_mark)) stop("decimal_mark and grouping_mark must differ", call. = FALSE)
   s <- trimws(as.character(x))
   s[is.na(s)] <- ""
   na_words <- c("", "na", "n.a.", "n/a", "nd", "n.d.", "n.d", "bdl", "bd", "-", "--", "nan", "null", "ins", "is")
   isna <- tolower(s) %in% na_words
-  lt <- grepl("^<\\s*", s)
-  gt <- grepl("^>\\s*", s)
-  num <- suppressWarnings(as.numeric(gsub("[,<>\\s]", "", s)))
+  lt <- grepl("^<[[:space:]]*", s)
+  gt <- grepl("^>[[:space:]]*", s)
+  body <- gsub("^[<>]|[[:space:]]", "", s)
+  if (decimal_mark == "." && grouping_mark == ",") .warn_decimal_comma(body[!isna])
+  body <- gsub(grouping_mark, "", body, fixed = TRUE)
+  if (decimal_mark != ".") body <- gsub(decimal_mark, ".", body, fixed = TRUE)
+  num <- suppressWarnings(as.numeric(body))
   num[isna] <- NA
   list(value = num, lod = ifelse(lt, num, NA_real_), qualifier = ifelse(lt, "<", ifelse(gt, ">", NA_character_)))
+}
+
+# every comma-bearing cell has 1-2 digits after its (single) comma and no cell
+# has a point: almost certainly a decimal comma, not thousands grouping
+.warn_decimal_comma <- function(body) {
+  with_comma <- body[grepl(",", body, fixed = TRUE)]
+  if (!length(with_comma) || any(grepl(".", body, fixed = TRUE))) return(invisible(FALSE))
+  if (all(grepl("^-?[0-9]*,[0-9]{1,2}$", with_comma))) {
+    warning("values such as ", shQuote(with_comma[1]), " look like decimal commas but were read with decimal_mark = '.' ",
+            "(so '2,5' is 25); pass decimal_mark = ',' if the file uses a decimal comma", call. = FALSE)
+    return(invisible(TRUE))
+  }
+  invisible(FALSE)
 }

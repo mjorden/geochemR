@@ -1,6 +1,6 @@
 Package: geochemR
 Title: Import, Process and Map Geochemical Data (XRD, XRF, Pyrolysis)
-Version: 0.2.1
+Version: 0.2.2
 Authors@R:
     person("Matthew", "Jorden", , "matthew.jorden@gmail.com", role = c("aut", "cre"))
 Description: A tidy data model and toolkit for sample-based geochemistry from

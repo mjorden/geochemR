@@ -28,6 +28,22 @@ test_that("validation catches structural errors and warns on data problems", {
   expect_warning(gc_data(samples, off), "XRD sample\\(s\\) total")
 })
 
+test_that("gc_example has every method on every sample (#1)", {
+  s <- gc_samples(gc_example)
+  for (meth in c("XRD", "XRF")) {
+    have <- unique(gc_measurements(gc_example, meth)$sample_id)
+    expect_setequal(have, s$sample_id)
+  }
+  # SRA is deliberately sparse on cuttings ("not every cuttings sample was run") but complete on core
+  sra <- unique(gc_measurements(gc_example, "SRA")$sample_id)
+  expect_true(all(s$sample_id[s$sample_type == "core"] %in% sra))
+  expect_gt(length(sra), nrow(s) / 2)
+  xrd <- gc_wide(gc_example, "XRD")
+  expect_false(anyNA(xrd$quartz))
+  expect_true(all(abs(rowSums(xrd[, c("quartz", "k_feldspar", "plagioclase", "calcite", "dolomite", "pyrite",
+                                      "illite", "mixed_layer", "kaolinite", "chlorite")]) - 100) < 1))
+})
+
 test_that("gc_wide pivots and joins the sample table", {
   w <- gc_wide(gc_data(samples, meas), "XRD")
   expect_true(all(c(names(samples), "depth_mid", "quartz", "calcite") %in% names(w)))

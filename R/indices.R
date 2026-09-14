@@ -72,7 +72,28 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 
 .col <- function(w, name) if (name %in% names(w)) w[[name]] else rep(NA_real_, nrow(w))
 
+# Stop when an input analyte carries a unit the index formulas do not expect
+# (e.g. TOC in ppm after gc_convert_units(method = NULL)). Rows with no unit
+# recorded are trusted.
+.check_units <- function(ds, method, expected) {
+  m <- ds$measurements
+  m <- m[m$method == method & m$analyte %in% names(expected) & !is.na(m$unit) & !(m$lab %in% "derived"), ]
+  for (a in unique(m$analyte)) {
+    u <- unique(m$unit[m$analyte == a])
+    bad <- setdiff(tolower(u), tolower(expected[[a]]))
+    if (length(bad)) {
+      stop("gc_indices(): ", method, " ", a, " is in ", paste(bad, collapse = ", "), " but the ", tolower(method),
+           " indices expect ", paste(expected[[a]], collapse = " / "), "; convert back with gc_convert_units()", call. = FALSE)
+    }
+  }
+  invisible(TRUE)
+}
+
+.pct <- c("wt%", "%", "wt.%", "pct")
+.mg_g <- c("mg/g", "mg HC/g", "mg CO2/g", "mg hc/g", "mg co2/g", "mgHC/g")
+
 .sra_indices <- function(ds, min_toc = 0.5) {
+  .check_units(ds, "SRA", list(TOC = .pct, S1 = .mg_g, S2 = .mg_g, S3 = .mg_g, Tmax = c("degC", "C", "deg C", "\u00b0C")))
   w <- gc_wide(ds, "SRA")
   toc <- .col(w, "TOC"); s1 <- .col(w, "S1"); s2 <- .col(w, "S2"); s3 <- .col(w, "S3"); tmax <- .col(w, "Tmax")
   toc_ok <- ifelse(!is.na(toc) & toc >= min_toc & toc > 0, toc, NA)
@@ -110,6 +131,8 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 }
 
 .xrd_indices <- function(ds) {
+  xrd_an <- unique(ds$measurements$analyte[ds$measurements$method == "XRD" & !(ds$measurements$lab %in% "derived")])
+  .check_units(ds, "XRD", stats::setNames(rep(list(.pct), length(xrd_an)), xrd_an))
   w <- gc_wide(ds, "XRD")
   s <- function(...) {
     cols <- c(...)
@@ -135,6 +158,7 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 }
 
 .pam_indices <- function(ds, min_toc = 0.5) {
+  .check_units(ds, "PAM", list(Oil1 = .mg_g, Oil2 = .mg_g, Oil3 = .mg_g, Oil4 = .mg_g, K1 = .mg_g))
   w <- gc_wide(ds, "PAM")
   o1 <- .col(w, "Oil1"); o2 <- .col(w, "Oil2"); o3 <- .col(w, "Oil3"); o4 <- .col(w, "Oil4"); k1 <- .col(w, "K1")
   z <- function(v) { v[is.na(v)] <- 0; v }

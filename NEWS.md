@@ -1,3 +1,29 @@
+# geochemR 0.2.2
+
+Bug fixes from the adversarial review: four ways the package produced wrong
+numbers without saying so.
+
+* `gc_example` now has XRD on all 180 samples (#1). The generator clamped a
+  data frame with `pmax()`, which injected `NA`, so 69 samples (most of the
+  limestone) had no mineralogy and every XRD figure was drawn on a biased
+  subset. Data, figures and the counts in the README are regenerated; a
+  test asserts every sample has every method.
+* Readers take `decimal_mark` / `grouping_mark` (#2). `.parse_values()` used
+  to strip every comma, so a decimal-comma sheet read `"2,5"` as 25; it also
+  failed on `"1 250"`. `read_xrd()`, `read_xrf()`, `read_sra()`,
+  `read_geochem()`, `read_samples()` and `read_workbook()` all accept the
+  marks, and a column that looks like decimal commas under the default
+  locale raises a warning.
+* `gc_interval_stats()` returns `NA` for a bin with no observation instead of
+  `-Inf` (`fun = max`) or `NaN` (`fun = mean`) (#5); shared `.safe_fun()`
+  with `gc_hole_summary()`.
+* `gc_convert_units()` converts XRF rows only by default (`method = "XRF"`;
+  `NULL` for all) (#7). Converting to ppm used to sweep up SRA TOC and XRD
+  wt% too, after which `gc_indices()` reported HI of about 0.02 without
+  complaint. `gc_indices()` now checks the units of its inputs and stops
+  with a message naming the analyte and unit.
+* The README figure script is in the package: `data-raw/make_figures.R`.
+
 # geochemR 0.2.1
 
 * **Colour separation.** The furniture stays monochrome; the data no longer

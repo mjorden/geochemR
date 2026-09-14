@@ -27,9 +27,9 @@ library(geochemR)
 
 ds <- gc_example                      # 12 holes x 15 intervals, XRD + XRF + SRA (synthetic)
 ds
-#> <gc_data> 180 samples in 12 holes; 4205 measurements
-#>   methods: SRA (633), XRD (1232), XRF (2340)
-#>   censored (<LOD): 86
+#> <gc_data> 180 samples in 12 holes; 4951 measurements
+#>   methods: SRA (631), XRD (1980), XRF (2340)
+#>   censored (<LOD): 85
 
 ds <- ds |>
   gc_substitute_lod("half") |>        # < LOD -> LOD / 2 (qualifier kept)
