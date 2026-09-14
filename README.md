@@ -111,7 +111,7 @@ Every plot returns a `ggplot` you can keep styling.
 ## Development
 
 ```r
-devtools::load_all(); testthat::test_dir("tests/testthat")   # 143 tests
+devtools::load_all(); testthat::test_dir("tests/testthat")   # 147 tests
 source("data-raw/make_example.R")                               # rebuild gc_example
 ```
 

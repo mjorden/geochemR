@@ -12,7 +12,7 @@ test_that("SRA indices reproduce the textbook definitions", {
   lean <- data.frame(sample_id = "L", method = "SRA", analyte = c("TOC", "S1", "S2", "S3", "Tmax"), value = c(0.2, 0.1, 0.3, 0.5, 435))
   wl <- gc_wide(gc_indices(gc_data(data.frame(sample_id = "L"), lean), "sra"), "SRA")
   absent_or_na <- function(v) is.null(v) || all(is.na(v))   # no derived rows at all, or NA
-  expect_true(absent_or_na(wl$HI) && absent_or_na(wl$OI) && absent_or_na(wl$S1_TOC))
+  expect_true(absent_or_na(wl[["HI"]]) && absent_or_na(wl[["OI"]]) && absent_or_na(wl[["S1_TOC"]]))
   expect_equal(wl$PI, 0.1 / 0.4); expect_false(is.na(wl$Ro_eq))
   wl2 <- gc_wide(gc_indices(gc_data(data.frame(sample_id = "L"), lean), "sra", min_toc = 0), "SRA")
   expect_equal(wl2$HI, 150)
