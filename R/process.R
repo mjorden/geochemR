@@ -13,12 +13,13 @@
 #' @export
 gc_substitute_lod <- function(ds, method = c("half", "sqrt2", "lod", "zero", "na")) {
   method <- match.arg(method)
+  ds <- .ensure_schema(ds)
   m <- ds$measurements
   cens <- !is.na(m$qualifier) & m$qualifier == "<" & !is.na(m$lod)
   m$value[cens] <- switch(method,
     half = m$lod[cens] / 2, sqrt2 = m$lod[cens] / sqrt(2), lod = m$lod[cens], zero = 0, na = NA_real_)
   ds$measurements <- m
-  ds
+  .log_step(ds, "gc_substitute_lod", list(method = method, rows = sum(cens)))
 }
 
 #' Convert concentration units
@@ -43,6 +44,7 @@ gc_substitute_lod <- function(ds, method = c("half", "sqrt2", "lod", "zero", "na
 gc_convert_units <- function(ds, to = c("wt%", "ppm", "ppb"), analytes = NULL, method = "XRF") {
   to <- match.arg(to)
   f <- c("wt%" = 1e4, ppm = 1, "mg/kg" = 1, ppb = 1e-3)  # to ppm
+  ds <- .ensure_schema(ds)
   m <- ds$measurements
   sel <- m$unit %in% names(f) & (is.null(analytes) | m$analyte %in% analytes) &
     (is.null(method) | m$method %in% toupper(method))
@@ -51,7 +53,7 @@ gc_convert_units <- function(ds, to = c("wt%", "ppm", "ppb"), analytes = NULL, m
   m$lod[sel] <- m$lod[sel] * scale
   m$unit[sel] <- to
   ds$measurements <- m
-  ds
+  .log_step(ds, "gc_convert_units", list(to = to, method = method, analytes = analytes, rows = sum(sel)))
 }
 
 #' Oxide / element conversion for XRF
@@ -68,6 +70,7 @@ gc_convert_units <- function(ds, to = c("wt%", "ppm", "ppb"), analytes = NULL, m
 #' gc_measurements(gc_oxide_to_element(gc_example), "XRF")
 #' @export
 gc_oxide_to_element <- function(ds, keep = FALSE) {
+  ds <- .ensure_schema(ds)
   m <- ds$measurements
   i <- which(m$method == "XRF" & m$analyte %in% gc_oxides$oxide)
   if (!length(i)) return(ds)
@@ -77,12 +80,13 @@ gc_oxide_to_element <- function(ds, keep = FALSE) {
   conv$value <- conv$value * gc_oxides$factor[k]
   conv$lod <- conv$lod * gc_oxides$factor[k]
   ds$measurements <- if (keep) dplyr::bind_rows(m, conv) else dplyr::bind_rows(m[-i, ], conv)
-  ds
+  .log_step(ds, "gc_oxide_to_element", list(keep = keep, rows = length(i)))
 }
 
 #' @rdname gc_oxide_to_element
 #' @export
 gc_element_to_oxide <- function(ds, keep = FALSE) {
+  ds <- .ensure_schema(ds)
   m <- ds$measurements
   ox <- gc_oxides[!duplicated(gc_oxides$element), ]  # Fe -> Fe2O3 (first listed)
   i <- which(m$method == "XRF" & m$analyte %in% ox$element)
@@ -93,30 +97,54 @@ gc_element_to_oxide <- function(ds, keep = FALSE) {
   conv$value <- conv$value / ox$factor[k]
   conv$lod <- conv$lod / ox$factor[k]
   ds$measurements <- if (keep) dplyr::bind_rows(m, conv) else dplyr::bind_rows(m[-i, ], conv)
-  ds
+  .log_step(ds, "gc_element_to_oxide", list(keep = keep, rows = length(i)))
 }
 
 #' Renormalise a composition to a fixed total
 #'
-#' Rescales one method's values per sample so they sum to `total`
+#' Rescales one method's *measured* values per sample so they sum to `total`
 #' (100 for XRD wt%). `exclude` names analytes left out of the sum and the
 #' scaling (an amorphous fraction, or `total_clay` when the individual clays
-#' are also reported).
+#' are also reported). Rows the laboratory calculated (`origin =
+#' "reported"`) or [gc_indices()] derived are never touched - rerun
+#' `gc_indices()` after renormalising if you want them to follow.
+#'
+#' A sample whose clays are reported only as `total_clay` (no individual
+#' clay minerals) has its other minerals scaled to `total - total_clay`, so
+#' the sample still closes to `total`.
 #'
 #' @param ds A `gc_data` object.
 #' @param method Which method to renormalise (default `"XRD"`).
 #' @param total Target total.
 #' @param exclude Analytes to leave out.
+#' @param tolerance Warn when a sample's sum before renormalising is more
+#'   than this fraction of `total` away from it (default 0.2: a 65 or 135
+#'   wt% "composition" is more likely a missing column than closure error).
 #' @return `ds`.
 #' @export
-gc_renormalize <- function(ds, method = "XRD", total = 100, exclude = c("total_clay", "total")) {
+gc_renormalize <- function(ds, method = "XRD", total = 100, exclude = c("total_clay", "total"), tolerance = 0.2) {
+  ds <- .ensure_schema(ds)
   m <- ds$measurements
-  sel <- m$method == toupper(method) & !m$analyte %in% exclude & !is.na(m$value)
+  meth <- m$method == toupper(method)
+  sel <- meth & !m$analyte %in% c(exclude, .xrd_sums[.xrd_sums != "total_clay"]) & !is.na(m$value) & m$origin == "measured"
+  if (!any(sel)) return(ds)
   sums <- tapply(m$value[sel], m$sample_id[sel], sum)
-  f <- total / sums[m$sample_id[sel]]
+  target <- stats::setNames(rep(total, length(sums)), names(sums))
+  # clay reported only as a total: the rest closes to what is left
+  clays <- setdiff(gc_minerals$canonical[gc_minerals$group == "clay"], "total_clay")
+  has_species <- unique(m$sample_id[sel & m$analyte %in% clays])
+  tc <- m[meth & m$analyte == "total_clay" & m$origin == "measured" & !is.na(m$value) & !(m$sample_id %in% has_species), ]
+  if (nrow(tc)) {
+    hit <- names(target) %in% tc$sample_id
+    target[hit] <- total - tc$value[match(names(target)[hit], tc$sample_id)]
+  }
+  off <- abs(sums - target) > tolerance * total
+  if (any(off)) warning(sum(off), " ", toupper(method), " sample(s) sum to more than ", round(100 * tolerance), "% of ", total,
+                        " away from it before renormalising (e.g. ", names(sums)[off][1], " = ", round(sums[off][1], 1), ")", call. = FALSE)
+  f <- (target / sums)[m$sample_id[sel]]
   m$value[sel] <- m$value[sel] * f
   ds$measurements <- m
-  ds
+  .log_step(ds, "gc_renormalize", list(method = method, total = total, exclude = exclude, samples = length(sums)))
 }
 
 #' Log-ratio transforms for compositional data

@@ -8,7 +8,8 @@ gc_renormalize(
   ds,
   method = "XRD",
   total = 100,
-  exclude = c("total_clay", "total")
+  exclude = c("total_clay", "total"),
+  tolerance = 0.2
 )
 }
 \arguments{
@@ -19,13 +20,23 @@ gc_renormalize(
 \item{total}{Target total.}
 
 \item{exclude}{Analytes to leave out.}
+
+\item{tolerance}{Warn when a sample's sum before renormalising is more
+than this fraction of \code{total} away from it (default 0.2: a 65 or 135
+wt\% "composition" is more likely a missing column than closure error).}
 }
 \value{
 \code{ds}.
 }
 \description{
-Rescales one method's values per sample so they sum to \code{total}
+Rescales one method's \emph{measured} values per sample so they sum to \code{total}
 (100 for XRD wt\%). \code{exclude} names analytes left out of the sum and the
 scaling (an amorphous fraction, or \code{total_clay} when the individual clays
-are also reported).
+are also reported). Rows the laboratory calculated (\code{origin = "reported"}) or \code{\link[=gc_indices]{gc_indices()}} derived are never touched - rerun
+\code{gc_indices()} after renormalising if you want them to follow.
+}
+\details{
+A sample whose clays are reported only as \code{total_clay} (no individual
+clay minerals) has its other minerals scaled to \code{total - total_clay}, so
+the sample still closes to \code{total}.
 }

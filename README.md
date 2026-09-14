@@ -109,7 +109,21 @@ ds <- gc_data(samples, dplyr::bind_rows(xrd, xrf, sra), crs = 26914, depth_unit 
 depths are errors; XRD totals far from 100, values below their own detection
 limit without a `<`, and duplicate rows are warnings — so a spreadsheet
 problem surfaces at import, not on a map. `gc_wide(ds, "XRF")` gets you back
-to one row per sample whenever you want it.
+to one row per sample whenever you want it - and refuses to average two
+labs' values of the same analyte unless you tell it how.
+
+Every measurement row says where it came from (`lab`, and `origin` =
+measured / lab-reported / derived), every input file is recorded with its
+MD5 hash in `meta$sources`, and every processing step is logged:
+
+```r
+gc_history(cu)
+#> # A tibble: 3 x 4
+#>   step          args                                                   time                version
+#>   gc_data       samples = 65, measurements = 3640                      2026-09-14 ...      0.3.0
+#>   read_workbook path = cuttings_workbook.xlsx, sheet = 1, hole_id = ...  2026-09-14 ...      0.3.0
+#>   gc_indices    which = sra,xrf,xrd,pam, min_toc = 0.5, rows = 1170    2026-09-14 ...      0.3.0
+```
 
 ## Gallery
 
@@ -138,7 +152,7 @@ well, coloured by formation.*
 | | Functions |
 |---|---|
 | **Read** | `read_samples()`, `read_xrd()`, `read_xrf()`, `read_sra()`, `read_geochem()`; `gc_mineral_name()` for lab spellings; `.parse_values()` for `<5` / `n.d.` |
-| **Model** | `gc_data()`, `validate_gc()`, `gc_samples()`, `gc_measurements()`, `gc_analytes()`, `gc_wide()`, `gc_bind()` |
+| **Model** | `gc_data()`, `validate_gc()`, `gc_samples()`, `gc_measurements()`, `gc_analytes()`, `gc_wide()`, `gc_bind()`, `gc_history()` |
 | **Process** | `gc_substitute_lod()` (half / √2 / LOD / zero), `gc_convert_units()` (wt% ↔ ppm ↔ ppb), `gc_oxide_to_element()` / `gc_element_to_oxide()`, `gc_renormalize()`, `gc_clr()` / `gc_alr()` (log-ratio transforms for compositional data), `gc_interval_stats()`, `gc_hole_summary()` |
 | **Indices** | `gc_indices()`: HI, OI, PI, S1/TOC, Ro-equivalent from Tmax (Jarvie 2001); CIA, Si/Al, K/Al, Ti/Al; carbonate, clay, QFM, mineralogical brittleness (Wang & Gale 2009) |
 | **Depth** | `plot_depth_profile()`, `plot_depth_heatmap()`, `plot_section()` (IDW on a distance–depth grid), `plot_stacked_depth()`, `plot_mineralogy()`, `plot_pam()` |

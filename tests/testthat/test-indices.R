@@ -16,9 +16,25 @@ test_that("SRA indices reproduce the textbook definitions", {
   expect_equal(wl$PI, 0.1 / 0.4); expect_false(is.na(wl$Ro_eq))
   wl2 <- gc_wide(gc_indices(gc_data(data.frame(sample_id = "L"), lean), "sra", min_toc = 0), "SRA")
   expect_equal(wl2$HI, 150)
-  expect_true(all(gc_measurements(ds)$lab[gc_measurements(ds)$analyte == "HI"] == "derived"))
+  expect_true(all(gc_measurements(ds)$origin[gc_measurements(ds)$analyte == "HI"] == "derived"))
+  expect_true(all(is.na(gc_measurements(ds)$lab[gc_measurements(ds)$analyte == "HI"])))
   # running twice does not duplicate derived rows
   expect_equal(nrow(gc_measurements(gc_indices(ds))), nrow(gc_measurements(ds)))
+})
+
+test_that("gc_indices(which =) leaves other methods' derived rows alone (#8)", {
+  ds <- gc_indices(gc_example)
+  n_sra <- sum(gc_measurements(ds, "SRA")$origin == "derived")
+  n_xrd <- sum(gc_measurements(ds, "XRD")$origin == "derived")
+  expect_gt(n_sra, 0); expect_gt(n_xrd, 0)
+  again <- gc_indices(ds, "xrd")
+  expect_equal(sum(gc_measurements(again, "SRA")$origin == "derived"), n_sra)   # kept
+  expect_equal(sum(gc_measurements(again, "XRD")$origin == "derived"), n_xrd)   # recomputed, same count
+  expect_equal(nrow(gc_measurements(again)), nrow(gc_measurements(ds)))
+  # a lab literally called "Derived" is a lab, not a sentinel
+  m <- data.frame(sample_id = "A", method = "SRA", analyte = c("TOC", "S2"), value = c(2, 8), lab = "Derived")
+  w <- gc_wide(gc_indices(gc_data(data.frame(sample_id = "A"), m), "sra"), "SRA")
+  expect_equal(w$HI, 400)
 })
 
 test_that("CIA and element ratios come out right on a known composition", {

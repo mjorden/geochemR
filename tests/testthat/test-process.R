@@ -42,9 +42,14 @@ test_that("renormalisation hits the target and respects exclusions", {
                   value = c(60, 30, 10, 45, 45))
   ds <- suppressWarnings(gc_data(data.frame(sample_id = c("A", "B")), m))
   r <- gc_measurements(gc_renormalize(ds))
-  expect_equal(r$value[r$sample_id == "A" & r$analyte != "total_clay"], c(60, 30) / 90 * 100)
+  # A already closes: 60 + 30 + total_clay 10 = 100, so the non-clays keep their values (#4)
+  expect_equal(r$value[r$sample_id == "A" & r$analyte != "total_clay"], c(60, 30))
   expect_equal(r$value[r$analyte == "total_clay"], 10)      # excluded, untouched
   expect_equal(sum(r$value[r$sample_id == "B"]), 100)
+  # an explicit exclusion is honoured on its own terms
+  r2 <- gc_measurements(suppressWarnings(gc_renormalize(ds, exclude = "calcite")))   # B is 45 before: tolerance warning
+  expect_equal(r2$value[r2$sample_id == "B" & r2$analyte == "quartz"], 100)
+  expect_equal(r2$value[r2$sample_id == "B" & r2$analyte == "calcite"], 45)
 })
 
 test_that("clr rows centre to zero and alr drops the denominator", {
@@ -84,6 +89,29 @@ test_that("interval stats never return -Inf / NaN for an empty bin (#5)", {
   # and on the example data with a coarse binning
   st <- gc_interval_stats(gc_example, "SRA", breaks = 5, fun = max)
   expect_false(any(is.infinite(as.matrix(st[, -(1:6)]))))
+})
+
+test_that("gc_renormalize leaves derived rows alone and closes total_clay-only samples (#4)", {
+  s <- data.frame(sample_id = c("A", "B"))
+  m <- data.frame(sample_id = c("A", "A", "A", "A", "B", "B", "B"), method = "XRD",
+                  analyte = c("quartz", "calcite", "illite", "kaolinite", "quartz", "calcite", "total_clay"),
+                  value = c(40, 20, 15, 5, 30, 20, 30))
+  # A sums to 80 with species; B has non-clays 50 + total_clay 30 = 80
+  ds <- gc_indices(suppressWarnings(gc_data(s, m)), "xrd")
+  before <- gc_measurements(ds)
+  rn <- suppressWarnings(gc_renormalize(ds))
+  after <- gc_measurements(rn)
+  a <- after[after$sample_id == "A" & after$origin == "measured", ]
+  expect_equal(sum(a$value), 100)
+  expect_equal(a$value[a$analyte == "quartz"], 50)
+  b <- after[after$sample_id == "B" & after$origin == "measured", ]
+  expect_equal(b$value[b$analyte == "total_clay"], 30)                     # untouched
+  expect_equal(sum(b$value[b$analyte != "total_clay"]), 70)                # closes to 100 - 30
+  expect_equal(b$value[b$analyte == "quartz"], 42)
+  # derived rows are byte-identical before and after
+  expect_equal(after[after$origin == "derived", ], before[before$origin == "derived", ])
+  expect_warning(gc_renormalize(ds, tolerance = 0.1), "sum to more than 10% of 100 away")
+  expect_silent(gc_renormalize(gc_data(data.frame(sample_id = "C"), data.frame(sample_id = "C", method = "XRD", analyte = c("quartz", "calcite"), value = c(52, 50)))))
 })
 
 test_that("gc_convert_units touches XRF only unless told otherwise (#7)", {

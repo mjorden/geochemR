@@ -88,7 +88,10 @@ traces in ppm, as reported). Analyte names are normalised (\verb{LECO TOC} ->
 Columns the laboratory \emph{calculates} from others (HI, OI, PI, S1/TOC, S2/S3,
 KQ, Q+F, total carbonate, brittleness, PAM ratios, majors + LE) are dropped
 by default so that \code{\link[=gc_indices]{gc_indices()}} is the single source of derived values;
-\code{keep_calculated = TRUE} keeps them with \code{lab = "reported"}.
+\code{keep_calculated = TRUE} keeps them with \code{origin = "reported"}.
+
+The workbook's path, MD5 hash, size and modification time go into
+\code{meta$sources}, and the call into the processing history (\code{\link[=gc_history]{gc_history()}}).
 }
 \examples{
 f <- system.file("extdata", "cuttings_workbook.xlsx", package = "geochemR")

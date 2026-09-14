@@ -65,7 +65,8 @@ analyte names (\code{NA} = not an analyte).}
 the suffix detection; a single unnamed string sets the default for
 columns without a suffix (default \code{"wt\%"}).}
 
-\item{lab, source}{Filled into every row.}
+\item{lab, source}{Filled into every row; \code{source} defaults to the file
+path, which \code{\link[=gc_data]{gc_data()}} hashes into \code{meta$sources}.}
 
 \item{sheet}{Excel sheet.}
 

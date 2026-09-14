@@ -16,8 +16,10 @@ the ratios blow up on lean samples and laboratories conventionally
 leave them blank below about 0.5 \%.}
 }
 \value{
-\code{ds} with extra rows, \code{method} set to \code{"SRA"}, \code{"XRF"} or \code{"XRD"}
-and \code{lab = "derived"}.
+\code{ds} with extra rows, \code{method} set to \code{"SRA"}, \code{"XRF"}, \code{"XRD"} or
+\code{"PAM"} and \code{origin = "derived"}. Calling it again recomputes: the
+derived rows of the methods in \code{which} are replaced, other methods'
+derived rows are left alone.
 }
 \description{
 Adds derived analytes as new measurement rows so they travel with the raw

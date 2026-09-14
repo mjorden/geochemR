@@ -169,7 +169,7 @@ plot_section <- function(ds, method, analyte, holes, breaks = 10, n_x = 120, n_z
 #' @export
 plot_stacked_depth <- function(ds, method, analytes, holes = NULL, normalize = FALSE, xlab = NULL, fill_scale = NULL) {
   d <- .long_for_plot(ds, method, analytes, holes)
-  d <- d[!(d$lab %in% "derived"), ]
+  d <- d[d$origin != "derived", ]
   if (normalize) {
     tot <- tapply(d$value, d$sample_id, sum, na.rm = TRUE)
     d$value <- 100 * d$value / tot[d$sample_id]

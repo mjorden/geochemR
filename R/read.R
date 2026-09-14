@@ -69,7 +69,8 @@ read_samples <- function(path, sheet = 1, ..., decimal_mark = ".", grouping_mark
 #' @param units For XRF: a named character vector `c(Zr = "ppm")` overriding
 #'   the suffix detection; a single unnamed string sets the default for
 #'   columns without a suffix (default `"wt%"`).
-#' @param lab,source Filled into every row.
+#' @param lab,source Filled into every row; `source` defaults to the file
+#'   path, which [gc_data()] hashes into `meta$sources`.
 #' @param sheet Excel sheet.
 #' @param analytes For `read_geochem()`: a function mapping column names to
 #'   analyte names (`NA` = not an analyte).
@@ -87,6 +88,7 @@ read_samples <- function(path, sheet = 1, ..., decimal_mark = ".", grouping_mark
 read_geochem <- function(path, method, analytes, sample_id = NULL, units = "wt%", lab = NA_character_,
                          source = NA_character_, sheet = 1, decimal_mark = ".", grouping_mark = ",") {
   df <- .read_table(path, sheet)
+  if (is.na(source) && is.character(path)) source <- path   # gc_data() hashes it into meta$sources
   id_col <- sample_id %||% .match_col(names(df), c("sample_id", "sample", "id", "sample_no", "sample_number", "sampleid", "lab_id"))
   if (is.null(id_col) || !id_col %in% names(df)) stop("no sample id column found in ", paste(names(df), collapse = ", "), call. = FALSE)
   other <- setdiff(names(df), id_col)

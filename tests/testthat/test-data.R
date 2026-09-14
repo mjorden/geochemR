@@ -61,7 +61,73 @@ test_that("gc_bind appends methods and new samples", {
   other <- gc_data(data.frame(sample_id = "B1", hole_id = "H3", depth_top = 1), data.frame(sample_id = "B1", method = "XRF", analyte = "SiO2", value = 50), sources = "b")
   ds3 <- gc_bind(ds, other)
   expect_equal(nrow(gc_samples(ds3)), 4)
-  expect_equal(ds3$meta$sources, "b")
+  expect_equal(ds3$meta$sources$path, "b")
+  # history is carried from both inputs and the bind is logged
+  expect_equal(gc_history(ds3)$step, c("gc_data", "gc_data", "gc_bind"))
+})
+
+test_that("origin defaults to measured, legacy lab sentinels are migrated (#8)", {
+  ds <- gc_data(samples, meas)
+  expect_true(all(gc_measurements(ds)$origin == "measured"))
+  legacy <- meas
+  legacy$lab <- NA_character_
+  legacy <- rbind(legacy, data.frame(sample_id = "A1", method = "xrd", analyte = "clay", value = 0, lab = "derived"))
+  legacy$lab[legacy$sample_id == "A2"] <- "reported"
+  lm <- gc_measurements(gc_data(samples, legacy))
+  expect_equal(lm$origin[lm$analyte == "clay"], "derived")
+  expect_true(all(lm$origin[lm$sample_id == "A2"] == "reported"))
+  expect_true(all(is.na(lm$lab)))
+  expect_error(gc_data(samples, cbind(meas, origin = "guessed")), "origin")
+  # an object saved by 0.2.x (no origin, no schema) is upgraded on first touch
+  old <- gc_data(samples, meas)
+  old$measurements$origin <- NULL
+  old$meta <- list(crs = NA, depth_unit = "ft", sources = "old.csv")
+  up <- gc_measurements(old)
+  expect_true(all(up$origin == "measured"))
+  expect_equal(gc_history(old)$step, "upgrade_schema")
+  expect_silent(w <- gc_wide(old, "XRD"))
+  expect_equal(w$quartz, c(60, 55, 70))
+})
+
+test_that("gc_wide never averages silently (#3)", {
+  ds <- gc_data(samples, meas)
+  # two labs, same analyte: error unless fun says how
+  two <- suppressWarnings(gc_bind(ds, data.frame(sample_id = "A1", method = "XRD", analyte = "quartz", value = 70, lab = "Lab B")))
+  expect_error(gc_wide(two, "XRD"), "more than one row of the same origin.*fun =")
+  expect_equal(gc_wide(two, "XRD", fun = mean)$quartz[1], 65)
+  expect_equal(gc_wide(two, "XRD", fun = max)$quartz[1], 70)
+  # mixed units are an error
+  mixed <- gc_bind(ds, data.frame(sample_id = c("A1", "A2"), method = "XRF", analyte = "Zr", value = c(100, 0.02), unit = c("ppm", "wt%")))
+  expect_error(gc_wide(mixed, "XRF"), "more than one unit")
+  expect_equal(gc_wide(gc_convert_units(mixed, "ppm"), "XRF")$Zr[1:2], c(100, 200))
+  # measured beats derived by default, and the resolution is announced
+  m <- data.frame(sample_id = "A", method = "SRA", analyte = c("TOC", "S2", "HI"), value = c(2, 8, 432))
+  di <- gc_indices(gc_data(data.frame(sample_id = "A"), m), "sra")
+  expect_message(w <- gc_wide(di, "SRA"), "HI.*derived.*measured")
+  expect_equal(w$HI, 432)
+  expect_equal(suppressMessages(gc_wide(di, "SRA", prefer = "derived"))$HI, 400)
+})
+
+test_that("provenance: sources are hashed and steps are logged (#14)", {
+  tmp <- tempfile(fileext = ".csv")
+  utils::write.csv(data.frame(sample = c("A1", "A2"), Quartz = c(60, 55), Calcite = c(40, 45)), tmp, row.names = FALSE)
+  m <- read_xrd(tmp)
+  expect_equal(unique(m$source), tmp)
+  ds <- gc_data(samples, m)
+  expect_equal(ds$meta$sources$md5, unname(tools::md5sum(tmp)))
+  expect_equal(ds$meta$sources$size, file.size(tmp))
+  expect_equal(ds$meta$schema_version, 2L)
+  expect_false(is.na(ds$meta$created))
+  ds <- gc_renormalize(gc_convert_units(gc_substitute_lod(ds, "half"), "ppm"))
+  h <- gc_history(ds)
+  expect_equal(h$step, c("gc_data", "gc_substitute_lod", "gc_convert_units", "gc_renormalize"))
+  expect_match(h$args[2], "method = half")
+  expect_match(h$args[3], "to = ppm")
+  expect_s3_class(h$time, "POSIXct")
+  expect_output(print(ds), "history: 4 step\\(s\\), last gc_renormalize")
+  # free-text sources are kept without a hash
+  txt <- gc_data(samples, meas, sources = "hand-typed from the 2019 report")
+  expect_true(is.na(txt$meta$sources$md5))
 })
 
 test_that("the bundled example is valid and has all three methods", {

@@ -20,6 +20,7 @@ reference:
       - gc_samples
       - gc_wide
       - gc_bind
+      - gc_history
       - gc_example
       - gc_cuttings
   - title: Reading laboratory tables
