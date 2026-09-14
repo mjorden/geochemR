@@ -17,7 +17,7 @@ plot_map(
   maxdist = Inf,
   contours = 6,
   label = TRUE,
-  palette = "viridis"
+  palette = "browns"
 )
 }
 \arguments{
@@ -38,7 +38,7 @@ plot_map(
 
 \item{label}{Label the points with the hole id.}
 
-\item{palette}{Viridis option.}
+\item{palette}{Sequential palette for \code{\link[=gc_pal]{gc_pal()}}.}
 }
 \value{
 A ggplot with \code{coord_equal()}.

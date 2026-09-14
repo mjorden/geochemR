@@ -16,7 +16,7 @@ plot_section(
   maxdist = Inf,
   nmax = 12,
   aspect = 0.05,
-  palette = "viridis"
+  palette = "browns"
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ plot_section(
 isotropic (e.g. 0.05 when 1 ft of depth should count like 20 ft
 laterally).}
 
-\item{palette}{Viridis option.}
+\item{palette}{Sequential palette for \code{\link[=gc_pal]{gc_pal()}}.}
 }
 \value{
 A ggplot with the hole positions marked along the top.

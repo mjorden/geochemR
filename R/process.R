@@ -48,8 +48,8 @@ gc_convert_units <- function(ds, to = c("wt%", "ppm", "ppb"), analytes = NULL) {
 
 #' Oxide / element conversion for XRF
 #'
-#' `gc_oxide_to_element()` rewrites oxide rows (`SiO2`, `Al2O3`, …) as their
-#' element (`Si`, `Al`, …) using the mass factors in [gc_oxides];
+#' `gc_oxide_to_element()` rewrites oxide rows (`SiO2`, `Al2O3`, ...) as their
+#' element (`Si`, `Al`, ...) using the mass factors in [gc_oxides];
 #' `gc_element_to_oxide()` does the reverse for elements that have a
 #' conventional oxide. Units are unchanged (a wt% oxide gives a wt% element).
 #'
@@ -156,7 +156,7 @@ gc_alr <- function(x, denominator, zero_replace = 0.65) {
 
 #' Interval statistics per hole
 #'
-#' Aggregates one method's analytes into depth bins per hole — the step
+#' Aggregates one method's analytes into depth bins per hole - the step
 #' between sample tables and anything gridded or mapped.
 #'
 #' @param ds A `gc_data` object.
@@ -189,22 +189,26 @@ gc_interval_stats <- function(ds, method, breaks = 10, fun = mean, analytes = NU
   out[, c("hole_id", "x", "y", "bin_top", "bin_base", "n", an)]
 }
 
-#' Per-hole summary
+#' Per-hole (or per-formation) summary
 #'
 #' @param ds A `gc_data` object.
 #' @param method Method.
 #' @param depth Optional `c(top, base)` window.
 #' @param fun Summary function.
 #' @param analytes Optional subset.
-#' @return One row per hole with `x`, `y`, `n` and one column per analyte.
+#' @param by Grouping: `"hole_id"` (default), or `c("hole_id", "formation")`,
+#'   `c("hole_id", "zone")` ... for stratigraphic summaries of a cuttings well.
+#' @return One row per group with `x`, `y`, `n`, `depth_top`, `depth_base` and
+#'   one column per analyte.
 #' @examples
 #' gc_hole_summary(gc_example, "SRA", analytes = c("TOC", "Tmax"))
 #' @export
-gc_hole_summary <- function(ds, method, depth = NULL, fun = mean, analytes = NULL) {
+gc_hole_summary <- function(ds, method, depth = NULL, fun = mean, analytes = NULL, by = "hole_id") {
   w <- gc_wide(ds, method, analytes)
   if (!is.null(depth)) w <- w[!is.na(w$depth_mid) & w$depth_mid >= depth[1] & w$depth_mid <= depth[2], ]
   an <- setdiff(names(w), names(ds$samples))
-  out <- dplyr::group_by(w, .data$hole_id)
+  out <- dplyr::group_by(w, dplyr::across(dplyr::all_of(by)))
   dplyr::summarise(out, x = mean(.data$x), y = mean(.data$y), n = dplyr::n(),
+                   depth_top = min(.data$depth_top, na.rm = TRUE), depth_base = max(.data$depth_base, na.rm = TRUE),
                    dplyr::across(dplyr::all_of(an), ~ if (all(is.na(.x))) NA_real_ else fun(.x[!is.na(.x)])), .groups = "drop")
 }

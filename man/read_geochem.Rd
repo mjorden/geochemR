@@ -65,8 +65,8 @@ columns without a suffix (default \code{"wt\%"}).}
 A tibble of measurements (see \code{\link[=gc_data]{gc_data()}}).
 }
 \description{
-\code{read_xrd()}, \code{read_xrf()} and \code{read_sra()} read a \emph{wide} table — one row
-per sample, one column per mineral / element / pyrolysis parameter — and
+\code{read_xrd()}, \code{read_xrf()} and \code{read_sra()} read a \emph{wide} table - one row
+per sample, one column per mineral / element / pyrolysis parameter - and
 return the long \code{measurements} form used by \code{\link[=gc_data]{gc_data()}}. \code{read_geochem()}
 is the generic behind them.
 }

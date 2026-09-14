@@ -15,7 +15,7 @@ NULL
 .mineral_table <- function() {
   rows <- list(
     c("quartz", "quartz|qtz|silica", "tectosilicate"),
-    c("k_feldspar", "k_feldspar|k-feldspar|kspar|k feldspar|orthoclase|microcline|potassium feldspar|kfs", "tectosilicate"),
+    c("k_feldspar", "k_feldspar|k-feldspar|kspar|k-spar|k spar|k feldspar|orthoclase|microcline|potassium feldspar|kfs", "tectosilicate"),
     c("plagioclase", "plagioclase|plag|albite|anorthite|na feldspar|plagioclase feldspar", "tectosilicate"),
     c("calcite", "calcite|cal", "carbonate"),
     c("dolomite", "dolomite|dol", "carbonate"),
@@ -33,7 +33,7 @@ NULL
     c("goethite", "goethite", "other"),
     c("illite", "illite|ill|illite_mica|illite/mica|illite+mica|mica", "clay"),
     c("smectite", "smectite|sme|montmorillonite", "clay"),
-    c("mixed_layer", "mixed_layer|mixed-layer|mixed layer|i/s|illite_smectite|illite/smectite|i-s|ml", "clay"),
+    c("mixed_layer", "mixed_layer|mixed-layer|mixed layer|i/s|mix i/s|mixed i/s|illite_smectite|illite/smectite|i-s|ml", "clay"),
     c("kaolinite", "kaolinite|kao|kaol", "clay"),
     c("chlorite", "chlorite|chl", "clay"),
     c("glauconite", "glauconite", "clay"),
@@ -59,10 +59,10 @@ NULL
 
 .sra_table <- function() {
   data.frame(
-    analyte = c("TOC", "S1", "S2", "S3", "Tmax", "HI", "OI", "PI", "Ro", "Ro_eq", "S1_TOC"),
-    unit    = c("wt%", "mg HC/g", "mg HC/g", "mg CO2/g", "degC", "mg HC/g TOC", "mg CO2/g TOC", "frac", "%", "%", "mg HC/g TOC"),
-    low     = c(0, 0, 0, 0, 300, 0, 0, 0, 0, 0, 0),
-    high    = c(100, NA, NA, NA, 650, 1200, 600, 1, 6, 6, NA),
+    analyte = c("TOC", "TOC_pyr", "S1", "S2", "S3", "Tmax", "HI", "OI", "PI", "Ro", "Ro_eq", "S1_TOC", "S2_S3", "KQ"),
+    unit    = c("wt%", "wt%", "mg HC/g", "mg HC/g", "mg CO2/g", "degC", "mg HC/g TOC", "mg CO2/g TOC", "frac", "%", "%", "mg HC/g TOC", "ratio", "index"),
+    low     = c(0, 0, 0, 0, 0, 300, 0, 0, 0, 0, 0, 0, 0, NA),
+    high    = c(100, 100, NA, NA, NA, 650, 1200, 600, 1, 6, 6, NA, NA, NA),
     stringsAsFactors = FALSE
   )
 }
@@ -78,6 +78,18 @@ gc_oxides <- .oxide_table()
 #' @rdname dictionaries
 #' @export
 gc_sra_analytes <- .sra_table()
+
+#' @rdname dictionaries
+#' @format `gc_pam_analytes`: the multi-ramp (PAM) pyrolysis fractions  - 
+#'   `Oil1` ... `Oil4` and `K1` in mg HC/g with the carbon range each fraction
+#'   represents, plus one `Tmax_*` per fraction.
+#' @export
+gc_pam_analytes <- data.frame(
+  analyte = c("Oil1", "Oil2", "Oil3", "Oil4", "K1", "Tmax_Oil1", "Tmax_Oil2", "Tmax_Oil3", "Tmax_Oil4", "Tmax_K1"),
+  unit = c(rep("mg HC/g", 5), rep("degC", 5)),
+  carbon_range = c("C4-C5", "C6-C10", "C11-C19", "C20-C36", "kerogen + C37+", rep(NA, 5)),
+  stringsAsFactors = FALSE
+)
 
 #' Canonical mineral names
 #'

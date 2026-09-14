@@ -24,6 +24,8 @@ read_samples <- function(path, sheet = 1, ...) {
     depth_top = c("depth_top", "top", "depth", "from", "top_depth", "depth_from"),
     depth_base = c("depth_base", "bottom", "base", "to", "bottom_depth", "depth_to"),
     sample_type = c("sample_type", "type", "sample_kind"),
+    formation = c("formation", "fm", "unit", "stratigraphy"),
+    zone = c("zone", "member", "interval_name"),
     date = c("date", "sample_date", "collected")
   )
   over <- list(...)
@@ -41,8 +43,8 @@ read_samples <- function(path, sheet = 1, ...) {
 
 #' Read a laboratory results table into long measurements
 #'
-#' `read_xrd()`, `read_xrf()` and `read_sra()` read a *wide* table — one row
-#' per sample, one column per mineral / element / pyrolysis parameter — and
+#' `read_xrd()`, `read_xrf()` and `read_sra()` read a *wide* table - one row
+#' per sample, one column per mineral / element / pyrolysis parameter - and
 #' return the long `measurements` form used by [gc_data()]. `read_geochem()`
 #' is the generic behind them.
 #'

@@ -6,8 +6,8 @@
 \alias{geochemR-package}
 \title{geochemR: import, process and map geochemical data}
 \description{
-Sample-based geochemistry — XRD mineralogy, XRF element / oxide chemistry
-and source-rock analyzer (Rock-Eval) pyrolysis — kept in one tidy data
+Sample-based geochemistry - XRD mineralogy, XRF element / oxide chemistry
+and source-rock analyzer (Rock-Eval) pyrolysis - kept in one tidy data
 model (\code{\link[=gc_data]{gc_data()}}), read from laboratory spreadsheets (\code{\link[=read_xrd]{read_xrd()}},
 \code{\link[=read_xrf]{read_xrf()}}, \code{\link[=read_sra]{read_sra()}}), processed (\code{\link[=gc_substitute_lod]{gc_substitute_lod()}},
 \code{\link[=gc_convert_units]{gc_convert_units()}}, \code{\link[=gc_oxide_to_element]{gc_oxide_to_element()}}, \code{\link[=gc_renormalize]{gc_renormalize()}},
@@ -19,6 +19,7 @@ the map (\code{\link[=plot_map]{plot_map()}}), plus \code{\link[=plot_ternary]{p
 Useful links:
 \itemize{
   \item \url{https://github.com/mjorden/geochemR}
+  \item \url{https://mjorden.github.io/geochemR/}
   \item Report bugs at \url{https://github.com/mjorden/geochemR/issues}
 }
 

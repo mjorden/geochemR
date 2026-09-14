@@ -18,8 +18,8 @@ gc_element_to_oxide(ds, keep = FALSE)
 \code{ds}.
 }
 \description{
-\code{gc_oxide_to_element()} rewrites oxide rows (\code{SiO2}, \code{Al2O3}, …) as their
-element (\code{Si}, \code{Al}, …) using the mass factors in \link{gc_oxides};
+\code{gc_oxide_to_element()} rewrites oxide rows (\code{SiO2}, \code{Al2O3}, ...) as their
+element (\code{Si}, \code{Al}, ...) using the mass factors in \link{gc_oxides};
 \code{gc_element_to_oxide()} does the reverse for elements that have a
 conventional oxide. Units are unchanged (a wt\% oxide gives a wt\% element).
 }

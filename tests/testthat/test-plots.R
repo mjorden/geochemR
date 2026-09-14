@@ -27,6 +27,25 @@ test_that("depth plots build", {
   expect_error(plot_depth_profile(gc_example, "SRA", "Nope"), "no SRA")
 })
 
+test_that("theme and scales", {
+  th <- theme_gc()
+  expect_s3_class(th, "theme")
+  expect_s3_class(theme_gc(grid = "both", axis = "none", panel = "parchment"), "theme")
+  expect_equal(unname(gc_colours("parchment")), "#F4EEE2")
+  expect_error(gc_colours("chartreuse"), "unknown colour")
+  expect_length(gc_pal()(3), 3)
+  expect_length(gc_pal("academic")(20), 20)     # interpolates beyond 11
+  expect_length(gc_pal("browns", reverse = TRUE)(7), 7)
+  expect_s3_class(scale_colour_gc(), "Scale"); expect_s3_class(scale_fill_gc_c(), "Scale")
+  expect_plot(plot_pam(gc_cuttings))
+  expect_plot(plot_pam(gc_cuttings, normalize = TRUE))
+  expect_plot(plot_stacked_depth(gc_cuttings, "XRD", c("quartz", "calcite", "total_clay"), normalize = TRUE))
+  expect_plot(plot_depth_profile(gc_cuttings, "SRA", c("TOC", "Tmax")))                 # single hole: no legend, name in subtitle
+  expect_plot(plot_depth_profile(gc_example, "SRA", "TOC", holes = c("H01", "H12")))     # two holes: direct labels
+  expect_plot(plot_depth_profile(gc_example, "SRA", "TOC", direct_labels = FALSE))       # legend instead
+  expect_plot(plot_ternary(gc_indices(gc_cuttings), "XRD", c("quartz", "carbonate", "clay"), colour = "formation"))
+})
+
 test_that("map, ternary and kerogen plots build", {
   expect_plot(plot_map(gc_example, "SRA", "TOC", depth = c(60, 120)))
   expect_plot(plot_map(gc_example, "XRD", "quartz", interp = FALSE, fun = max))

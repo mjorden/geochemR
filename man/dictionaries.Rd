@@ -6,6 +6,7 @@
 \alias{gc_minerals}
 \alias{gc_oxides}
 \alias{gc_sra_analytes}
+\alias{gc_pam_analytes}
 \title{Analyte dictionaries}
 \format{
 \code{gc_minerals}: a data frame with \code{canonical}, \code{alias}, \code{group}
@@ -14,11 +15,15 @@
 by mass, so \code{element = oxide * factor}). \code{gc_sra_analytes}: \code{analyte},
 \code{unit}, \code{low}, \code{high}.
 
-An object of class \code{data.frame} with 81 rows and 3 columns.
+An object of class \code{data.frame} with 85 rows and 3 columns.
 
 An object of class \code{data.frame} with 20 rows and 3 columns.
 
-An object of class \code{data.frame} with 11 rows and 4 columns.
+An object of class \code{data.frame} with 14 rows and 4 columns.
+
+\code{gc_pam_analytes}: the multi-ramp (PAM) pyrolysis fractions  -
+\code{Oil1} ... \code{Oil4} and \code{K1} in mg HC/g with the carbon range each fraction
+represents, plus one \verb{Tmax_*} per fraction.
 }
 \usage{
 gc_minerals
@@ -26,6 +31,8 @@ gc_minerals
 gc_oxides
 
 gc_sra_analytes
+
+gc_pam_analytes
 }
 \description{
 \code{gc_minerals} maps the mineral names labs print to canonical names;

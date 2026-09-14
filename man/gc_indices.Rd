@@ -4,14 +4,14 @@
 \alias{gc_indices}
 \title{Derived indices}
 \usage{
-gc_indices(ds, which = c("sra", "xrf", "xrd"), min_toc = 0.5)
+gc_indices(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5)
 }
 \arguments{
 \item{ds}{A \code{gc_data} object.}
 
 \item{which}{Which groups to compute (\code{"sra"}, \code{"xrf"}, \code{"xrd"}).}
 
-\item{min_toc}{TOC (wt\%) below which HI, OI and S1/TOC are not reported —
+\item{min_toc}{TOC (wt\%) below which HI, OI and S1/TOC are not reported  -
 the ratios blow up on lean samples and laboratories conventionally
 leave them blank below about 0.5 \%.}
 }
@@ -29,7 +29,7 @@ data. What is computed depends on what is present:
 \item \code{HI = 100 * S2 / TOC} (mg HC / g TOC), \code{OI = 100 * S3 / TOC}
 \item \code{PI = S1 / (S1 + S2)} (production index)
 \item \code{S1_TOC = 100 * S1 / TOC} (oil-crossover index; > 100 suggests migrated oil)
-\item \code{Ro_eq = 0.0180 * Tmax - 7.16} (Jarvie et al. 2001), \code{NA} outside 400-500 °C
+\item \code{Ro_eq = 0.0180 * Tmax - 7.16} (Jarvie et al. 2001), \code{NA} outside 400-500 degC
 }
 
 \strong{XRF} (oxides in wt\%; elements are converted to oxides for the
@@ -49,6 +49,17 @@ counts as zero.
 \item \code{QFM} = quartz + feldspars (+ mica if present)
 \item \code{BI_min = (quartz + dolomite) / (quartz + dolomite + calcite + clay)}
 (Wang & Gale 2009 mineralogical brittleness, 0-1)
+\item \code{BI_w = 100 * (1.5*QFM + 1.5*carbonate) / (1.5*QFM + 1.5*carbonate + 2*clay)}
+\itemize{
+\item a weighted brittleness of the kind cuttings-analysis laboratories
+report, 0-100; brittle phases weighted 1.5, clay 2
+}
+}
+
+\strong{PAM} (multi-ramp pyrolysis fractions, needs \code{Oil1} ... \code{K1}):
+\itemize{
+\item \code{Oil_total = Oil1 + Oil2 + Oil3 + Oil4}, \code{Oil3_Oil2}, \code{Oil4_Oil3}, \code{K1_Oil4}
+and \code{Oil_TOC = 100 * Oil_total / TOC} when an SRA TOC exists for the sample
 }
 }
 \examples{

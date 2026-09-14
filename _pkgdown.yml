@@ -21,9 +21,11 @@ reference:
       - gc_wide
       - gc_bind
       - gc_example
+      - gc_cuttings
   - title: Reading laboratory tables
-    desc: Wide spreadsheets in, long measurements out
+    desc: A whole deliverable workbook in one call, or wide tables per method
     contents:
+      - read_workbook
       - read_samples
       - read_geochem
       - gc_mineral_name
@@ -46,13 +48,19 @@ reference:
       - plot_depth_profile
       - plot_depth_heatmap
       - plot_section
+      - plot_stacked_depth
       - plot_mineralogy
+      - plot_pam
   - title: Plots in plan and cross-plots
     contents:
       - plot_map
       - plot_ternary
       - plot_kerogen
       - gc_idw
+  - title: The look
+    desc: Parchment, brown ink, Tufte restraint
+    contents:
+      - theme_gc
   - title: Package
     contents:
       - geochemR-package

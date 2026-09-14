@@ -7,7 +7,7 @@
 plot_mineralogy(
   ds,
   holes = NULL,
-  exclude = c("total_clay", "total", "carbonate", "clay", "QFM", "BI_min")
+  exclude = c("total_clay", "total", "carbonate", "clay", "QFM", "BI", "BI_min", "BI_w")
 )
 }
 \arguments{
@@ -15,15 +15,16 @@ plot_mineralogy(
 
 \item{holes}{Optional subset.}
 
-\item{exclude}{Analytes to leave out (defaults to totals and derived rows).}
+\item{exclude}{Analytes to leave out (totals and derived sums by default).}
 }
 \value{
 A ggplot.
 }
 \description{
-XRD composition per sample as stacked bars, grouped by mineral group,
-one facet per hole, ordered by depth.
+XRD composition per sample interval as stacked bars, minerals grouped
+(tectosilicates, carbonates, clays, sulfides, other), one facet per hole.
 }
 \examples{
 plot_mineralogy(gc_example, holes = c("H01", "H12"))
+plot_mineralogy(gc_cuttings)
 }

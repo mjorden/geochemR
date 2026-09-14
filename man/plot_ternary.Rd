@@ -13,8 +13,8 @@ plot_ternary(ds, method, parts, colour = "hole_id", holes = NULL)
 
 \item{parts}{Three analyte names, in order bottom-left, top, bottom-right.}
 
-\item{colour}{Column of the sample table (or \code{"hole_id"}, \code{"depth_mid"})
-to colour by.}
+\item{colour}{Column of the sample table (or \code{"hole_id"}, \code{"depth_mid"},
+\code{"formation"}) to colour by.}
 
 \item{holes}{Optional subset.}
 }
@@ -23,10 +23,11 @@ A ggplot.
 }
 \description{
 Three parts of a composition (renormalised to 100 per sample) plotted in
-barycentric coordinates — no extra package needed. Typical uses:
+barycentric coordinates - no extra package needed. Typical uses:
 \code{c("quartz", "carbonate", "clay")} after \code{\link[=gc_indices]{gc_indices()}}, or
 \code{c("SiO2", "Al2O3", "CaO")}.
 }
 \examples{
 plot_ternary(gc_indices(gc_example), "XRD", c("quartz", "carbonate", "clay"), colour = "depth_mid")
+plot_ternary(gc_indices(gc_cuttings), "XRD", c("quartz", "carbonate", "clay"), colour = "formation")
 }

@@ -16,7 +16,7 @@ plot_kerogen(
 
 \item{type}{Which plot.}
 
-\item{colour}{Column to colour by (\code{"hole_id"}, \code{"depth_mid"}, or a sample column).}
+\item{colour}{Column to colour by (\code{"hole_id"}, \code{"depth_mid"}, \code{"formation"}, ...).}
 
 \item{holes}{Optional subset.}
 }
@@ -24,15 +24,15 @@ plot_kerogen(
 A ggplot.
 }
 \description{
-\code{type = "hi_oi"} — pseudo-van Krevelen (HI vs OI) with the conventional
-Type I / II / III trend lines; \code{type = "hi_tmax"} — HI vs Tmax with
-maturity windows (immature < 435 °C, oil 435–470, gas > 470);
-\code{type = "s2_toc"} — S2 vs TOC, whose slope is the HI of the sample set
+\code{type = "hi_oi"} - pseudo-van Krevelen (HI vs OI) with the conventional
+Type I / II / III trend lines; \code{type = "hi_tmax"} - HI vs Tmax with
+maturity windows (immature < 435 degC, oil 435-470, gas > 470);
+\code{type = "s2_toc"} - S2 vs TOC, whose slope is the HI of the sample set
 (and whose intercept exposes a mineral-matrix effect). Needs
 \code{\link[=gc_indices]{gc_indices()}} to have been run for HI / OI.
 }
 \examples{
 ds <- gc_indices(gc_example)
 plot_kerogen(ds, "hi_oi")
-plot_kerogen(ds, "hi_tmax", colour = "depth_mid")
+plot_kerogen(gc_indices(gc_cuttings), "hi_tmax", colour = "formation")
 }

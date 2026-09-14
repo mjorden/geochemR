@@ -22,7 +22,7 @@ A tibble: \code{hole_id}, \code{x}, \code{y}, \code{bin_top}, \code{bin_base}, \
 column per analyte.
 }
 \description{
-Aggregates one method's analytes into depth bins per hole — the step
+Aggregates one method's analytes into depth bins per hole - the step
 between sample tables and anything gridded or mapped.
 }
 \examples{

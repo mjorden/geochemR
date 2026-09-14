@@ -22,7 +22,7 @@ gc_data(
 
 \item{crs}{Coordinate reference system of \code{x}/\code{y} as an EPSG code, or \code{NA}.}
 
-\item{depth_unit}{\code{"ft"} or \code{"m"} — only carried as metadata.}
+\item{depth_unit}{\code{"ft"} or \code{"m"} - only carried as metadata.}
 
 \item{sources}{Character vector recording where the data came from.}
 }
@@ -34,14 +34,15 @@ A \code{gc_data} object is two tibbles and a little metadata:
 }
 \details{
 \itemize{
-\item \code{samples} — one row per physical sample: \code{sample_id}, \code{hole_id}, \code{x}, \code{y}
+\item \code{samples} - one row per physical sample: \code{sample_id}, \code{hole_id}, \code{x}, \code{y}
 (map coordinates), \code{z} (surface elevation, optional), \code{depth_top},
-\code{depth_base}, \code{depth_mid}, \code{sample_type}, \code{date} (optional).
-\item \code{measurements} — one row per (sample, analyte): \code{sample_id}, \code{method}
+\code{depth_base}, \code{depth_mid}, \code{sample_type}, \code{formation} and \code{zone}
+(optional stratigraphic labels), \code{date} (optional).
+\item \code{measurements} - one row per (sample, analyte): \code{sample_id}, \code{method}
 (\code{"XRD"}, \code{"XRF"}, \code{"SRA"} or your own), \code{analyte}, \code{value}, \code{unit},
 \code{lod} (detection limit, \code{NA} if none), \code{qualifier} (\code{"<"} when censored
 below \code{lod}, \code{">"} above range, \code{NA} otherwise), \code{lab}.
-\item \code{meta} — a list: \code{crs} (EPSG code or \code{NA}), \code{depth_unit}, \code{sources}.
+\item \code{meta} - a list: \code{crs} (EPSG code or \code{NA}), \code{depth_unit}, \code{sources}.
 }
 
 Lab results are \emph{samples}, not curves: tens per hole, at a depth or over an

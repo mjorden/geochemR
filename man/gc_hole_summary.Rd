@@ -2,9 +2,16 @@
 % Please edit documentation in R/process.R
 \name{gc_hole_summary}
 \alias{gc_hole_summary}
-\title{Per-hole summary}
+\title{Per-hole (or per-formation) summary}
 \usage{
-gc_hole_summary(ds, method, depth = NULL, fun = mean, analytes = NULL)
+gc_hole_summary(
+  ds,
+  method,
+  depth = NULL,
+  fun = mean,
+  analytes = NULL,
+  by = "hole_id"
+)
 }
 \arguments{
 \item{ds}{A \code{gc_data} object.}
@@ -16,12 +23,16 @@ gc_hole_summary(ds, method, depth = NULL, fun = mean, analytes = NULL)
 \item{fun}{Summary function.}
 
 \item{analytes}{Optional subset.}
+
+\item{by}{Grouping: \code{"hole_id"} (default), or \code{c("hole_id", "formation")},
+\code{c("hole_id", "zone")} ... for stratigraphic summaries of a cuttings well.}
 }
 \value{
-One row per hole with \code{x}, \code{y}, \code{n} and one column per analyte.
+One row per group with \code{x}, \code{y}, \code{n}, \code{depth_top}, \code{depth_base} and
+one column per analyte.
 }
 \description{
-Per-hole summary
+Per-hole (or per-formation) summary
 }
 \examples{
 gc_hole_summary(gc_example, "SRA", analytes = c("TOC", "Tmax"))

@@ -7,7 +7,7 @@
 #' * `HI = 100 * S2 / TOC` (mg HC / g TOC), `OI = 100 * S3 / TOC`
 #' * `PI = S1 / (S1 + S2)` (production index)
 #' * `S1_TOC = 100 * S1 / TOC` (oil-crossover index; > 100 suggests migrated oil)
-#' * `Ro_eq = 0.0180 * Tmax - 7.16` (Jarvie et al. 2001), `NA` outside 400-500 °C
+#' * `Ro_eq = 0.0180 * Tmax - 7.16` (Jarvie et al. 2001), `NA` outside 400-500 degC
 #'
 #' **XRF** (oxides in wt%; elements are converted to oxides for the
 #' calculation):
@@ -23,10 +23,17 @@
 #' * `QFM` = quartz + feldspars (+ mica if present)
 #' * `BI_min = (quartz + dolomite) / (quartz + dolomite + calcite + clay)`
 #'   (Wang & Gale 2009 mineralogical brittleness, 0-1)
+#' * `BI_w = 100 * (1.5*QFM + 1.5*carbonate) / (1.5*QFM + 1.5*carbonate + 2*clay)`
+#'   - a weighted brittleness of the kind cuttings-analysis laboratories
+#'   report, 0-100; brittle phases weighted 1.5, clay 2
+#'
+#' **PAM** (multi-ramp pyrolysis fractions, needs `Oil1` ... `K1`):
+#' * `Oil_total = Oil1 + Oil2 + Oil3 + Oil4`, `Oil3_Oil2`, `Oil4_Oil3`, `K1_Oil4`
+#'   and `Oil_TOC = 100 * Oil_total / TOC` when an SRA TOC exists for the sample
 #'
 #' @param ds A `gc_data` object.
 #' @param which Which groups to compute (`"sra"`, `"xrf"`, `"xrd"`).
-#' @param min_toc TOC (wt%) below which HI, OI and S1/TOC are not reported —
+#' @param min_toc TOC (wt%) below which HI, OI and S1/TOC are not reported  - 
 #'   the ratios blow up on lean samples and laboratories conventionally
 #'   leave them blank below about 0.5 %.
 #' @return `ds` with extra rows, `method` set to `"SRA"`, `"XRF"` or `"XRD"`
@@ -35,7 +42,7 @@
 #' ds <- gc_indices(gc_example)
 #' gc_analytes(ds)
 #' @export
-gc_indices <- function(ds, which = c("sra", "xrf", "xrd"), min_toc = 0.5) {
+gc_indices <- function(ds, which = c("sra", "xrf", "xrd", "pam"), min_toc = 0.5) {
   which <- match.arg(which, several.ok = TRUE)
   m <- ds$measurements
   m <- m[!(m$lab %in% "derived"), ]
@@ -44,6 +51,7 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd"), min_toc = 0.5) {
   if ("sra" %in% which && any(m$method == "SRA")) new <- c(new, list(.sra_indices(ds, min_toc)))
   if ("xrf" %in% which && any(m$method == "XRF")) new <- c(new, list(.xrf_indices(ds)))
   if ("xrd" %in% which && any(m$method == "XRD")) new <- c(new, list(.xrd_indices(ds)))
+  if ("pam" %in% which && any(m$method == "PAM")) new <- c(new, list(.pam_indices(ds, min_toc)))
   new <- dplyr::bind_rows(new)
   if (nrow(new)) ds$measurements <- dplyr::bind_rows(m, new)
   ds
@@ -115,10 +123,34 @@ gc_indices <- function(ds, which = c("sra", "xrf", "xrd"), min_toc = 0.5) {
   q <- .col(w, "quartz"); d <- .col(w, "dolomite"); cal <- .col(w, "calcite")
   q[is.na(q)] <- 0; d[is.na(d)] <- 0; cal[is.na(cal)] <- 0; clay[is.na(clay)] <- 0
   bi <- (q + d) / (q + d + cal + clay)
+  carb0 <- carb; carb0[is.na(carb0)] <- 0
+  bi_w <- 100 * (1.5 * qfm + 1.5 * carb0) / (1.5 * qfm + 1.5 * carb0 + 2 * clay)
   dplyr::bind_rows(
     .derived(w, "XRD", "carbonate", carb, "wt%"),
     .derived(w, "XRD", "clay", clay, "wt%"),
     .derived(w, "XRD", "QFM", qfm, "wt%"),
-    .derived(w, "XRD", "BI_min", bi, "frac")
+    .derived(w, "XRD", "BI_min", bi, "frac"),
+    .derived(w, "XRD", "BI_w", bi_w, "index")
   )
+}
+
+.pam_indices <- function(ds, min_toc = 0.5) {
+  w <- gc_wide(ds, "PAM")
+  o1 <- .col(w, "Oil1"); o2 <- .col(w, "Oil2"); o3 <- .col(w, "Oil3"); o4 <- .col(w, "Oil4"); k1 <- .col(w, "K1")
+  z <- function(v) { v[is.na(v)] <- 0; v }
+  total <- z(o1) + z(o2) + z(o3) + z(o4)
+  total[is.na(o1) & is.na(o2) & is.na(o3) & is.na(o4)] <- NA
+  out <- list(
+    .derived(w, "PAM", "Oil_total", total, "mg HC/g"),
+    .derived(w, "PAM", "Oil3_Oil2", o3 / o2, "ratio"),
+    .derived(w, "PAM", "Oil4_Oil3", o4 / o3, "ratio"),
+    .derived(w, "PAM", "K1_Oil4", k1 / o4, "ratio")
+  )
+  if (any(ds$measurements$method == "SRA" & ds$measurements$analyte == "TOC")) {
+    toc <- gc_wide(ds, "SRA", "TOC")
+    t <- toc$TOC[match(w$sample_id, toc$sample_id)]
+    t <- ifelse(!is.na(t) & t >= min_toc & t > 0, t, NA)
+    out <- c(out, list(.derived(w, "PAM", "Oil_TOC", 100 * total / t, "mg HC/g TOC")))
+  }
+  dplyr::bind_rows(out)
 }

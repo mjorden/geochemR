@@ -10,13 +10,14 @@ plot_depth_profile(
   analytes = NULL,
   holes = NULL,
   free_x = TRUE,
-  connect = TRUE
+  connect = TRUE,
+  direct_labels = NULL
 )
 }
 \arguments{
 \item{ds}{A \code{gc_data} object.}
 
-\item{method}{Method (\code{"XRD"}, \code{"XRF"}, \code{"SRA"}).}
+\item{method}{Method (\code{"XRD"}, \code{"XRF"}, \code{"SRA"}, \code{"PAM"}).}
 
 \item{analytes}{Analytes to plot (default: all for the method).}
 
@@ -25,15 +26,22 @@ plot_depth_profile(
 \item{free_x}{Independent x scales per analyte (default \code{TRUE}).}
 
 \item{connect}{Join a hole's samples with a line.}
+
+\item{direct_labels}{Label traces at their deepest sample instead of a
+legend; \code{NULL} decides by the number of holes.}
 }
 \value{
 A ggplot.
 }
 \description{
 One panel per analyte, holes as colours, depth increasing downward.
-Interval samples are drawn as vertical bars over their interval with a
-point at the mid-depth; censored values are hollow.
+Interval samples are drawn as a bar over their interval with a point at the
+mid-depth; censored values are hollow. With \code{direct_labels} (the default
+for two or three holes) each trace is named at its deepest sample and no
+legend is drawn; a single hole needs no label at all, and more than three
+get a legend.
 }
 \examples{
 plot_depth_profile(gc_example, "SRA", c("TOC", "Tmax"), holes = c("H01", "H05"))
+plot_depth_profile(gc_cuttings, "SRA", c("TOC", "S2", "Tmax"))
 }

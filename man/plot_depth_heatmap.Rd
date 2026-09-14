@@ -10,7 +10,7 @@ plot_depth_heatmap(
   analyte,
   breaks = NULL,
   order = "x",
-  palette = "viridis"
+  palette = "browns"
 )
 }
 \arguments{
@@ -23,7 +23,7 @@ plot_depth_heatmap(
 
 \item{order}{Hole order: \code{"x"}, \code{"y"}, or a character vector.}
 
-\item{palette}{A viridis option name (\code{"viridis"}, \code{"magma"}, …).}
+\item{palette}{A sequential palette name for \code{\link[=gc_pal]{gc_pal()}}.}
 }
 \value{
 A ggplot.

@@ -103,7 +103,44 @@ plot_kerogen(ds, "hi_tmax", colour = "depth_mid")
 plot_ternary(ds, "XRD", c("quartz", "carbonate", "clay"), colour = "depth_mid")
 ```
 
-## 7. Summaries for reports
+## 7. A whole laboratory workbook at once
+
+Commercial cuttings-analysis deliverables put every method on one sheet
+under a group / analyte / unit header. `read_workbook()` reads that layout
+directly; the package ships a synthetic one in exactly that form.
+
+```{r workbook}
+f <- system.file("extdata", "cuttings_workbook.xlsx", package = "geochemR")
+cu <- read_workbook(f, hole_id = "EX-1", lab = "Example Cuttings Lab") |> gc_indices()
+cu
+gc_analytes(cu)$PAM
+```
+
+Bottom-only depths become intervals, formation and zone come along, the clay
+speciation (reported as % of total clay) is converted to bulk wt%, and the
+lab's own calculated columns are dropped so that `gc_indices()` is the one
+source of derived values.
+
+```{r cuttings-plots, fig.height = 6}
+plot_depth_profile(cu, "SRA", c("TOC", "S1", "S2", "Tmax", "HI"))
+plot_pam(cu)
+plot_kerogen(cu, "hi_tmax", colour = "formation")
+gc_hole_summary(cu, "SRA", by = c("hole_id", "formation"), analytes = c("TOC", "HI", "Tmax", "Ro_eq"))
+```
+
+## 8. The look
+
+Every plot uses `theme_gc()` — parchment page, brown ink, serif type,
+tan-to-espresso palette — and the `scale_*_gc()` scales. They are ordinary
+ggplot2 objects, so add layers or override anything:
+
+```{r look}
+plot_map(ds, "SRA", "TOC", depth = c(50, 110)) +
+  ggplot2::labs(title = "Where the organic-rich mudstone is richest",
+                caption = "Synthetic example; mean TOC per hole, inverse-distance surface")
+```
+
+## 9. Summaries for reports
 
 ```{r summaries}
 gc_hole_summary(ds, "SRA", depth = c(50, 110), analytes = c("TOC", "HI", "Tmax", "Ro_eq"))

@@ -2,14 +2,15 @@
 #'
 #' A `gc_data` object is two tibbles and a little metadata:
 #'
-#' * `samples` — one row per physical sample: `sample_id`, `hole_id`, `x`, `y`
+#' * `samples` - one row per physical sample: `sample_id`, `hole_id`, `x`, `y`
 #'   (map coordinates), `z` (surface elevation, optional), `depth_top`,
-#'   `depth_base`, `depth_mid`, `sample_type`, `date` (optional).
-#' * `measurements` — one row per (sample, analyte): `sample_id`, `method`
+#'   `depth_base`, `depth_mid`, `sample_type`, `formation` and `zone`
+#'   (optional stratigraphic labels), `date` (optional).
+#' * `measurements` - one row per (sample, analyte): `sample_id`, `method`
 #'   (`"XRD"`, `"XRF"`, `"SRA"` or your own), `analyte`, `value`, `unit`,
 #'   `lod` (detection limit, `NA` if none), `qualifier` (`"<"` when censored
 #'   below `lod`, `">"` above range, `NA` otherwise), `lab`.
-#' * `meta` — a list: `crs` (EPSG code or `NA`), `depth_unit`, `sources`.
+#' * `meta` - a list: `crs` (EPSG code or `NA`), `depth_unit`, `sources`.
 #'
 #' Lab results are *samples*, not curves: tens per hole, at a depth or over an
 #' interval, from a lab by a method. Keeping every method in one long table
@@ -21,7 +22,7 @@
 #'   `analyte`, `value`; `unit`, `lod`, `qualifier`, `lab` are filled with
 #'   `NA` when absent.
 #' @param crs Coordinate reference system of `x`/`y` as an EPSG code, or `NA`.
-#' @param depth_unit `"ft"` or `"m"` — only carried as metadata.
+#' @param depth_unit `"ft"` or `"m"` - only carried as metadata.
 #' @param sources Character vector recording where the data came from.
 #' @return An object of class `gc_data`.
 #' @examples
@@ -34,7 +35,7 @@ gc_data <- function(samples, measurements, crs = NA, depth_unit = "ft", sources 
   samples <- tibble::as_tibble(samples)
   measurements <- tibble::as_tibble(measurements)
   if (!"sample_id" %in% names(samples)) stop("`samples` needs a `sample_id` column", call. = FALSE)
-  for (col in c("hole_id", "sample_type")) if (!col %in% names(samples)) samples[[col]] <- NA_character_
+  for (col in c("hole_id", "sample_type", "formation", "zone")) if (!col %in% names(samples)) samples[[col]] <- NA_character_
   for (col in c("x", "y", "z", "depth_top", "depth_base")) if (!col %in% names(samples)) samples[[col]] <- NA_real_
   samples$sample_id <- as.character(samples$sample_id)
   samples$hole_id <- as.character(samples$hole_id)
@@ -86,7 +87,9 @@ validate_gc <- function(ds, xrd_tolerance = 5) {
   if (any(dup)) warning(sum(dup), " duplicate (sample, method, analyte, lab) measurement rows", call. = FALSE)
   below <- !is.na(m$lod) & !is.na(m$value) & m$value < m$lod & (is.na(m$qualifier) | m$qualifier != "<")
   if (any(below)) warning(sum(below), " values below their detection limit lack a '<' qualifier", call. = FALSE)
-  xrd <- m[m$method == "XRD" & !is.na(m$value) & !(m$analyte %in% c("total_clay", "total")), ]
+  # bulk-mineral rows only: not totals, not group sums or indices (derived or lab-reported)
+  xrd <- m[m$method == "XRD" & !is.na(m$value) & !(m$lab %in% c("derived", "reported")) &
+             !(m$analyte %in% c("total_clay", "total", "clay", "carbonate", "QFM", "BI", "BI_min", "BI_w")), ]
   if (nrow(xrd)) {
     tot <- tapply(xrd$value, xrd$sample_id, sum)
     off <- tot[abs(tot - 100) > xrd_tolerance]
